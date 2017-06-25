@@ -1,0 +1,27 @@
+{
+    "name": "axios/tpr-framework",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "axios",
+            "email": "axioscros@aliyun.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "composer/composer": "1.0.*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "tpr\\": "src"
+        },
+        "files": [
+            "start.php",
+            "src/helper.php"
+        ]
+    }
+}
