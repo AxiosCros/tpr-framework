@@ -155,4 +155,12 @@ trait Jump
         $isAjax = Request::instance()->isAjax();
         return $isAjax ? Config::get('default_ajax_return') : Config::get('default_return_type');
     }
+
+    protected function wrong($code=500,$message='',$header=[]){
+        $this->response([],$code,$message,$header);
+    }
+
+    protected function response($data=[],$code=200,$message='',array $header=[]){
+        $this->result($data,$code,$message,$header);
+    }
 }
