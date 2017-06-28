@@ -5,6 +5,8 @@
 
 > 新增或修改了一些功能和特性，比如请求参数的接口验证，前置后置中间件，异步任务等等
 
+> thinkphp5 github地址 [https://github.com/AxiosCros/framework](https://github.com/AxiosCros/framework)
+
 ## 修改记录简介
 * 修改一些宏定义变量的默认值
  > 即修改了默认的项目目录结构，将配置目录与应用目录分离
