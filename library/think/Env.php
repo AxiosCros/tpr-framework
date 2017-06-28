@@ -45,7 +45,7 @@ class Env
     public static function config($path){
         if(is_file($path)){
             self::$file_path = $path;
-            self::$env_array = parse_ini_file(self::$file_path, true);
+            self::$env_array =  parse_ini_file(self::$file_path, true);
         }else{
             throw new FileNotFoundException($path . ' not found');
         }
@@ -125,6 +125,31 @@ class Env
 
     public static function all(){
         return self::init();
+    }
+
+    public static function save(){
+        $envSection = self::$env_array;
+        $text = self::envFileString($envSection);
+        return file_put_contents(self::$file_path,$text);
+    }
+
+    private static function envFileString($data){
+        $str = "\r\n";
+
+        foreach ($data as $k1=>$v1){
+            $str .= "[".$k1."]\r\n";
+            foreach ($v1 as $k2=>$v2){
+                if(is_array($v2)){
+                    foreach ($v2 as $k3=>$v3){
+                        $str .= $k2.'['.$k3.'] = '.$v3."\r\n";
+                    }
+                }else{
+                    $str .= $k2.' = '.$v2."\r\n";
+                }
+            }
+            $str .="\r\n";
+        }
+        return $str;
     }
 
 }
