@@ -18,7 +18,7 @@ defined('THINK_PATH') or define('THINK_PATH', __DIR__ . DS);
 define('LIB_PATH', THINK_PATH . 'library' . DS);
 define('CORE_PATH', LIB_PATH . 'think' . DS);
 define('TRAIT_PATH', LIB_PATH . 'traits' . DS);
-defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . DS);
+defined('APP_PATH') or define('APP_PATH', dirname(dirname($_SERVER['SCRIPT_FILENAME'])) . DS.'application'.DS);
 defined('ROOT_PATH') or define('ROOT_PATH', dirname(realpath(APP_PATH)) . DS);
 defined('EXTEND_PATH') or define('EXTEND_PATH', ROOT_PATH . 'extend' . DS);
 defined('VENDOR_PATH') or define('VENDOR_PATH', ROOT_PATH . 'vendor' . DS);
@@ -26,9 +26,11 @@ defined('RUNTIME_PATH') or define('RUNTIME_PATH', ROOT_PATH . 'runtime' . DS);
 defined('LOG_PATH') or define('LOG_PATH', RUNTIME_PATH . 'log' . DS);
 defined('CACHE_PATH') or define('CACHE_PATH', RUNTIME_PATH . 'cache' . DS);
 defined('TEMP_PATH') or define('TEMP_PATH', RUNTIME_PATH . 'temp' . DS);
-defined('CONF_PATH') or define('CONF_PATH', APP_PATH); // 配置文件目录
+defined('CONF_PATH') or define('CONF_PATH', ROOT_PATH.'config/'); // 配置文件目录
 defined('CONF_EXT') or define('CONF_EXT', EXT); // 配置文件后缀
 defined('ENV_PREFIX') or define('ENV_PREFIX', 'PHP_'); // 环境变量的配置前缀
+defined('LANG_PATH') or define('LANG_PATH',CONF_PATH.'lang'.DIRECTORY_SEPARATOR);
+defined('APP_NAMESPACE') or define('APP_NAMESPACE','app');
 
 // 环境常量
 define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
