@@ -483,7 +483,7 @@ class App
         } elseif (is_file(RUNTIME_PATH . $module . 'init' . EXT)) {
             include RUNTIME_PATH . $module . 'init' . EXT;
         } else {
-            $path = APP_PATH . $module;
+            $path = CONF_PATH . $module;
             // 加载模块配置
             $config = Config::load(CONF_PATH . $module . 'config' . CONF_EXT);
             // 读取数据库配置文件
@@ -515,6 +515,7 @@ class App
             if (is_file($path . 'common' . EXT)) {
                 include $path . 'common' . EXT;
             }
+
 
             // 加载当前模块语言包
             if ($module) {
