@@ -86,5 +86,41 @@ class Env
         return $tmp;
     }
 
+    public static function set($index,$value){
+        self::init();
+        $envArraySection = self::$env_array;
+        if(strpos($index,'.')){
+            $indexArray = explode('.',$index);
+            $tmpSection = &$envArraySection;
+            $tmp = &$envArray;
+            $indexLen = count($indexArray);
+            foreach ($indexArray as $key=>$i){
+                if(!isset($tmpSection[$i])){
+                    return false;
+                }
+                //final
+                if($key==$indexLen-1){
+                    $tmpSection[$i] = $value;
+                    $tmp[$i] = $value;
+                }else{
+                    if($key!=0){
+                        $tmp = &$tmp[$i];
+                    }
+                    $tmpSection = &$tmpSection[$i];
+                }
+            }
+        }else if(isset(self::$env_array[$index])){
+            $envArraySection[$index] = $value;
+        }else{
+            return false;
+        }
+
+        $name = ENV_PREFIX . strtoupper(str_replace('.' , '_' , $index));
+        putenv("$name=$value");
+
+        self::$env_array = $envArraySection;
+        return self::getFromFile($index);
+    }
+
 
 }
