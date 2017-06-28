@@ -1,4 +1,4 @@
-/.idea
-composer.lock
+/composer.lock
 /vendor
-.env
+.idea
+.DS_Store

@@ -1,27 +1,35 @@
 {
-    "name": "axios/tpr-framework",
-    "type": "library",
+    "name": "topthink/framework",
+    "description": "the new thinkphp framework",
+    "type": "think-framework",
+    "keywords": [
+        "framework",
+        "thinkphp",
+        "ORM"
+    ],
+    "homepage": "http://thinkphp.cn/",
     "license": "Apache-2.0",
     "authors": [
         {
-            "name": "axios",
-            "email": "axioscros@aliyun.com"
+            "name": "liu21st",
+            "email": "liu21st@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
-        "php": ">=7.0"
+        "php": ">=5.4.0",
+        "topthink/think-installer": "~1.0"
     },
     "require-dev": {
-        "composer/composer": "1.0.*@dev"
+        "phpunit/phpunit": "4.8.*",
+        "johnkary/phpunit-speedtrap": "^1.0",
+        "mikey179/vfsStream": "~1.6",
+        "phploc/phploc": "2.*",
+        "sebastian/phpcpd": "2.*",
+        "phpdocumentor/reflection-docblock": "^2.0"
     },
     "autoload": {
         "psr-4": {
-            "tpr\\": "src"
-        },
-        "files": [
-            "start.php",
-            "src/helper.php"
-        ]
+            "think\\": "library/think"
+        }
     }
 }
