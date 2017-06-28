@@ -49,8 +49,14 @@ class Tool {
     }
 
     public static function checkData2String(&$array=[]){
+        if(is_object($array)){
+            $array = self::object2Array($array);
+        }
         if(is_array($array)){
             foreach ($array as &$a){
+                if(is_object($a)){
+                    $a = self::object2Array($a);
+                }
                 if(is_array($a)){
                     $a = check_data_to_string($a);
                 }
@@ -67,5 +73,10 @@ class Tool {
             $array = "";
         }
         return $array;
+    }
+
+    public static function object2Array($object) {
+        $object =  json_decode( json_encode( $object),true);
+        return  $object;
     }
 }
