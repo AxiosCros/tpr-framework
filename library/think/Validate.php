@@ -96,7 +96,7 @@ class Validate
     protected $scene = [];
 
     // 验证失败错误信息
-    protected $error = [];
+    protected $error = '';
 
     // 批量验证
     protected $batch = false;
@@ -1180,6 +1180,10 @@ class Validate
     }
 
     // 获取错误信息
+
+    /**
+     * @return string
+     */
     public function getError()
     {
         return $this->error;
