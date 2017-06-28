@@ -28,7 +28,25 @@ use think\Request;
 use think\Response;
 use think\Session;
 use think\Url;
-use think\View;
+
+if(!function_exists('u')){
+    function u($module = 'index', $controller = 'index' , $action = 'index'){
+        return url($module.'/'.$controller.'/'.$action);
+    }
+}
+
+if(!function_exists('c')){
+    function c($index , $default = ''){
+        $config =  config($index);
+        return is_null($config) ? $default : $config;
+    }
+}
+
+if(!function_exists('env')){
+    function env($index,$default=''){
+        return \think\Env::get($index,$default);
+    }
+}
 
 if (!function_exists('load_trait')) {
     /**
