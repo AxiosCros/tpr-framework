@@ -67,6 +67,9 @@ class Db
      */
     public static function connect($config = [], $name = false)
     {
+        if(is_string($config)){
+            $config = Config::get($config);
+        }
         if (false === $name) {
             $name = md5(serialize($config));
         }
