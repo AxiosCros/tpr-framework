@@ -24,6 +24,8 @@ use think\View as ViewTemplate;
 
 trait Jump
 {
+    protected $return_type;
+
     /**
      * 操作成功跳转的快捷方法
      * @access protected
@@ -161,6 +163,7 @@ trait Jump
     }
 
     protected function response($data=[],$code=200,$message='',array $header=[]){
-        $this->result($data,$code,$message,$header);
+        $type = !empty($this->return_type)?$this->return_type:Config::get('default_ajax_return');
+        $this->result($data,$code,$message,$type,$header);
     }
 }
