@@ -30,6 +30,12 @@ use think\Session;
 use think\Url;
 use think\View;
 
+if(!function_exists('env')){
+    function env($index,$default=''){
+        return \think\Env::get($index,$default);
+    }
+}
+
 if (!function_exists('load_trait')) {
     /**
      * 快速导入Traits PHP5.5以上无需调用
