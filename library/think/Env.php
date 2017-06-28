@@ -62,6 +62,7 @@ class Env
         if(empty(self::$env_array)){
             self::$env_array = is_file(self::$file_path) ? parse_ini_file(self::$file_path, true) : [];
         }
+        return self::$env_array;
     }
 
     public static function getFromFile($index, $default = null){
@@ -122,5 +123,8 @@ class Env
         return self::getFromFile($index);
     }
 
+    public static function all(){
+        return self::init();
+    }
 
 }
