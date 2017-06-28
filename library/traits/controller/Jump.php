@@ -16,6 +16,7 @@ namespace traits\controller;
 
 use think\Config;
 use think\exception\HttpResponseException;
+use think\Fork;
 use think\Request;
 use think\Response;
 use think\response\Redirect;
@@ -158,6 +159,11 @@ trait Jump
         return $isAjax ? Config::get('default_ajax_return') : Config::get('default_return_type');
     }
 
+    /**
+     * @param int $code
+     * @param string $message
+     * @param array $header
+     */
     protected function wrong($code=500,$message='',$header=[]){
         $this->response([],$code,$message,$header);
     }
@@ -165,5 +171,8 @@ trait Jump
     protected function response($data=[],$code=200,$message='',array $header=[]){
         $type = !empty($this->return_type)?$this->return_type:Config::get('default_ajax_return');
         $this->result($data,$code,$message,$type,$header);
+        $queue = Fork::$queue;
+        Fork::fork(true);
+        Fork::doFork($queue);
     }
 }

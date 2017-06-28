@@ -48,21 +48,21 @@ class ActionBegin{
     }
 
     public function sign(){
-        $status = config('sign.status',0);
+        $status = c('sign.status',0);
 
         if($status){
-            $timestamp = config('sign.timestamp_name','timestamp');
+            $timestamp = c('sign.timestamp_name','timestamp');
             if(!isset($this->param[$timestamp])){
                 $this->wrong(401,$timestamp.' param not exits');
             }
             $timestamp = $this->param[$timestamp];
 
-            $expire = config('sign.expire',10);
+            $expire = c('sign.expire',10);
             if(time()-intval($timestamp) > intval($expire)){
                 $this->wrong(401,md5($timestamp."azXCz5AEabA1Y9XhB").'sign timeout'.time());
             }
 
-            $sign_name = config('sign.sign_mame','sign');
+            $sign_name = c('sign.sign_mame','sign');
             if(!isset($this->param[$sign_name])){
                 $this->wrong(401,$sign_name.' param not exits');
             }
@@ -77,7 +77,7 @@ class ActionBegin{
     }
 
     private function filter(){
-        $validate_config = Config::get('validate.'.$this->mca);
+        $validate_config = c('validate.'.$this->mca);
 
         if(!empty($validate_config)){
             try{
@@ -115,7 +115,7 @@ class ActionBegin{
     }
 
     private function middleware(){
-        $middleware_config =  config('middleware.before',[]);
+        $middleware_config =  c('middleware.before',[]);
         if(!empty($middleware_config)){
             if(isset($middleware_config[$this->mca])){
                 $middleware_config = $middleware_config[$this->mca];

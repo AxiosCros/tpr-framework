@@ -20,6 +20,7 @@ class Fork {
     }
 
     public static function doFork($queue=[]){
+        self::$queue = [];
         $max = intval(config('global.max_process',100));
         $max = $max<50?50:$max;
         $max = $max>1000?1000:$max;

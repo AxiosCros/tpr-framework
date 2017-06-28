@@ -15,8 +15,11 @@ use axios\tpr\service\ForkService;
 use think\Request;
 
 class RequestEnd extends ForkService{
+
     public $param;
+
     public $request;
+
     function __construct()
     {
         $this->request = Request::instance();
