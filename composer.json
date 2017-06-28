@@ -1,13 +1,14 @@
 {
     "name": "axops/tpr-framework",
     "description": "base on thinkphp5",
+    "version": "1.0.0",
     "keywords": [
         "framework",
         "thinkphp",
         "ORM",
         "Api"
     ],
-    "homepage": "http://thinkphp.cn/",
+    "homepage": "https://github.com/AxiosCros/tpr-framework",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -15,6 +16,9 @@
             "email": "axioscros@aliyun.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/AxiosCros/tpr-framework/issues"
+    },
     "require": {
         "php": ">=5.4.0"
     },
