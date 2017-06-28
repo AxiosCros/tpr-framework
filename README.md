@@ -43,10 +43,16 @@
 * 系统语言包加载 增加 CONF_PATH/lang/ 目录
 
 * traits\controller\Jump 增加wrong和response方法用于接口数据回调
- > 支持数据转义,如整型转为字符串,null转为空字符串,对象转为数组等
+  ``` php
+  支持数据转义,如整型转为字符串,null转为空字符串,对象转为数组等
+  ```
  
 * 实现自定义回调格式
- > 默认回调格式为json，但是某个接口需要回调xml时，只需在回调前使用 $this->return_type = 'xml'即可
+  ``` shell
+  默认回调格式为json,
+  但是某个接口需要回调xml时，
+  只需在回调前使用 $this->return_type = 'xml'即可
+  ```
 
 * Env 类增加getFromFile方法、config方法、set方法和save方法
   * getFromFile方法实现环境变量支持从文件读取，支持一级/三级变量获取
@@ -57,12 +63,12 @@
 * 增加助手函数env()
 
 * 增加助手函数c()方法获取带默认值的配置
- ``` php
- c($index,$default);
- ```
+  ``` php
+  c($index,$default);
+  ```
 
 * 增加助手函数u(),方便url生成
- > u($module = 'index'', $controller = 'index'', $action = 'index'')
+  > u($module = 'index'', $controller = 'index'', $action = 'index'')
  
 * Validate类的error参数默认值修改为空字符串
 
@@ -73,9 +79,9 @@
 * 日志存储增加Mongo驱动
 
 * Db类的connect方法支持通过传入配置名载入配置
- ``` php
- Db::connect('mysql.test')->name('test')->select();
- ```
+  ``` php
+  Db::connect('mysql.test')->name('test')->select();
+  ```
 
 * 增加AppInit应用初始化行为
   * 增加数字签名验证功能
@@ -84,10 +90,10 @@
   * 增加请求缓存功能
  
 * 增加请求结束行为监听
- > start.php
- ``` php
- Hook::listen('request_end');
- ```
+  > start.php
+  ``` php
+  Hook::listen('request_end');
+  ```
 
 ## 开源协议
-> 遵循Apache2开源协议发布，并提供免费使用
+  > 遵循Apache2开源协议发布，并提供免费使用
