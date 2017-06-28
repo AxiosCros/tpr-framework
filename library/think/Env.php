@@ -11,11 +11,15 @@
 
 namespace think;
 
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+
 class Env
 {
     public static $file_path = '';
 
     public static $env_array = [];
+
+    public static $instance = null;
 
     /**
      * 获取环境变量值
@@ -36,6 +40,19 @@ class Env
         } else {
             return $default;
         }
+    }
+
+    public static function config($path){
+        if(is_file($path)){
+            self::$file_path = $path;
+            self::$env_array = parse_ini_file(self::$file_path, true);
+        }else{
+            throw new FileNotFoundException($path . ' not found');
+        }
+        if(is_null(self::$instance)){
+            self::$instance = new static();
+        }
+        return self::$instance ;
     }
 
     private static function init(){
