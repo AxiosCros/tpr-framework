@@ -30,6 +30,12 @@ use think\Session;
 use think\Url;
 use think\View;
 
+if(!function_exists('u')){
+    function u($module = 'index', $controller = 'index' , $action = 'index'){
+        return url($module.'/'.$controller.'/'.$action);
+    }
+}
+
 if(!function_exists('env')){
     function env($index,$default=''){
         return \think\Env::get($index,$default);
