@@ -458,6 +458,7 @@ class App
             date_default_timezone_set($config['default_timezone']);
 
             // 监听app_init
+            Hook::add('app_init','think\\behavior\\AppInit');
             Hook::listen('app_init');
 
             self::$init = true;
