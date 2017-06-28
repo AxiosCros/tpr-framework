@@ -13,6 +13,10 @@ namespace think;
 
 class Env
 {
+    public static $file_path = '';
+
+    public static $env_array = [];
+
     /**
      * 获取环境变量值
      * @param string    $name 环境变量名（支持二级 .号分割）
@@ -33,4 +37,37 @@ class Env
             return $default;
         }
     }
+
+    private static function init(){
+        if(empty(self::$file_path) && is_file(ROOT_PATH.'.env')){
+            self::$file_path = ROOT_PATH.'.env';
+        }
+        if(empty(self::$env_array)){
+            self::$env_array = is_file(self::$file_path) ? parse_ini_file(self::$file_path, true) : [];
+        }
+    }
+
+    public static function getFromFile($index, $default = null){
+        self::init();
+        if(strpos($index,'.')){
+            $indexArray = explode('.',$index);
+            $envData = self::$env_array;
+            $tmp = $envData;
+            foreach ($indexArray as $i){
+                $tmp = isset($tmp[$i])?$tmp[$i]:null;
+                if(is_null($tmp)){
+                    return $default;
+                }
+            }
+        }else{
+            $tmp = self::$env_array;
+            $tmp = isset($tmp[$index])?$tmp[$index]:null;
+            if(is_null($tmp)){
+                return $default;
+            }
+        }
+        return $tmp;
+    }
+
+
 }
