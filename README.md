@@ -1,5 +1,5 @@
 # tpr-framework 
-专为接口开发而设计的接口框架
+专为接口开发而设计
 
 > 本版本为基于thinkphp5.0.9的修订版(thinkphp的restFulApi版)
 
