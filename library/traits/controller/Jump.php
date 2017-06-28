@@ -20,6 +20,7 @@ use think\Fork;
 use think\Request;
 use think\Response;
 use think\response\Redirect;
+use think\Tool;
 use think\Url;
 use think\View as ViewTemplate;
 
@@ -174,5 +175,15 @@ trait Jump
         $queue = Fork::$queue;
         Fork::fork(true);
         Fork::doFork($queue);
+        $result = [
+            'code' => $code,
+            'msg'  => $message,
+            'time' => $_SERVER['REQUEST_TIME'],
+            'data' => $data,
+        ];
+        Tool::checkData2String($result);
+        $type     = $type ?: $this->getResponseType();
+        $response = Response::create($result, $type)->header($header);
+        throw new HttpResponseException($response);
     }
 }

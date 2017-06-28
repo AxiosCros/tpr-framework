@@ -47,4 +47,25 @@ class Tool {
         self::$identity = $identity;
         return $identity;
     }
+
+    public static function checkData2String(&$array=[]){
+        if(is_array($array)){
+            foreach ($array as &$a){
+                if(is_array($a)){
+                    $a = check_data_to_string($a);
+                }
+                if(is_int($a)){
+                    $a = strval($a);
+                }
+                if(is_null($a)){
+                    $a = "";
+                }
+            }
+        }else if(is_int($array)){
+            $array = strval($array);
+        }else if(is_null($array)){
+            $array = "";
+        }
+        return $array;
+    }
 }
