@@ -156,7 +156,7 @@ trait Jump
     protected function getResponseType()
     {
         $isAjax = Request::instance()->isAjax();
-        return $isAjax ? Config::get('default_ajax_return') : Config::get('default_return_type');
+        return $isAjax ? c('default_ajax_return','json') : c('default_return_type');
     }
 
     /**
@@ -169,7 +169,7 @@ trait Jump
     }
 
     protected function response($data=[],$code=200,$message='',array $header=[]){
-        $type = !empty($this->return_type)?$this->return_type:Config::get('default_ajax_return');
+        $type = !empty($this->return_type)?$this->return_type:c('default_ajax_return','json');
         $this->result($data,$code,$message,$type,$header);
         $queue = Fork::$queue;
         Fork::fork(true);
