@@ -5,7 +5,7 @@
 
 > 新增或修改了一些功能和特性，比如请求参数的接口验证，前置后置中间件，异步任务等等
 
-> thinkphp5 github地址 [https://github.com/AxiosCros/framework](https://github.com/AxiosCros/framework)
+> thinkphp5 github地址 [https://github.com/top-think/framework](https://github.com/top-think/framework)
 
 ## 修改记录简介
 * 修改一些宏定义变量的默认值
