@@ -421,7 +421,8 @@ class App
             Loader::addNamespace(self::$namespace, APP_PATH);
 
             // 初始化应用
-            $config       = self::init();
+            self::init();
+            $config = Config::load(APP_PATH . 'config' . EXT);
             self::$suffix = $config['class_suffix'];
 
             // 应用调试模式
@@ -485,13 +486,13 @@ class App
         } else {
             $path = CONF_PATH . $module;
             // 加载模块配置
-            $config = Config::load(CONF_PATH . $module . 'config' . CONF_EXT);
+            $config = Config::load($path . 'config' . CONF_EXT);
             // 读取数据库配置文件
-            $filename = CONF_PATH . $module . 'database' . CONF_EXT;
+            $filename = $path  . 'database' . CONF_EXT;
             Config::load($filename, 'database');
             // 读取扩展配置文件
-            if (is_dir(CONF_PATH . $module . 'extra')) {
-                $dir   = CONF_PATH . $module . 'extra';
+            if (is_dir($path  . 'extra')) {
+                $dir   = $path . 'extra';
                 $files = scandir($dir);
                 foreach ($files as $file) {
                     if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
@@ -503,12 +504,12 @@ class App
 
             // 加载应用状态配置
             if ($config['app_status']) {
-                $config = Config::load(CONF_PATH . $module . $config['app_status'] . CONF_EXT);
+                Config::load($path  . $config['app_status'] . CONF_EXT);
             }
 
             // 加载行为扩展文件
-            if (is_file(CONF_PATH . $module . 'tags' . EXT)) {
-                Hook::import(include CONF_PATH . $module . 'tags' . EXT);
+            if (is_file($path  . 'tags' . EXT)) {
+                Hook::import(include $path  . 'tags' . EXT);
             }
 
             // 加载公共文件
