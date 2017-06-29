@@ -177,7 +177,7 @@ trait Jump
         Fork::doFork($queue);
         $result = [
             'code' => $code,
-            'msg'  => $message,
+            'msg'  => lang($message),
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
