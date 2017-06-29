@@ -103,5 +103,8 @@
 
 * validate获取error信息经过lang()翻译后回调
 
+* 增加加载APP_PATH目录下的配置文件
+  > 配置优先级 : 模块级别module > 应用级别app > 公共级别 CONF_PATH
+
 ## 开源协议
   > 遵循Apache2开源协议发布，并提供免费使用
