@@ -10,6 +10,31 @@ namespace think;
 
 class Tool {
     public static $identity;
+
+    public static function uuid($salt=''){
+        return md5($salt.uniqid(md5(microtime(true)),true));
+    }
+
+    public static function uuidAddFlavour($salt='',$cut=8,$flavour='-',$isUpper=false){
+        $str = self::uuid($salt);
+        $len = strlen($str);$length = $len;$uuid='';
+        if(is_array($cut)){
+            while ($length>0){
+                $uuid .= substr($str,$len-$length,array_rand($cut)).$flavour;
+                $length -=$cut;
+            }
+        }else if(is_int($cut)){
+            $step = 0;
+            while ($length>0){
+                $temp = substr($str,$len-$length,$cut);
+                $uuid .= $step!=0 ? $flavour.$temp:$temp;
+                $length -=$cut;
+                $step++;
+            }
+        }
+        return $isUpper?strtoupper($uuid):$uuid;
+    }
+
     /**
      * 获取客户端IP地址
      * @param int $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
