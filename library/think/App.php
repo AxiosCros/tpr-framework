@@ -422,7 +422,8 @@ class App
 
             // 初始化应用
             self::init();
-            $config = Config::load(APP_PATH . 'config' . EXT);
+            $config = self::importConfig(APP_PATH);
+
             self::$suffix = $config['class_suffix'];
 
             // 应用调试模式
@@ -485,38 +486,8 @@ class App
             include RUNTIME_PATH . $module . 'init' . EXT;
         } else {
             $path = CONF_PATH . $module;
-            // 加载模块配置
-            $config = Config::load($path . 'config' . CONF_EXT);
-            // 读取数据库配置文件
-            $filename = $path  . 'database' . CONF_EXT;
-            Config::load($filename, 'database');
-            // 读取扩展配置文件
-            if (is_dir($path  . 'extra')) {
-                $dir   = $path . 'extra';
-                $files = scandir($dir);
-                foreach ($files as $file) {
-                    if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
-                        $filename = $dir . DS . $file;
-                        Config::load($filename, pathinfo($file, PATHINFO_FILENAME));
-                    }
-                }
-            }
 
-            // 加载应用状态配置
-            if ($config['app_status']) {
-                Config::load($path  . $config['app_status'] . CONF_EXT);
-            }
-
-            // 加载行为扩展文件
-            if (is_file($path  . 'tags' . EXT)) {
-                Hook::import(include $path  . 'tags' . EXT);
-            }
-
-            // 加载公共文件
-            if (is_file($path . 'common' . EXT)) {
-                include $path . 'common' . EXT;
-            }
-
+            self::importConfig($path);
 
             // 加载当前模块语言包
             if ($module) {
@@ -524,6 +495,41 @@ class App
             }
         }
         return Config::get();
+    }
+
+    public static function importConfig($path = ''){
+        // 加载模块配置
+        $config = Config::load($path . 'config' . CONF_EXT);
+        // 读取数据库配置文件
+        $filename = $path  . 'database' . CONF_EXT;
+        Config::load($filename, 'database');
+        // 读取扩展配置文件
+        if (is_dir($path  . 'extra')) {
+            $dir   = $path . 'extra';
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
+                    $filename = $dir . DS . $file;
+                    Config::load($filename, pathinfo($file, PATHINFO_FILENAME));
+                }
+            }
+        }
+
+        // 加载应用状态配置
+        if ($config['app_status']) {
+            Config::load($path  . $config['app_status'] . CONF_EXT);
+        }
+
+        // 加载行为扩展文件
+        if (is_file($path  . 'tags' . EXT)) {
+            Hook::import(include $path  . 'tags' . EXT);
+        }
+
+        // 加载公共文件
+        if (is_file($path . 'common' . EXT)) {
+            include $path . 'common' . EXT;
+        }
+        return $config;
     }
 
     /**
