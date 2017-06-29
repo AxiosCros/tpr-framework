@@ -1186,7 +1186,7 @@ class Validate
      */
     public function getError()
     {
-        return $this->error;
+        return lang($this->error);
     }
 
     /**
