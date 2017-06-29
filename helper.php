@@ -29,6 +29,12 @@ use think\Response;
 use think\Session;
 use think\Url;
 
+if(!function_exists('D')){
+    function D($table_name , $config=null){
+        return is_null($config) ? Db::name($table_name) : Db::connect($config)->name($table_name) ;
+    }
+}
+
 if(!function_exists('u')){
     function u($module = 'index', $controller = 'index' , $action = 'index'){
         return url($module.'/'.$controller.'/'.$action);
