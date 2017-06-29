@@ -27,6 +27,7 @@ class Controller
      * @var \think\Request Request实例
      */
     protected $request;
+    protected $param = [];
     // 验证失败是否抛出异常
     protected $failException = false;
     // 是否批量验证
@@ -51,6 +52,7 @@ class Controller
         }
         $this->view    = View::instance(Config::get('template'), Config::get('view_replace_str'));
         $this->request = $request;
+        $this->param   = $this->request->param();
 
         // 控制器初始化
         $this->_initialize();
