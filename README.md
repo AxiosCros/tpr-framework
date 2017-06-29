@@ -110,6 +110,10 @@
 
 * 增加加载APP_PATH目录下的配置文件
   > 修改后的配置优先级为 : 模块级别module > 应用级别app > 公共级别 CONF_PATH
+  > 应用配置文件位于 APP_PATH/ 目录下
+  > 公共配置文件位于 CONF_PATH/ 目录
+  > 模块配置文件位于 CONF_PATH/module_name/ 目录下
+  > 文件包含 config.php , database.php  , tags.php , extra/下的扩展配置 
 
 ## 开源协议
   > 遵循Apache2开源协议发布，并提供免费使用

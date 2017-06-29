@@ -489,6 +489,11 @@ class App
 
             self::importConfig($path);
 
+            // 加载公共文件
+            if (is_file($path . 'common' . EXT)) {
+                include $path . 'common' . EXT;
+            }
+
             // 加载当前模块语言包
             if ($module) {
                 Lang::load($path . 'lang' . DS . Request::instance()->langset() . EXT);
@@ -525,10 +530,6 @@ class App
             Hook::import(include $path  . 'tags' . EXT);
         }
 
-        // 加载公共文件
-        if (is_file($path . 'common' . EXT)) {
-            include $path . 'common' . EXT;
-        }
         return $config;
     }
 
