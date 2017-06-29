@@ -7,6 +7,10 @@
 
 > thinkphp5 github地址 [https://github.com/top-think/framework](https://github.com/top-think/framework)
 
+> 安装方式  :   composer require axios/tpr-framework
+
+> 交流QQ群：521797692
+
 ## 修改记录简介
 * 修改一些宏定义变量的默认值
  > 即修改了默认的项目目录结构，将配置目录与应用目录分离
