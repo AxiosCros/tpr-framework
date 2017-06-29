@@ -71,6 +71,11 @@
 
 * 增加助手函数u(),方便url生成
   > u($module = 'index'', $controller = 'index'', $action = 'index'')
+  
+* 增加D()方法
+ ``` php
+ D($table_name,$config);
+ ```
  
 * Validate类的error参数默认值修改为空字符串
 
