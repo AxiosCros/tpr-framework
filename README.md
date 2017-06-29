@@ -96,6 +96,12 @@
   ``` php
   Hook::listen('request_end');
   ```
+  
+* think/Controller增加$this->param参数
+
+* Tool增加生成唯一标识的工具函数uuid()
+
+* validate获取error信息经过lang()翻译后回调
 
 ## 开源协议
   > 遵循Apache2开源协议发布，并提供免费使用
