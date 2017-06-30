@@ -49,7 +49,7 @@ abstract class Relation
     /**
      * 获取当前的关联模型类
      * @access public
-     * @return string
+     * @return \think\model\Relation|string
      */
     public function getModel()
     {

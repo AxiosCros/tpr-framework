@@ -83,7 +83,7 @@ class Tool {
                     $a = self::object2Array($a);
                 }
                 if(is_array($a)){
-                    $a = check_data_to_string($a);
+                    $a = self::checkData2String();
                 }
                 if(is_int($a)){
                     $a = strval($a);

@@ -899,7 +899,7 @@ class Request
                 return $array[$name];
             }
         }
-        return;
+        return null;
     }
 
     /**
@@ -1025,6 +1025,7 @@ class Request
         } else {
             $this->filter = $filter;
         }
+        return null;
     }
 
     protected function getFilter($filter, $default)
@@ -1049,7 +1050,7 @@ class Request
      * @param mixed     $value 键值
      * @param mixed     $key 键名
      * @param array     $filters 过滤方法+默认值
-     * @return mixed
+     * @return void
      */
     private function filterValue(&$value, $key, $filters)
     {
@@ -1077,7 +1078,7 @@ class Request
                 }
             }
         }
-        return $this->filterExp($value);
+        $this->filterExp($value);
     }
 
     /**
@@ -1098,7 +1099,8 @@ class Request
      * 强制类型转换
      * @param string $data
      * @param string $type
-     * @return mixed
+     * @return void
+     * @throws \InvalidArgumentException
      */
     private function typeCast(&$data, $type)
     {
@@ -1391,7 +1393,7 @@ class Request
      * 获取当前请求的路由信息
      * @access public
      * @param array $route 路由名称
-     * @return array
+     * @return array|null
      */
     public function routeInfo($route = [])
     {
@@ -1400,6 +1402,7 @@ class Request
         } else {
             return $this->routeInfo;
         }
+        return null;
     }
 
     /**
@@ -1602,9 +1605,9 @@ class Request
     /**
      * 设置当前请求绑定的对象实例
      * @access public
-     * @param string $name 绑定的对象标识
+     * @param string|array $name 绑定的对象标识
      * @param mixed  $obj 绑定的对象实例
-     * @return mixed
+     * @return void
      */
     public function bind($name, $obj = null)
     {

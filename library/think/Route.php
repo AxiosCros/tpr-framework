@@ -123,7 +123,7 @@ class Route
      * @access public
      * @param mixed     $bind 绑定信息
      * @param string    $type 绑定类型 默认为module 支持 namespace class controller
-     * @return mixed
+     * @return void
      */
     public static function bind($bind, $type = 'module')
     {
@@ -149,6 +149,7 @@ class Route
             $name = strtolower($name);
             return isset(self::$rules['name'][$name]) ? self::$rules['name'][$name] : null;
         }
+        return [];
     }
 
     /**
@@ -347,7 +348,7 @@ class Route
      * 设置当前执行的参数信息
      * @access public
      * @param array    $options 参数信息
-     * @return mixed
+     * @return void
      */
     protected static function setOption($options = [])
     {
@@ -716,6 +717,7 @@ class Route
             unset($rules['pattern'], $rules['alias'], $rules['domain'], $rules['name']);
             return $rules;
         }
+        return self::$rules;
     }
 
     /**
@@ -902,7 +904,7 @@ class Route
             }
             $rule    = $item['rule'];
             $route   = $item['route'];
-            $vars    = $item['var'];
+//            $vars    = $item['var'];
             $option  = $item['option'];
             $pattern = $item['pattern'];
 
@@ -1374,6 +1376,7 @@ class Route
      */
     private static function parseRule($rule, $route, $pathinfo, $option = [], $matches = [])
     {
+        $result = null;
         $request = Request::instance();
         // 解析路由规则
         if ($rule) {

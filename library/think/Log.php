@@ -41,6 +41,9 @@ class Log
     // 日志类型
     protected static $type = ['log', 'error', 'info', 'sql', 'notice', 'alert', 'debug'];
     // 日志写入驱动
+    /**
+     * @var \think\Log\driver\File|\think\Log\driver\Mongo
+     */
     protected static $driver;
 
     // 当前日志授权key
@@ -208,6 +211,7 @@ class Log
             array_push($args, $method);
             return call_user_func_array('\\think\\Log::record', $args);
         }
+        return false;
     }
 
 }

@@ -378,7 +378,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         } elseif (array_key_exists($name, $this->relation)) {
             return $this->relation[$name];
         } else {
-            return;
+            return false;
         }
     }
 
@@ -461,7 +461,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     protected function writeTransform($value, $type)
     {
         if (is_null($value)) {
-            return;
+            return false;
         }
 
         if (is_array($type)) {
@@ -565,7 +565,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     /**
      * 获取关联模型数据
      * @access public
-     * @param Relation        $modelRelation 模型关联对象
+     * @param \think\model\Relation        $modelRelation 模型关联对象
      * @return mixed
      */
     protected function getRelationData(Relation $modelRelation)
@@ -589,7 +589,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     protected function readTransform($value, $type)
     {
         if (is_null($value)) {
-            return;
+            return false;
         }
 
         if (is_array($type)) {
@@ -1526,7 +1526,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         if (!empty($field)) {
             $model->allowField($field);
         }
-        $result = $model->isUpdate(true)->save($data, $where);
+        $model->isUpdate(true)->save($data, $where);
         return $model;
     }
 
@@ -1542,7 +1542,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     public static function get($data, $with = [], $cache = false)
     {
         if (is_null($data)) {
-            return;
+            return null;
         }
 
         if (true === $with || is_int($with)) {

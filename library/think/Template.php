@@ -120,7 +120,7 @@ class Template
      * 模板引擎配置项
      * @access public
      * @param array|string $config
-     * @return void|array
+     * @return null|array
      */
     public function config($config)
     {
@@ -128,9 +128,9 @@ class Template
             $this->config = array_merge($this->config, $config);
         } elseif (isset($this->config[$config])) {
             return $this->config[$config];
-        } else {
-            return;
         }
+
+        return null;
     }
 
     /**
@@ -668,7 +668,7 @@ class Template
             $content = str_replace($matches[0], '', $content);
             return explode(',', $matches['name']);
         }
-        return;
+        return null;
     }
 
     /**
@@ -677,7 +677,7 @@ class Template
      * @param  string   $tagLib 要解析的标签库
      * @param  string   $content 要解析的模板内容
      * @param  boolean  $hide 是否隐藏标签库前缀
-     * @return void
+     * @return null
      */
     public function parseTagLib($tagLib, &$content, $hide = false)
     {
@@ -690,7 +690,7 @@ class Template
         }
         $tLib = new $className($this);
         $tLib->parseTag($content, $hide ? '' : $tagLib);
-        return;
+        return null;
     }
 
     /**

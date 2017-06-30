@@ -252,6 +252,7 @@ class Validate
     public function check($data, $rules = [], $scene = '')
     {
         $this->error = [];
+        $array = [];
 
         if (empty($rules)) {
             // 读取验证规则
@@ -352,6 +353,7 @@ class Validate
      */
     protected function checkItem($field, $value, $rules, $data, $title = '', $msg = [])
     {
+        $result = null;
         // 支持多规则验证 require|in:a,b,c|... 或者 ['require','in'=>'a,b,c',...]
         if (is_string($rules)) {
             $rules = explode('|', $rules);
