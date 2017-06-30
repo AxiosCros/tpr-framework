@@ -169,11 +169,11 @@ trait Jump
         $this->response([],$code,$message,$header);
     }
 
-    protected function response($data=[],$code=200,$message='',array $header=[]){
+    protected function response($data=[],$code=200,$message='success',array $header=[]){
         $type = !empty($this->return_type)?$this->return_type:c('default_ajax_return','json');
-        $this->result($data,$code,$message,$type,$header);
+        $message = empty($message)?'success':$message;
         $queue = Fork::$queue;
-        Fork::fork(true);
+        Fork::fork();
         Fork::doFork($queue);
         $result = [
             'code' => $code,
@@ -181,7 +181,7 @@ trait Jump
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
-        Tool::checkData2String($result);
+        $result = Tool::checkData2String($result);halt($result);
         $type     = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);
