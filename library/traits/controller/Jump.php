@@ -181,7 +181,7 @@ trait Jump
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
-        $result = Tool::checkData2String($result);halt($result);
+        $result = Tool::checkData2String($result);
         $type     = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);
