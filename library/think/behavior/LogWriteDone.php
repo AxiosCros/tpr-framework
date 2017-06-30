@@ -11,7 +11,7 @@
 
 namespace think\behavior;
 
-use axios\tpr\service\ForkService;
+use think\Fork;
 use think\Request;
 use think\Tool;
 
@@ -22,7 +22,7 @@ use think\Tool;
  * need library/think/Log.php 161
  *  ->   Hook::listen('log_write_done', $log);
  */
-class LogWriteDone extends ForkService{
+class LogWriteDone extends Fork {
     public $param;
     public $request;
     function __construct()

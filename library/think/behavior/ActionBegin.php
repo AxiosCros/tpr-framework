@@ -15,7 +15,6 @@ use think\cache\CacheRequest;
 use think\exception\ClassNotFoundException;
 use think\Request;
 use think\Loader;
-use think\Config;
 use traits\controller\Jump;
 
 Loader::import('controller/Jump', TRAIT_PATH, EXT);
@@ -40,40 +39,9 @@ class ActionBegin{
     }
 
     public function run(){
-        $this->sign();
         $this->filter();
-
         $this->middleware();
         $this->cache();
-    }
-
-    public function sign(){
-        $status = c('sign.status',0);
-
-        if($status){
-            $timestamp = c('sign.timestamp_name','timestamp');
-            if(!isset($this->param[$timestamp])){
-                $this->wrong(401,$timestamp.' param not exits');
-            }
-            $timestamp = $this->param[$timestamp];
-
-            $expire = c('sign.expire',10);
-            if(time()-intval($timestamp) > intval($expire)){
-                $this->wrong(401,md5($timestamp."azXCz5AEabA1Y9XhB").'sign timeout'.time());
-            }
-
-            $sign_name = c('sign.sign_mame','sign');
-            if(!isset($this->param[$sign_name])){
-                $this->wrong(401,$sign_name.' param not exits');
-            }
-
-            $sign = $this->param[$sign_name];
-            $sign_result = check_sign($timestamp,$sign);
-
-            if($sign_result!==true){
-                $this->wrong(401,'wrong sign');
-            }
-        }
     }
 
     private function filter(){
