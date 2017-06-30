@@ -52,7 +52,7 @@ class Cookie
     /**
      * 设置或者获取cookie作用域（前缀）
      * @param string $prefix
-     * @return string|void
+     * @return string
      */
     public static function prefix($prefix = '')
     {
@@ -60,6 +60,7 @@ class Cookie
             return self::$config['prefix'];
         }
         self::$config['prefix'] = $prefix;
+        return '';
     }
 
     /**
@@ -69,7 +70,7 @@ class Cookie
      * @param mixed  $value cookie值
      * @param mixed  $option 可选参数 可能会是 null|integer|string
      *
-     * @return mixed
+     * @return void
      * @internal param mixed $options cookie参数
      */
     public static function set($name, $value = '', $option = null)
@@ -170,7 +171,7 @@ class Cookie
      * Cookie删除
      * @param string        $name cookie名称
      * @param string|null   $prefix cookie前缀
-     * @return mixed
+     * @return void
      */
     public static function delete($name, $prefix = null)
     {
@@ -214,7 +215,12 @@ class Cookie
         return;
     }
 
-    private static function jsonFormatProtect(&$val, $key, $type = 'encode')
+    /**
+     * 该方法目前好像没用上，原先是private
+     * @param $val
+     * @param string $type
+     */
+    public static function jsonFormatProtect(&$val, $type = 'encode')
     {
         if (!empty($val) && true !== $val) {
             $val = 'decode' == $type ? urldecode($val) : urlencode($val);
