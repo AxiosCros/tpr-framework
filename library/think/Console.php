@@ -310,7 +310,7 @@ class Console
     /**
      * 添加一个指令
      * @param Command $command
-     * @return Command
+     * @return string|Command
      */
     public function add(Command $command)
     {
@@ -318,7 +318,7 @@ class Console
 
         if (!$command->isEnabled()) {
             $command->setConsole(null);
-            return;
+            return '';
         }
 
         if (null === $command->getDefinition()) {

@@ -169,7 +169,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      * 在数组开头插入一个元素
      * @param mixed $value
      * @param null  $key
-     * @return int
+     * @return void
      */
     public function unshift($value, $key = null)
     {

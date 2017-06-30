@@ -99,6 +99,7 @@ if (!function_exists('debug')) {
         } else {
             return 'm' == $dec ? Debug::getRangeMem($start, $end) : Debug::getRangeTime($start, $end, $dec);
         }
+        return true;
     }
 }
 
@@ -186,7 +187,7 @@ if (!function_exists('model')) {
      * @param string    $name Model名称
      * @param string    $layer 业务层名称
      * @param bool      $appendSuffix 是否添加类名后缀
-     * @return \think\Model
+     * @return Object
      */
     function model($name = '', $layer = 'model', $appendSuffix = false)
     {
@@ -200,7 +201,7 @@ if (!function_exists('validate')) {
      * @param string    $name 验证器名称
      * @param string    $layer 业务层名称
      * @param bool      $appendSuffix 是否添加类名后缀
-     * @return \think\Validate
+     * @return Object|false
      */
     function validate($name = '', $layer = 'validate', $appendSuffix = false)
     {
@@ -228,7 +229,7 @@ if (!function_exists('controller')) {
      * @param string    $name 资源地址
      * @param string    $layer 控制层名称
      * @param bool      $appendSuffix 是否添加类名后缀
-     * @return \think\Controller
+     * @return Object|false
      */
     function controller($name, $layer = 'controller', $appendSuffix = false)
     {
@@ -284,7 +285,7 @@ if (!function_exists('dump')) {
      * @param mixed     $var 变量
      * @param boolean   $echo 是否输出 默认为true 如果为false 则返回输出字符串
      * @param string    $label 标签 默认为空
-     * @return void|string
+     * @return string
      */
     function dump($var, $echo = true, $label = null)
     {
@@ -328,11 +329,12 @@ if (!function_exists('session')) {
             return 0 === strpos($name, '?') ? Session::has(substr($name, 1), $prefix) : Session::get($name, $prefix);
         } elseif (is_null($value)) {
             // 删除
-            return Session::delete($name, $prefix);
+            Session::delete($name, $prefix);
         } else {
             // 设置
-            return Session::set($name, $value, $prefix);
+            Session::set($name, $value, $prefix);
         }
+        return true;
     }
 }
 
@@ -362,6 +364,7 @@ if (!function_exists('cookie')) {
             // 设置
             return Cookie::set($name, $value, $option);
         }
+        return true;
     }
 }
 
@@ -418,7 +421,7 @@ if (!function_exists('trace')) {
      * 记录日志信息
      * @param mixed     $log log信息 支持字符串和数组
      * @param string    $level 日志级别
-     * @return void|array
+     * @return array
      */
     function trace($log = '[think]', $level = 'log')
     {
@@ -427,6 +430,7 @@ if (!function_exists('trace')) {
         } else {
             Log::record($log, $level);
         }
+        return [];
     }
 }
 

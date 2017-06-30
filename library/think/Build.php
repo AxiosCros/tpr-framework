@@ -15,11 +15,10 @@ class Build
 {
     /**
      * 根据传入的build资料创建目录和文件
-     * @access protected
-     * @param  array  $build build列表
-     * @param  string $namespace 应用类库命名空间
-     * @param  bool   $suffix 类库后缀
-     * @return void
+     * @param array  $build build列表
+     * @param string $namespace 应用类库命名空间
+     * @param bool   $suffix 类库后缀
+     * @throws Exception
      */
     public static function run(array $build = [], $namespace = 'app', $suffix = false)
     {
@@ -195,7 +194,7 @@ class Build
         $filename = CONF_PATH . ($module ? $module . DS : '') . 'config.php';
 
         if (!is_dir(dirname($filename))) {
-            mkdir(dirname($filename, 0755, true));
+            mkdir(dirname($filename), 0755, true);
         }
         if (!is_file($filename)) {
             file_put_contents($filename, "<?php\n//配置文件\nreturn [\n\n];");

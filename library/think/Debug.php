@@ -25,7 +25,7 @@ class Debug
      * 记录时间（微秒）和内存使用情况
      * @param string    $name 标记位置
      * @param mixed     $value 标记值 留空则取当前 time 表示仅记录时间 否则同时记录时间和内存
-     * @return mixed
+     * @return void
      */
     public static function remark($name, $value = '')
     {
@@ -156,7 +156,7 @@ class Debug
      * @param boolean       $echo 是否输出 默认为true 如果为false 则返回输出字符串
      * @param string        $label 标签 默认为空
      * @param integer       $flags htmlspecialchars flags
-     * @return void|string
+     * @return string
      */
     public static function dump($var, $echo = true, $label = null, $flags = ENT_SUBSTITUTE)
     {
@@ -175,7 +175,7 @@ class Debug
         }
         if ($echo) {
             echo($output);
-            return;
+            return '';
         } else {
             return $output;
         }
@@ -185,7 +185,7 @@ class Debug
     {
         $config  = Config::get('trace');
         $type    = isset($config['type']) ? $config['type'] : 'Html';
-        $request = Request::instance();
+        Request::instance();
         $class   = false !== strpos($type, '\\') ? $type : '\\think\\debug\\' . ucwords($type);
         unset($config['type']);
         if (class_exists($class)) {

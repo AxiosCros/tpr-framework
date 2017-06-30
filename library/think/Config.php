@@ -138,7 +138,7 @@ class Config
                 $name                                                 = explode('.', $name, 2);
                 self::$config[$range][strtolower($name[0])][$name[1]] = $value;
             }
-            return;
+            return '';
         } elseif (is_array($name)) {
             // 批量设置
             if (!empty($value)) {
