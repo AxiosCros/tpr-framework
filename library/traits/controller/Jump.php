@@ -182,6 +182,7 @@ trait Jump
             'data' => $data,
         ];
         $result = Tool::checkData2String($result);
+        Request::instance()->req = $result;
         $type     = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);

@@ -15,7 +15,7 @@ class Fork {
 
     protected static $pid_list = [];
 
-    public static function check(){
+    protected static function check(){
         return function_exists('pcntl_fork') && function_exists('posix_kill') && function_exists('ftok') && function_exists('shmop_open') ;
     }
 
