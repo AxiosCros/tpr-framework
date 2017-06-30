@@ -11,10 +11,10 @@
 
 namespace think\behavior;
 
-use axios\tpr\service\ForkService;
+use think\Fork;
 use think\Request;
 
-class RequestEnd extends ForkService{
+class RequestEnd extends Fork {
 
     public $param;
 

@@ -18,5 +18,6 @@ class AppInit {
         Hook::add('app_end' ,'think\\behavior\\AppEnd');
         Hook::add('log_write_done', 'think\\behavior\\LogWriteDone');
         Hook::add('request_end', 'think\\behavior\\RequestEnd');
+        Hook::add('request_end', 'think\\behavior\\ResponseEnd');
     }
 }
