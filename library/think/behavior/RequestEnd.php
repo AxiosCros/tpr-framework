@@ -27,7 +27,9 @@ class RequestEnd extends Fork {
     }
 
     public function run(){
-        posix_kill(posix_getpid(), SIGINT);
-        exit();
+        if(function_exists('posix_kill') && function_exists('posix_getpid')){
+            posix_kill(posix_getpid(), SIGINT);
+            exit();
+        }
     }
 }

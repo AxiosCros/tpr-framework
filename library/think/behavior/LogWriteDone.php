@@ -33,7 +33,7 @@ class LogWriteDone extends Fork {
 
     public function run(){
         $identity = Tool::identity();
-        if($identity==2){
+        if($identity==2 && function_exists('posix_kill') && function_exists('posix_getpid')){
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
