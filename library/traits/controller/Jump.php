@@ -172,9 +172,6 @@ trait Jump
     protected function response($data=[],$code=200,$message='success',array $header=[]){
         $type = !empty($this->return_type)?$this->return_type:c('default_ajax_return','json');
         $message = empty($message)?'success':$message;
-        $queue = Fork::$queue;
-        Fork::fork();
-        Fork::doFork($queue);
         $result = [
             'code' => $code,
             'msg'  => lang($message),

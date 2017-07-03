@@ -129,6 +129,9 @@ class Response
             // 提高页面响应
             fastcgi_finish_request();
         }
+        $queue = Fork::$queue;
+        Fork::fork(true);
+        Fork::doFork($queue);
 
         // 监听response_end
         Hook::listen('response_end', $this);
