@@ -43,7 +43,7 @@
  │  └─.htaccess          用于apache的重写
  │
  ├─extend                扩展类库目录
- ├─runtime               应用的运行时目录（可写，可定制）
+ ├─runtime               缓存目录（可写，可定制）
  ├─vendor                第三方类库目录（Composer依赖库）
  ├─composer.json         composer 定义文件
  ├─LICENSE.txt           授权说明文件
