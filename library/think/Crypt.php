@@ -19,11 +19,11 @@ class Crypt
 
     public static function path($path = '')
     {
-        if(file_exists($path) && is_dir($path)){
+        if (file_exists($path) && is_dir($path)) {
             self::$key_path = $path;
-        }else if(!empty($select)){
-            self::$key_path = CONF_PATH . "key/" . $path . "/" ;
-        }else{
+        } else if (!empty($select)) {
+            self::$key_path = CONF_PATH . "key/" . $path . "/";
+        } else {
             return self::$key_path;
         }
 
