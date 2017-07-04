@@ -123,8 +123,8 @@
   > 文件包含 config.php , database.php  , tags.php , extra/下的扩展配置 
   
 * 增加RSA加密类Crypt
-  ``` php
 
+``` php
 //生成密钥  CONF_PATH/key/for_api/
 Crypt::makeKey('for_api'');     // 生成一对公私密钥 for_api 为该密钥的命名
 
@@ -134,7 +134,7 @@ Crypt::rsa('for_api')->encrypt($test,'pri');
 // 解密  pri私钥解密  pub公钥解密
 Crypt::rsa('for_api')->decrypt($encrypt,'pub');
 
-  ```
+```
 
 ## 开源协议
   > 遵循Apache2开源协议发布，并提供免费使用
