@@ -24,7 +24,7 @@ use think\db\Query;
  * @method Query union(mixed $union, boolean $all = false) static UNION查询
  * @method Query limit(mixed $offset, integer $length = null) static 查询LIMIT
  * @method Query order(mixed $field, string $order = null) static 查询ORDER
- * @method Query cache(mixed $key = null , integer $expire = null) static 设置查询缓存
+ * @method Query cache(mixed $key = null, integer $expire = null) static 设置查询缓存
  * @method mixed value(string $field) static 获取某个字段的值
  * @method array column(string $field, string $key = '') static 获取某个列的值
  * @method Query view(mixed $join, mixed $field = null, mixed $on = null, string $type = 'INNER') static 视图查询
@@ -60,14 +60,14 @@ class Db
      * 数据库初始化 并取得数据库类实例
      * @static
      * @access public
-     * @param mixed         $config 连接配置
-     * @param bool|string   $name 连接标识 true 强制重新连接
+     * @param mixed $config 连接配置
+     * @param bool|string $name 连接标识 true 强制重新连接
      * @return Connection
      * @throws Exception
      */
     public static function connect($config = [], $name = false)
     {
-        if(is_string($config)){
+        if (is_string($config)) {
             $config = Config::get($config);
         }
         if (false === $name) {
@@ -130,13 +130,13 @@ class Db
             return [];
         }
         $dsn = [
-            'type'     => $info['scheme'],
+            'type' => $info['scheme'],
             'username' => isset($info['user']) ? $info['user'] : '',
             'password' => isset($info['pass']) ? $info['pass'] : '',
             'hostname' => isset($info['host']) ? $info['host'] : '',
             'hostport' => isset($info['port']) ? $info['port'] : '',
             'database' => !empty($info['path']) ? ltrim($info['path'], '/') : '',
-            'charset'  => isset($info['fragment']) ? $info['fragment'] : 'utf8',
+            'charset' => isset($info['fragment']) ? $info['fragment'] : 'utf8',
         ];
 
         if (isset($info['query'])) {

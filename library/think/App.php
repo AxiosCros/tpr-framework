@@ -134,8 +134,8 @@ class App
             $response = $data;
         } elseif (!is_null($data)) {
             // 默认自动识别响应输出类型
-            $isAjax   = $request->isAjax();
-            $type     = $isAjax ? Config::get('default_ajax_return') : Config::get('default_return_type');
+            $isAjax = $request->isAjax();
+            $type = $isAjax ? Config::get('default_ajax_return') : Config::get('default_return_type');
             $response = Response::create($data, $type);
         } else {
             $response = Response::create();
@@ -150,8 +150,8 @@ class App
     /**
      * 设置当前请求的调度信息
      * @access public
-     * @param array|string  $dispatch 调度信息
-     * @param string        $type 调度类型
+     * @param array|string $dispatch 调度信息
+     * @param string $type 调度类型
      * @return void
      */
     public static function dispatch($dispatch, $type = 'module')
@@ -163,13 +163,13 @@ class App
      * 执行函数或者闭包方法 支持参数调用
      * @access public
      * @param string|array|\Closure $function 函数或者闭包
-     * @param array                 $vars     变量
+     * @param array $vars 变量
      * @return mixed
      */
     public static function invokeFunction($function, $vars = [])
     {
         $reflect = new \ReflectionFunction($function);
-        $args    = self::bindParams($reflect, $vars);
+        $args = self::bindParams($reflect, $vars);
         // 记录执行信息
         self::$debug && Log::record('[ RUN ] ' . $reflect->__toString(), 'info');
         return $reflect->invokeArgs($args);
@@ -179,13 +179,13 @@ class App
      * 调用反射执行类的方法 支持参数绑定
      * @access public
      * @param string|array $method 方法
-     * @param array        $vars   变量
+     * @param array $vars 变量
      * @return mixed
      */
     public static function invokeMethod($method, $vars = [])
     {
         if (is_array($method)) {
-            $class   = is_object($method[0]) ? $method[0] : self::invokeClass($method[0]);
+            $class = is_object($method[0]) ? $method[0] : self::invokeClass($method[0]);
             $reflect = new \ReflectionMethod($class, $method[1]);
         } else {
             // 静态方法
@@ -200,13 +200,13 @@ class App
     /**
      * 调用反射执行类的实例化 支持依赖注入
      * @access public
-     * @param string    $class 类名
-     * @param array     $vars  变量
+     * @param string $class 类名
+     * @param array $vars 变量
      * @return mixed
      */
     public static function invokeClass($class, $vars = [])
     {
-        $reflect     = new \ReflectionClass($class);
+        $reflect = new \ReflectionClass($class);
         $constructor = $reflect->getConstructor();
         if ($constructor) {
             $args = self::bindParams($constructor, $vars);
@@ -220,7 +220,7 @@ class App
      * 绑定参数
      * @access private
      * @param \ReflectionMethod|\ReflectionFunction $reflect 反射类
-     * @param array                                 $vars    变量
+     * @param array $vars 变量
      * @return array
      */
     private static function bindParams($reflect, $vars = [])
@@ -237,7 +237,7 @@ class App
         if ($reflect->getNumberOfParameters() > 0) {
             // 判断数组类型 数字数组时按顺序绑定参数
             reset($vars);
-            $type   = key($vars) === 0 ? 1 : 0;
+            $type = key($vars) === 0 ? 1 : 0;
             $params = $reflect->getParameters();
             foreach ($params as $param) {
                 $args[] = self::getParamValue($param, $vars, $type);
@@ -249,18 +249,18 @@ class App
     /**
      * 获取参数值
      * @access private
-     * @param \ReflectionParameter  $param
-     * @param array                 $vars    变量
-     * @param string                $type
+     * @param \ReflectionParameter $param
+     * @param array $vars 变量
+     * @param string $type
      * @return array
      */
     private static function getParamValue($param, &$vars, $type)
     {
-        $name  = $param->getName();
+        $name = $param->getName();
         $class = $param->getClass();
         if ($class) {
             $className = $class->getName();
-            $bind      = Request::instance()->$name;
+            $bind = Request::instance()->$name;
             if ($bind instanceof $className) {
                 $result = $bind;
             } else {
@@ -323,7 +323,7 @@ class App
      * @access public
      * @param array $result 模块/控制器/操作
      * @param array $config 配置参数
-     * @param bool  $convert 是否自动转换控制器和操作名
+     * @param bool $convert 是否自动转换控制器和操作名
      * @return mixed
      */
     public static function module($result, $config, $convert = null)
@@ -334,14 +334,14 @@ class App
         $request = Request::instance();
         if ($config['app_multi_module']) {
             // 多模块部署
-            $module    = strip_tags(strtolower($result[0] ?: $config['default_module']));
-            $bind      = Route::getBind('module');
+            $module = strip_tags(strtolower($result[0] ?: $config['default_module']));
+            $bind = Route::getBind('module');
             $available = false;
             if ($bind) {
                 // 绑定模块
                 list($bindModule) = explode('/', $bind);
                 if (empty($result[0])) {
-                    $module    = $bindModule;
+                    $module = $bindModule;
                     $available = true;
                 } elseif ($module == $bindModule) {
                     $available = true;
@@ -460,7 +460,7 @@ class App
             date_default_timezone_set($config['default_timezone']);
 
             // 监听app_init
-            Hook::add('app_init','think\\behavior\\AppInit');
+            Hook::add('app_init', 'think\\behavior\\AppInit');
             Hook::listen('app_init');
 
             self::$init = true;
@@ -502,15 +502,16 @@ class App
         return Config::get();
     }
 
-    public static function importConfig($path = ''){
+    public static function importConfig($path = '')
+    {
         // 加载模块配置
         $config = Config::load($path . 'config' . CONF_EXT);
         // 读取数据库配置文件
-        $filename = $path  . 'database' . CONF_EXT;
+        $filename = $path . 'database' . CONF_EXT;
         Config::load($filename, 'database');
         // 读取扩展配置文件
-        if (is_dir($path  . 'extra')) {
-            $dir   = $path . 'extra';
+        if (is_dir($path . 'extra')) {
+            $dir = $path . 'extra';
             $files = scandir($dir);
             foreach ($files as $file) {
                 if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
@@ -522,12 +523,12 @@ class App
 
         // 加载应用状态配置
         if ($config['app_status']) {
-            Config::load($path  . $config['app_status'] . CONF_EXT);
+            Config::load($path . $config['app_status'] . CONF_EXT);
         }
 
         // 加载行为扩展文件
-        if (is_file($path  . 'tags' . EXT)) {
-            Hook::import(include $path  . 'tags' . EXT);
+        if (is_file($path . 'tags' . EXT)) {
+            Hook::import(include $path . 'tags' . EXT);
         }
 
         return $config;
@@ -537,14 +538,14 @@ class App
      * URL路由检测（根据PATH_INFO)
      * @access public
      * @param  \think\Request $request
-     * @param  array          $config
+     * @param  array $config
      * @return array
      * @throws \think\Exception
      */
     public static function routeCheck($request, array $config)
     {
-        $path   = $request->path();
-        $depr   = $config['pathinfo_depr'];
+        $path = $request->path();
+        $depr = $config['pathinfo_depr'];
         $result = false;
         // 路由检测
         $check = !is_null(self::$routeCheck) ? self::$routeCheck : $config['url_route_on'];
@@ -571,7 +572,7 @@ class App
 
             // 路由检测（根据路由定义返回不同的URL调度）
             $result = Route::check($request, $path, $depr, $config['url_domain_deploy']);
-            $must   = !is_null(self::$routeMust) ? self::$routeMust : $config['url_route_must'];
+            $must = !is_null(self::$routeMust) ? self::$routeMust : $config['url_route_must'];
             if ($must && false === $result) {
                 // 路由无效
                 throw new RouteNotFoundException();
@@ -588,12 +589,12 @@ class App
      * 设置应用的路由检测机制
      * @access public
      * @param  bool $route 是否需要检测路由
-     * @param  bool $must  是否强制检测路由
+     * @param  bool $must 是否强制检测路由
      * @return void
      */
     public static function route($route, $must = false)
     {
         self::$routeCheck = $route;
-        self::$routeMust  = $must;
+        self::$routeMust = $must;
     }
 }

@@ -119,7 +119,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      * 通过使用用户自定义函数，以字符串返回数组
      *
      * @param  callable $callback
-     * @param  mixed    $initial
+     * @param  mixed $initial
      * @return mixed
      */
     public function reduce(callable $callback, $initial = null)
@@ -150,7 +150,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * 把一个数组分割为新的数组块.
      *
-     * @param  int  $size
+     * @param  int $size
      * @param  bool $preserveKeys
      * @return static
      */
@@ -168,7 +168,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * 在数组开头插入一个元素
      * @param mixed $value
-     * @param null  $key
+     * @param null $key
      * @return void
      */
     public function unshift($value, $key = null)
@@ -225,18 +225,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 
         $result = [];
         foreach ($this->items as $row) {
-            $key    = $value    = null;
+            $key = $value = null;
             $keySet = $valueSet = false;
             if (null !== $index_key && array_key_exists($index_key, $row)) {
                 $keySet = true;
-                $key    = (string) $row[$index_key];
+                $key = (string)$row[$index_key];
             }
             if (null === $column_key) {
                 $valueSet = true;
-                $value    = $row;
+                $value = $row;
             } elseif (is_array($row) && array_key_exists($column_key, $row)) {
                 $valueSet = true;
-                $value    = $row[$column_key];
+                $value = $row[$column_key];
             }
             if ($valueSet) {
                 if ($keySet) {
@@ -288,8 +288,8 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * 截取数组
      *
-     * @param  int  $offset
-     * @param  int  $length
+     * @param  int $offset
+     * @param  int $length
      * @param  bool $preserveKeys
      * @return static
      */
@@ -368,6 +368,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
         if ($items instanceof self) {
             return $items->all();
         }
-        return (array) $items;
+        return (array)$items;
     }
 }

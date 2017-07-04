@@ -29,10 +29,10 @@ class Config
 
     /**
      * 解析配置文件或内容
-     * @param string    $config 配置文件路径或内容
-     * @param string    $type 配置解析类型
-     * @param string    $name 配置名（如设置即表示二级配置）
-     * @param string    $range  作用域
+     * @param string $config 配置文件路径或内容
+     * @param string $type 配置解析类型
+     * @param string $name 配置名（如设置即表示二级配置）
+     * @param string $range 作用域
      * @return mixed
      */
     public static function parse($config, $type = '', $name = '', $range = '')
@@ -47,9 +47,9 @@ class Config
 
     /**
      * 加载配置文件（PHP格式）
-     * @param string    $file 配置文件名
-     * @param string    $name 配置名（如设置即表示二级配置）
-     * @param string    $range  作用域
+     * @param string $file 配置文件名
+     * @param string $name 配置名（如设置即表示二级配置）
+     * @param string $range 作用域
      * @return mixed
      */
     public static function load($file, $name = '', $range = '')
@@ -75,8 +75,8 @@ class Config
 
     /**
      * 检测配置是否存在
-     * @param string    $name 配置参数名（支持二级配置 .号分割）
-     * @param string    $range  作用域
+     * @param string $name 配置参数名（支持二级配置 .号分割）
+     * @param string $range 作用域
      * @return bool
      */
     public static function has($name, $range = '')
@@ -94,8 +94,8 @@ class Config
 
     /**
      * 获取配置参数 为空则获取所有配置
-     * @param string    $name 配置参数名（支持二级配置 .号分割）
-     * @param string    $range  作用域
+     * @param string $name 配置参数名（支持二级配置 .号分割）
+     * @param string $range 作用域
      * @return mixed
      */
     public static function get($name = null, $range = '')
@@ -111,7 +111,7 @@ class Config
             return isset(self::$config[$range][$name]) ? self::$config[$range][$name] : null;
         } else {
             // 二维数组设置和获取支持
-            $name    = explode('.', $name, 2);
+            $name = explode('.', $name, 2);
             $name[0] = strtolower($name[0]);
             return isset(self::$config[$range][$name[0]][$name[1]]) ? self::$config[$range][$name[0]][$name[1]] : null;
         }
@@ -119,9 +119,9 @@ class Config
 
     /**
      * 设置配置参数 name为数组则为批量设置
-     * @param string|array  $name 配置参数名（支持二级配置 .号分割）
-     * @param mixed         $value 配置值
-     * @param string        $range  作用域
+     * @param string|array $name 配置参数名（支持二级配置 .号分割）
+     * @param mixed $value 配置值
+     * @param string $range 作用域
      * @return mixed
      */
     public static function set($name, $value = null, $range = '')
@@ -135,7 +135,7 @@ class Config
                 self::$config[$range][strtolower($name)] = $value;
             } else {
                 // 二维数组设置和获取支持
-                $name                                                 = explode('.', $name, 2);
+                $name = explode('.', $name, 2);
                 self::$config[$range][strtolower($name[0])][$name[1]] = $value;
             }
             return '';
@@ -143,8 +143,8 @@ class Config
             // 批量设置
             if (!empty($value)) {
                 self::$config[$range][$value] = isset(self::$config[$range][$value]) ?
-                array_merge(self::$config[$range][$value], $name) :
-                self::$config[$range][$value] = $name;
+                    array_merge(self::$config[$range][$value], $name) :
+                    self::$config[$range][$value] = $name;
                 return self::$config[$range][$value];
             } else {
                 return self::$config[$range] = array_merge(self::$config[$range], array_change_key_case($name));

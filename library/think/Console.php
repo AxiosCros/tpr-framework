@@ -30,7 +30,7 @@ class Console
     private $wantHelps = false;
 
     private $catchExceptions = true;
-    private $autoExit        = true;
+    private $autoExit = true;
     private $definition;
     private $defaultCommand;
 
@@ -49,11 +49,11 @@ class Console
 
     public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
-        $this->name    = $name;
+        $this->name = $name;
         $this->version = $version;
 
         $this->defaultCommand = 'list';
-        $this->definition     = $this->getDefaultInputDefinition();
+        $this->definition = $this->getDefaultInputDefinition();
 
         foreach ($this->getDefaultCommands() as $command) {
             $this->add($command);
@@ -89,7 +89,7 @@ class Console
 
     /**
      * @param        $command
-     * @param array  $parameters
+     * @param array $parameters
      * @param string $driver
      * @return Output|Buffer
      */
@@ -99,7 +99,7 @@ class Console
 
         array_unshift($parameters, $command);
 
-        $input  = new Input($parameters);
+        $input = new Input($parameters);
         $output = new Output($driver);
 
         $console->setCatchExceptions(false);
@@ -116,7 +116,7 @@ class Console
      */
     public function run()
     {
-        $input  = new Input();
+        $input = new Input();
         $output = new Output();
 
         $this->configureIO($input, $output);
@@ -132,7 +132,7 @@ class Console
 
             $exitCode = $e->getCode();
             if (is_numeric($exitCode)) {
-                $exitCode = (int) $exitCode;
+                $exitCode = (int)$exitCode;
                 if (0 === $exitCode) {
                     $exitCode = 1;
                 }
@@ -154,7 +154,7 @@ class Console
 
     /**
      * 执行指令
-     * @param Input  $input
+     * @param Input $input
      * @param Output $output
      * @return int
      */
@@ -170,7 +170,7 @@ class Console
 
         if (true === $input->hasParameterOption(['--help', '-h'])) {
             if (!$name) {
-                $name  = 'help';
+                $name = 'help';
                 $input = new Input(['help']);
             } else {
                 $this->wantHelps = true;
@@ -178,7 +178,7 @@ class Console
         }
 
         if (!$name) {
-            $name  = $this->defaultCommand;
+            $name = $this->defaultCommand;
             $input = new Input([$this->defaultCommand]);
         }
 
@@ -223,7 +223,7 @@ class Console
      */
     public function setCatchExceptions($boolean)
     {
-        $this->catchExceptions = (bool) $boolean;
+        $this->catchExceptions = (bool)$boolean;
     }
 
     /**
@@ -233,7 +233,7 @@ class Console
      */
     public function setAutoExit($boolean)
     {
-        $this->autoExit = (bool) $boolean;
+        $this->autoExit = (bool)$boolean;
     }
 
     /**
@@ -398,7 +398,7 @@ class Console
     public function findNamespace($namespace)
     {
         $allNamespaces = $this->getNamespaces();
-        $expr          = preg_replace_callback('{([^:]+|)}', function ($matches) {
+        $expr = preg_replace_callback('{([^:]+|)}', function ($matches) {
             return preg_quote($matches[1]) . '[^:]*';
         }, $namespace);
         $namespaces = preg_grep('{^' . $expr . '}', $allNamespaces);
@@ -436,7 +436,7 @@ class Console
     public function find($name)
     {
         $allCommands = array_keys($this->commands);
-        $expr        = preg_replace_callback('{([^:]+|)}', function ($matches) {
+        $expr = preg_replace_callback('{([^:]+|)}', function ($matches) {
             return preg_quote($matches[1]) . '[^:]*';
         }, $name);
         $commands = preg_grep('{^' . $expr . '}', $allCommands);
@@ -462,7 +462,7 @@ class Console
 
         if (count($commands) > 1) {
             $commandList = $this->commands;
-            $commands    = array_filter($commands, function ($nameOrAlias) use ($commandList, $commands) {
+            $commands = array_filter($commands, function ($nameOrAlias) use ($commandList, $commands) {
                 $commandName = $commandList[$nameOrAlias]->getName();
 
                 return $commandName === $nameOrAlias || !in_array($commandName, $commands);
@@ -511,7 +511,7 @@ class Console
         $abbrevs = [];
         foreach ($names as $name) {
             for ($len = strlen($name); $len > 0; --$len) {
-                $abbrev             = substr($name, 0, $len);
+                $abbrev = substr($name, 0, $len);
                 $abbrevs[$abbrev][] = $name;
             }
         }
@@ -521,7 +521,7 @@ class Console
 
     /**
      * 配置基于用户的参数和选项的输入和输出实例。
-     * @param Input  $input  输入实例
+     * @param Input $input 输入实例
      * @param Output $output 输出实例
      */
     protected function configureIO(Input $input, Output $output)
@@ -552,8 +552,8 @@ class Console
     /**
      * 执行指令
      * @param Command $command 指令实例
-     * @param Input   $input   输入实例
-     * @param Output  $output  输出实例
+     * @param Input $input 输入实例
+     * @param Output $output 输出实例
      * @return int
      * @throws \Exception
      */
@@ -624,7 +624,7 @@ class Console
 
     /**
      * 返回命名空间部分
-     * @param string $name  指令
+     * @param string $name 指令
      * @param string $limit 部分的命名空间的最大数量
      * @return string
      */
@@ -638,13 +638,13 @@ class Console
 
     /**
      * 查找可替代的建议
-     * @param string             $name
+     * @param string $name
      * @param array|\Traversable $collection
      * @return array
      */
     private function findAlternatives($name, $collection)
     {
-        $threshold    = 1e3;
+        $threshold = 1e3;
         $alternatives = [];
 
         $collectionParts = [];
@@ -702,7 +702,7 @@ class Console
      */
     private function extractAllNamespaces($name)
     {
-        $parts      = explode(':', $name, -1);
+        $parts = explode(':', $name, -1);
         $namespaces = [];
 
         foreach ($parts as $part) {

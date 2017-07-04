@@ -15,17 +15,17 @@ class Cookie
 {
     protected static $config = [
         // cookie 名称前缀
-        'prefix'    => '',
+        'prefix' => '',
         // cookie 保存时间
-        'expire'    => 0,
+        'expire' => 0,
         // cookie 保存路径
-        'path'      => '/',
+        'path' => '/',
         // cookie 有效域名
-        'domain'    => '',
+        'domain' => '',
         //  cookie 启用安全传输
-        'secure'    => false,
+        'secure' => false,
         // httponly设置
-        'httponly'  => '',
+        'httponly' => '',
         // 是否使用 setcookie
         'setcookie' => true,
     ];
@@ -66,9 +66,9 @@ class Cookie
     /**
      * Cookie 设置、获取、删除
      *
-     * @param string $name  cookie名称
-     * @param mixed  $value cookie值
-     * @param mixed  $option 可选参数 可能会是 null|integer|string
+     * @param string $name cookie名称
+     * @param mixed $value cookie值
+     * @param mixed $option 可选参数 可能会是 null|integer|string
      *
      * @return void
      * @internal param mixed $options cookie参数
@@ -102,9 +102,9 @@ class Cookie
 
     /**
      * 永久保存Cookie数据
-     * @param string $name  cookie名称
-     * @param mixed  $value cookie值
-     * @param mixed  $option 可选参数 可能会是 null|integer|string
+     * @param string $name cookie名称
+     * @param mixed $value cookie值
+     * @param mixed $option 可选参数 可能会是 null|integer|string
      * @return void
      */
     public static function forever($name, $value = '', $option = null)
@@ -118,29 +118,29 @@ class Cookie
 
     /**
      * 判断Cookie数据
-     * @param string        $name cookie名称
-     * @param string|null   $prefix cookie前缀
+     * @param string $name cookie名称
+     * @param string|null $prefix cookie前缀
      * @return bool
      */
     public static function has($name, $prefix = null)
     {
         !isset(self::$init) && self::init();
         $prefix = !is_null($prefix) ? $prefix : self::$config['prefix'];
-        $name   = $prefix . $name;
+        $name = $prefix . $name;
         return isset($_COOKIE[$name]);
     }
 
     /**
      * Cookie获取
-     * @param string        $name cookie名称
-     * @param string|null   $prefix cookie前缀
+     * @param string $name cookie名称
+     * @param string|null $prefix cookie前缀
      * @return mixed
      */
     public static function get($name = '', $prefix = null)
     {
         !isset(self::$init) && self::init();
         $prefix = !is_null($prefix) ? $prefix : self::$config['prefix'];
-        $key    = $prefix . $name;
+        $key = $prefix . $name;
 
         if ('' == $name) {
             // 获取全部
@@ -169,8 +169,8 @@ class Cookie
 
     /**
      * Cookie删除
-     * @param string        $name cookie名称
-     * @param string|null   $prefix cookie前缀
+     * @param string $name cookie名称
+     * @param string|null $prefix cookie前缀
      * @return void
      */
     public static function delete($name, $prefix = null)
@@ -178,7 +178,7 @@ class Cookie
         !isset(self::$init) && self::init();
         $config = self::$config;
         $prefix = !is_null($prefix) ? $prefix : $config['prefix'];
-        $name   = $prefix . $name;
+        $name = $prefix . $name;
         if ($config['setcookie']) {
             setcookie($name, '', $_SERVER['REQUEST_TIME'] - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
         }
