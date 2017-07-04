@@ -6,9 +6,11 @@
  * @blog:  http://hanxv.cn
  * @datetime: 2017/6/28 14:51
  */
+
 namespace think;
 
-class Doc {
+class Doc
+{
     public static $instance;
 
     public static $dir;
@@ -22,8 +24,8 @@ class Doc {
     private static $content = '';
 
     public static $typeList = [
-        'char', 'string', 'int', 'float', 'boolean','bool','date',
-        'array', 'fixed', 'enum', 'object','double','void','mixed'
+        'char', 'string', 'int', 'float', 'boolean', 'bool', 'date',
+        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed'
     ];
 
     function __construct($dir = APP_PATH)
@@ -32,24 +34,28 @@ class Doc {
         self::$apiClassList = self::scanApiClass($dir);
     }
 
-    public static function config($dir=APP_PATH,$connector=';'){
+    public static function config($dir = APP_PATH, $connector = ';', $app_path = APP_PATH)
+    {
+        self::scan($app_path);
         self::$connector = $connector;
         self::$instance = new static($dir);
         self::$dir = $dir;
         return self::$instance;
     }
 
-    public static function doc($class=''){
-        if(empty(self::$dir)){
+    public static function doc($class = '')
+    {
+        if (empty(self::$dir)) {
             self::config();
         }
-        $list = [];$n=0;
-        if(!empty($class)){
+        $list = [];
+        $n = 0;
+        if (!empty($class)) {
             $list = self::makeClassDoc($class);
-        }else{
-            foreach (self::$apiClassList as $k=>$apiClassDir){
-                $doc =  self::makeClassDoc($apiClassDir);
-                if(!empty($doc)){
+        } else {
+            foreach (self::$apiClassList as $k => $apiClassDir) {
+                $doc = self::makeClassDoc($apiClassDir);
+                if (!empty($doc)) {
                     $list[$n++] = $doc;
                 }
             }
@@ -58,12 +64,13 @@ class Doc {
         return $list;
     }
 
-    public static function makeClassDoc($class=''){
-        if(empty(self::$dir)){
+    public static function makeClassDoc($class = '')
+    {
+        if (empty(self::$dir)) {
             self::config();
         }
         $doc = [];
-        if(class_exists($class)){
+        if (class_exists($class)) {
             $reflectionClass = new \ReflectionClass($class);
             $doc['name'] = $reflectionClass->name;
             $doc['file_name'] = $reflectionClass->getFileName();
@@ -72,10 +79,11 @@ class Doc {
             $doc['comment'] = $comment;
 
             $_getMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
-            $methods = [];$m=0;
-            foreach ($_getMethods as $key=>$method){
-                if($method->class==$class){
-                    $methods[$m] = self::makeMethodDoc($class,$method->name);
+            $methods = [];
+            $m = 0;
+            foreach ($_getMethods as $key => $method) {
+                if ($method->class == $class) {
+                    $methods[$m] = self::makeMethodDoc($class, $method->name);
                     $m++;
                 }
             }
@@ -84,19 +92,20 @@ class Doc {
         return $doc;
     }
 
-    public static function makeMethodDoc($class,$method_name){
-        if(empty(self::$dir)){
+    public static function makeMethodDoc($class, $method_name)
+    {
+        if (empty(self::$dir)) {
             self::config();
         }
         $reflectionClass = new \ReflectionClass($class);
         $method = $reflectionClass->getMethod($method_name);
-        $temp = explode("\\",$class);
+        $temp = explode("\\", $class);
         $m = [];
         $m['name'] = $method->name;
-        $m['path'] = strtolower($temp[1])."/".strtolower($temp[3])."/".$method->name;
-        $rule =  Route::name($m['path']);
+        $m['path'] = strtolower($temp[1]) . "/" . strtolower($temp[3]) . "/" . $method->name;
+        $rule = Route::name($m['path']);
         $route = '';
-        if(!empty($rule)){
+        if (!empty($rule)) {
             $route = $rule[0][0];
         }
         $m['route'] = $route;
@@ -105,43 +114,44 @@ class Doc {
         return $m;
     }
 
-    private static function trans($comment){
+    private static function trans($comment)
+    {
         $docComment = $comment;
         $data = [];
         if ($docComment !== false) {
             $docCommentArr = explode("\n", $docComment);
-            foreach ($docCommentArr as $comment){
+            foreach ($docCommentArr as $comment) {
                 //find @ position
-                $posA = strpos($comment,'@');
-                if($posA===false){
+                $posA = strpos($comment, '@');
+                if ($posA === false) {
                     continue;
                 }
                 $content = trim(substr($comment, $posA));
-                $needle_length = strpos($content,' ');
-                if($needle_length === false){
-                    $needle = str_replace('@','',trim($content));
+                $needle_length = strpos($content, ' ');
+                if ($needle_length === false) {
+                    $needle = str_replace('@', '', trim($content));
                     $content = '';
-                }else{
-                    $needle = trim(substr($content,1,$needle_length));
+                } else {
+                    $needle = trim(substr($content, 1, $needle_length));
                     $content = trim(substr($content, $needle_length));
                     $content = self::transContent($content);
                 }
-                if($content===true){
+                if ($content === true) {
                     continue;
                 }
-                if(isset($data[$needle])){
-                    if(is_array($data[$needle])){
-                        array_push($data[$needle],$content);
-                    }else{
+                if (isset($data[$needle])) {
+                    if (is_array($data[$needle])) {
+                        array_push($data[$needle], $content);
+                    } else {
                         $tmp = $data[$needle];
                         $data[$needle] = [];
                         $data[$needle][0] = $tmp;
                         $data[$needle][1] = $content;
                     }
-                }else{
-                    if(is_array($content)){
-                        $data[$needle][0]=$content;
-                    }else{
+                } else {
+                    if (is_array($content)) {
+                        $data[$needle][0] = $content;
+                    } else {
                         $data[$needle] = $content;
                     }
                 }
@@ -151,33 +161,34 @@ class Doc {
         return $data;
     }
 
-    private static function transContent($content){
+    private static function transContent($content)
+    {
         $connector = self::$connector;
-        self::$isConnect = strpos($content,$connector)===false?false:true;
-        self::$content = self::$content.$content;
-        if(self::$isConnect){
-            self::$content = str_replace(self::$connector,'',self::$content);
+        self::$isConnect = strpos($content, $connector) === false ? false : true;
+        self::$content = self::$content . $content;
+        if (self::$isConnect) {
+            self::$content = str_replace(self::$connector, '', self::$content);
             return true;
         }
         $content = self::$content;
         self::$content = '';
-        if(strpos($content,' ')!==false){
-            $content = preg_replace("/[\s]+/is"," ",$content);
-            $contentArray = explode(' ',$content);
-            if(isset($contentArray[0]) && !self::isType($contentArray[0])){
+        if (strpos($content, ' ') !== false) {
+            $content = preg_replace("/[\s]+/is", " ", $content);
+            $contentArray = explode(' ', $content);
+            if (isset($contentArray[0]) && !self::isType($contentArray[0])) {
                 return $content;
             }
             $data = [
-                'type'=>isset($contentArray[0])?$contentArray[0]:'',
-                'name'=>isset($contentArray[1])?$contentArray[1]:''
+                'type' => isset($contentArray[0]) ? $contentArray[0] : '',
+                'name' => isset($contentArray[1]) ? $contentArray[1] : ''
             ];
             $desc = '';
-            foreach ($contentArray as $k=>$c){
-                if($k<2){
+            foreach ($contentArray as $k => $c) {
+                if ($k < 2) {
                     continue;
                 }
-                if(!empty($c)){
-                    $desc = $desc.trim($c).' ';
+                if (!empty($c)) {
+                    $desc = $desc . trim($c) . ' ';
                 }
             }
 
@@ -187,25 +198,27 @@ class Doc {
         return $content;
     }
 
-    private static function isType($type = ''){
-        if(strpos($type , '|')){
-            $array = explode('|',$type);
-            foreach ($array as $a){
-                if(in_array(strtolower($a),self::$typeList)){
+    private static function isType($type = '')
+    {
+        if (strpos($type, '|')) {
+            $array = explode('|', $type);
+            foreach ($array as $a) {
+                if (in_array(strtolower($a), self::$typeList)) {
                     return true;
                 }
             }
-        }else{
-            if(in_array(strtolower($type),self::$typeList)){
+        } else {
+            if (in_array(strtolower($type), self::$typeList)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static function deepScanDir($dir) {
-        $fileArr = array ();
-        $dirArr = array ();
+    public static function deepScanDir($dir)
+    {
+        $fileArr = array();
+        $dirArr = array();
         $dir = rtrim($dir, '//');
         if (is_dir($dir)) {
             $dirHandle = opendir($dir);
@@ -213,8 +226,7 @@ class Doc {
                 $subFile = $dir . DIRECTORY_SEPARATOR . $fileName;
                 if (is_file($subFile)) {
                     $fileArr[] = $subFile;
-                }
-                elseif (is_dir($subFile) && str_replace('.', '', $fileName) != '') {
+                } elseif (is_dir($subFile) && str_replace('.', '', $fileName) != '') {
                     $dirArr[] = $subFile;
                     $arr = self::deepScanDir($subFile);
                     $dirArr = array_merge($dirArr, $arr['dir']);
@@ -223,22 +235,23 @@ class Doc {
             }
             closedir($dirHandle);
         }
-        return array (
+        return array(
             'dir' => $dirArr,
             'file' => $fileArr
         );
     }
 
-    public static function scanApiClass($dir=APP_PATH){
-        if(is_string($dir)){
+    public static function scanApiClass($dir = APP_PATH)
+    {
+        if (is_string($dir)) {
             return self::scan($dir);
-        }else if(is_array($dir)){
+        } else if (is_array($dir)) {
             $class_list = [];
-            foreach ($dir as $d){
-                if(is_string($d)){
+            foreach ($dir as $d) {
+                if (is_string($d)) {
                     $list = self::scan($d);
-                    foreach ($list as $l){
-                        array_push($class_list,$l);
+                    foreach ($list as $l) {
+                        array_push($class_list, $l);
                     }
                 }
             }
@@ -247,19 +260,21 @@ class Doc {
         return [];
     }
 
-    private static function scan($dir){
+    private static function scan($dir)
+    {
         $scan = self::deepScanDir($dir);
         $files = $scan['file'];
-        $n=0;$ApiList = [];
-        foreach ($files as $k=>$f){
+        $n = 0;
+        $ApiList = [];
+        foreach ($files as $k => $f) {
             require_once $f;
             $content = file_get_contents($f);
-            $namespace_begin = strpos($content,'namespace')+10;
-            $namespace_end = strpos($content,';');
-            $namespace = substr($content,$namespace_begin,$namespace_end-$namespace_begin);
-            $class_name = basename($f,'.php');
-            $class = $namespace.'\\'.$class_name;
-            $ApiList[$n++]=$class;
+            $namespace_begin = strpos($content, 'namespace') + 10;
+            $namespace_end = strpos($content, ';');
+            $namespace = substr($content, $namespace_begin, $namespace_end - $namespace_begin);
+            $class_name = basename($f, '.php');
+            $class = $namespace . '\\' . $class_name;
+            $ApiList[$n++] = $class;
         }
         return $ApiList;
     }
