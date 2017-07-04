@@ -126,7 +126,7 @@
 
 ``` php
 //生成密钥  CONF_PATH/key/for_api/
-Crypt::makeKey('for_api'');     // 生成一对公私密钥 for_api 为该密钥的命名
+Crypt::makeKey('for_api');     // 生成一对公私密钥 for_api 为该密钥的命名
 
 // 加密  pri私钥加密  pub公钥加密
 Crypt::rsa('for_api')->encrypt($test,'pri');
