@@ -34,7 +34,7 @@ class Doc
         self::$apiClassList = self::scanApiClass($dir);
     }
 
-    public static function config($dir = APP_PATH, $connector = ';', $app_path = APP_PATH)
+    public static function config($dir = APP_PATH, $app_path = APP_PATH, $connector = ';')
     {
         self::scan($app_path);
         self::$connector = $connector;
