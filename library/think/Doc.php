@@ -120,10 +120,14 @@ class Doc
         $data = [];
         if ($docComment !== false) {
             $docCommentArr = explode("\n", $docComment);
-            foreach ($docCommentArr as $comment) {
+            foreach ($docCommentArr as $key => $comment) {
                 //find @ position
                 $posA = strpos($comment, '@');
                 if ($posA === false) {
+                    if ($key == 1 && strpos($comment, '@') === false) {
+                        $content = trim(str_replace('*', ' ', $comment));
+                        $data['title'] = $content;
+                    }
                     continue;
                 }
                 $content = trim(substr($comment, $posA));
