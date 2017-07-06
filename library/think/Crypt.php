@@ -48,7 +48,7 @@ class Crypt
         $res = openssl_pkey_new();
         openssl_pkey_export($res, $pri_key);
         $path = empty($path) ? CONF_PATH . "key/" : $path;
-        $path = self::path($path);
+        self::path($path);
         file_put_contents(self::$key_path . 'pri.pem', $pri_key);
         self::$pri_key = $pri_key;
 
