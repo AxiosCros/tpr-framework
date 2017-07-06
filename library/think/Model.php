@@ -353,7 +353,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             // 检测修改器
             $method = 'set' . Loader::parseName($name, 1) . 'Attr';
             if (method_exists($this, $method)) {
-                $value = $this->$method($value, array_merge($this->data, $data));
+                $value = $this->$method($value, array_merge($this->data, $data), $this->relation);
             } elseif (isset($this->type[$name])) {
                 // 类型转换
                 $value = $this->writeTransform($value, $this->type[$name]);
@@ -532,7 +532,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         // 检测属性获取器
         $method = 'get' . Loader::parseName($name, 1) . 'Attr';
         if (method_exists($this, $method)) {
-            $value = $this->$method($value, $this->data);
+            $value = $this->$method($value, $this->data, $this->relation);
         } elseif (isset($this->type[$name])) {
             // 类型转换
             $value = $this->readTransform($value, $this->type[$name]);
@@ -1084,22 +1084,20 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         return $result;
     }
 
-    protected function checkAllowField(&$data, $auto = [])
+    protected function checkAllowField($auto = [])
     {
-        if (!empty($this->field)) {
-            if (true === $this->field) {
-                $this->field = $this->getQuery()->getTableInfo('', 'fields');
-                $field       = $this->field;
-            } else {
-                $field = array_merge($this->field, $auto);
+        if (true === $this->field) {
+            $this->field = $this->getQuery()->getTableInfo('', 'fields');
+            $field       = $this->field;
+        } elseif (!empty($this->field)) {
+            $field = array_merge($this->field, $auto);
+            if ($this->autoWriteTimestamp) {
+                array_push($field, $this->createTime, $this->updateTime);
             }
-
-            foreach ($data as $key => $val) {
-                if (!in_array($key, $field)) {
-                    unset($data[$key]);
-                }
-            }
+        } else {
+            $field = [];
         }
+        return $field;
     }
 
     protected function autoRelationUpdate($relation)
