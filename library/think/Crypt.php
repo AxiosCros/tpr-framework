@@ -21,7 +21,7 @@ class Crypt
     {
         if (file_exists($path) && is_dir($path)) {
             self::$key_path = $path;
-        } else if (!empty($select)) {
+        } else if (!empty($path)) {
             self::$key_path = CONF_PATH . "key/" . $path . "/";
         } else {
             return self::$key_path;
@@ -48,7 +48,7 @@ class Crypt
         $res = openssl_pkey_new();
         openssl_pkey_export($res, $pri_key);
         $path = empty($path) ? CONF_PATH . "key/" : $path;
-        self::path($path);
+        $path = self::path($path);
         file_put_contents(self::$key_path . 'pri.pem', $pri_key);
         self::$pri_key = $pri_key;
 
