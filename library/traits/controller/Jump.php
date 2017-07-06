@@ -181,10 +181,10 @@ trait Jump
             'data' => $data,
         ];
         $result = Tool::checkData2String($result);
-        $this->send($result, $header);
+        $this->ajaxReturn($result, $header);
     }
 
-    protected function send($result = [], array $header = [])
+    protected function ajaxReturn($result = [], array $header = [])
     {
         $type = !empty($this->return_type) ? $this->return_type : c('default_ajax_return', 'json');
         Request::instance()->req = $result;
