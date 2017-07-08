@@ -68,6 +68,9 @@ class Session
             session_name($config['name']);
         }
         if (isset($config['path'])) {
+            if(!file_exists($config['path'])){
+                mkdir($config['path'],0700,true);
+            }
             session_save_path($config['path']);
         }
         if (isset($config['domain'])) {
