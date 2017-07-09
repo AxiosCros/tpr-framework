@@ -32,7 +32,7 @@ abstract class Driver
      * 读取缓存
      * @access public
      * @param string $name 缓存变量名
-     * @param mixed  $default 默认值
+     * @param mixed $default 默认值
      * @return mixed
      */
     abstract public function get($name, $default = false);
@@ -40,9 +40,9 @@ abstract class Driver
     /**
      * 写入缓存
      * @access public
-     * @param string    $name 缓存变量名
-     * @param mixed     $value  存储数据
-     * @param int       $expire  有效时间 0为永久
+     * @param string $name 缓存变量名
+     * @param mixed $value 存储数据
+     * @param int $expire 有效时间 0为永久
      * @return boolean
      */
     abstract public function set($name, $value, $expire = null);
@@ -50,8 +50,8 @@ abstract class Driver
     /**
      * 自增缓存（针对数值缓存）
      * @access public
-     * @param string    $name 缓存变量名
-     * @param int       $step 步长
+     * @param string $name 缓存变量名
+     * @param int $step 步长
      * @return false|int
      */
     abstract public function inc($name, $step = 1);
@@ -59,8 +59,8 @@ abstract class Driver
     /**
      * 自减缓存（针对数值缓存）
      * @access public
-     * @param string    $name 缓存变量名
-     * @param int       $step 步长
+     * @param string $name 缓存变量名
+     * @param int $step 步长
      * @return false|int
      */
     abstract public function dec($name, $step = 1);
@@ -112,9 +112,9 @@ abstract class Driver
     /**
      * 如果不存在则写入缓存
      * @access public
-     * @param string    $name 缓存变量名
-     * @param mixed     $value  存储数据
-     * @param int       $expire  有效时间 0为永久
+     * @param string $name 缓存变量名
+     * @param mixed $value 存储数据
+     * @param int $expire 有效时间 0为永久
      * @return mixed
      */
     public function remember($name, $value, $expire = null)
@@ -133,9 +133,9 @@ abstract class Driver
     /**
      * 缓存标签
      * @access public
-     * @param string        $name 标签名
-     * @param string|array  $keys 缓存标识
-     * @param bool          $overlay 是否覆盖
+     * @param string $name 标签名
+     * @param string|array $keys 缓存标识
+     * @param bool $overlay 是否覆盖
      * @return $this
      */
     public function tag($name, $keys = null, $overlay = false)
@@ -167,7 +167,7 @@ abstract class Driver
     protected function setTagItem($name)
     {
         if ($this->tag) {
-            $key       = 'tag_' . md5($this->tag);
+            $key = 'tag_' . md5($this->tag);
             $this->tag = null;
             if ($this->has($key)) {
                 $value = $this->get($key);
@@ -187,7 +187,7 @@ abstract class Driver
      */
     protected function getTagItem($tag)
     {
-        $key   = 'tag_' . md5($tag);
+        $key = 'tag_' . md5($tag);
         $value = $this->get($key);
         if ($value) {
             return explode(',', $value);
