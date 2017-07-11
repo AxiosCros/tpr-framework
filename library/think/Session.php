@@ -16,7 +16,7 @@ use think\exception\ClassNotFoundException;
 class Session
 {
     protected static $prefix = '';
-    protected static $init   = null;
+    protected static $init = null;
 
     /**
      * 设置或者获取session作用域（前缀）
@@ -51,6 +51,9 @@ class Session
         }
 
         // 启动session
+        if (!isset($config['auto_start'])) {
+            $config['auto_start'] = true;
+        }
         if (!empty($config['auto_start']) && PHP_SESSION_ACTIVE != session_status()) {
             ini_set('session.auto_start', 0);
             $isDoStart = true;
@@ -68,6 +71,9 @@ class Session
             session_name($config['name']);
         }
         if (isset($config['path'])) {
+            if (!file_exists($config['path'])) {
+                mkdir($config['path'], 0700, true);
+            }
             session_save_path($config['path']);
         }
         if (isset($config['domain'])) {
@@ -127,9 +133,9 @@ class Session
 
     /**
      * session设置
-     * @param string        $name session名称
-     * @param mixed         $value session值
-     * @param string|null   $prefix 作用域（前缀）
+     * @param string $name session名称
+     * @param mixed $value session值
+     * @param string|null $prefix 作用域（前缀）
      * @return void
      */
     public static function set($name, $value = '', $prefix = null)
@@ -154,8 +160,8 @@ class Session
 
     /**
      * session获取
-     * @param string        $name session名称
-     * @param string|null   $prefix 作用域（前缀）
+     * @param string $name session名称
+     * @param string|null $prefix 作用域（前缀）
      * @return mixed
      */
     public static function get($name = '', $prefix = null)
@@ -169,14 +175,14 @@ class Session
             // 获取session
             if (strpos($name, '.')) {
                 list($name1, $name2) = explode('.', $name);
-                $value               = isset($_SESSION[$prefix][$name1][$name2]) ? $_SESSION[$prefix][$name1][$name2] : null;
+                $value = isset($_SESSION[$prefix][$name1][$name2]) ? $_SESSION[$prefix][$name1][$name2] : null;
             } else {
                 $value = isset($_SESSION[$prefix][$name]) ? $_SESSION[$prefix][$name] : null;
             }
         } else {
             if (strpos($name, '.')) {
                 list($name1, $name2) = explode('.', $name);
-                $value               = isset($_SESSION[$name1][$name2]) ? $_SESSION[$name1][$name2] : null;
+                $value = isset($_SESSION[$name1][$name2]) ? $_SESSION[$name1][$name2] : null;
             } else {
                 $value = isset($_SESSION[$name]) ? $_SESSION[$name] : null;
             }
@@ -186,8 +192,8 @@ class Session
 
     /**
      * session获取并删除
-     * @param string        $name session名称
-     * @param string|null   $prefix 作用域（前缀）
+     * @param string $name session名称
+     * @param string|null $prefix 作用域（前缀）
      * @return mixed
      */
     public static function pull($name, $prefix = null)
@@ -203,9 +209,9 @@ class Session
 
     /**
      * session设置 下一次请求有效
-     * @param string        $name session名称
-     * @param mixed         $value session值
-     * @param string|null   $prefix 作用域（前缀）
+     * @param string $name session名称
+     * @param mixed $value session值
+     * @param string|null $prefix 作用域（前缀）
      * @return void
      */
     public static function flash($name, $value)
@@ -239,8 +245,8 @@ class Session
 
     /**
      * 删除session数据
-     * @param string|array  $name session名称
-     * @param string|null   $prefix 作用域（前缀）
+     * @param string|array $name session名称
+     * @param string|null $prefix 作用域（前缀）
      * @return void
      */
     public static function delete($name, $prefix = null)
@@ -269,7 +275,7 @@ class Session
 
     /**
      * 清空session数据
-     * @param string|null   $prefix 作用域（前缀）
+     * @param string|null $prefix 作用域（前缀）
      * @return void
      */
     public static function clear($prefix = null)
@@ -285,8 +291,8 @@ class Session
 
     /**
      * 判断session数据
-     * @param string        $name session名称
-     * @param string|null   $prefix
+     * @param string $name session名称
+     * @param string|null $prefix
      * @return bool
      */
     public static function has($name, $prefix = null)
@@ -304,8 +310,8 @@ class Session
 
     /**
      * 添加数据到一个session数组
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed $value
      * @return void
      */
     public static function push($key, $value)
