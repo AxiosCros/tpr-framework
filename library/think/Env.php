@@ -11,8 +11,6 @@
 
 namespace think;
 
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
-
 class Env
 {
     public static $file_path = '';
@@ -44,15 +42,15 @@ class Env
 
     public static function config($path)
     {
-        if (is_file($path)) {
+        if (is_file($path) && self::$file_path != $path) {
             self::$file_path = $path;
             self::$env_array = parse_ini_file(self::$file_path, true);
-        } else {
-            throw new FileNotFoundException($path . ' not found');
         }
+
         if (is_null(self::$instance)) {
             self::$instance = new static();
         }
+
         return self::$instance;
     }
 
