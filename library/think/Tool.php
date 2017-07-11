@@ -148,4 +148,22 @@ class Tool {
         }
         return $array;
     }
+
+    /**
+     * 随机字符串生成器
+     * @param $length
+     * @param string $strPol
+     * @return null|string
+     */
+    public static function getRandChar($length = 15,$strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"){
+        $str = null;
+
+        $max = strlen($strPol)-1;
+
+        for($i=0;$i<$length;$i++){
+            $str.=$strPol[rand(0,$max)];//rand($min,$max)生成介于min和max两个数之间的一个随机整数
+        }
+
+        return $str;
+    }
 }
