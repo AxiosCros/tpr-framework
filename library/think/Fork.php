@@ -17,6 +17,8 @@ class Fork
 
     protected static $pid_list = [];
 
+    protected static $max = 100;
+
     protected static function check()
     {
         return function_exists('pcntl_fork') && function_exists('posix_kill') && function_exists('ftok') && function_exists('shmop_open');
@@ -28,18 +30,29 @@ class Fork
         $max = intval(config('app.max_process', 100));
         $max = $max < 50 ? 50 : $max;
         $max = $max > 1000 ? 1000 : $max;
+        self::$max = $max;
+
         foreach ($queue as $q) {
-            $pid_size = shell_exec('ps -fe |grep "php-fpm"|grep "pool"|wc -l');
-            while (($pid_size >= $max)) {
-                sleep(3);
-                $pid_size = shell_exec('ps -fe |grep "php-fpm"|grep "pool"|wc -l');
-            };
             self::doWork($q['class'], $q['func'], $q['args']);
         }
     }
 
+    protected static function max(){
+        $pid_size = shell_exec('ps -fe |grep "php-fpm"|grep "pool"|wc -l');
+
+        if($pid_size >= self::$max){
+            return true;
+        }
+
+        return false;
+    }
+
     public static function doWork($class, $func, $args = [])
     {
+        if(self::max()){
+            sleep(3);
+            self::doWork($class, $func, $args);
+        }
         if (is_string($class) && class_exists($class)) {
             $class = new $class();
         }
