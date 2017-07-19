@@ -25,7 +25,7 @@ class Doc
 
     public static $typeList = [
         'char', 'string', 'int', 'float', 'boolean', 'bool', 'date',
-        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed','array'
+        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed'
     ];
 
     function __construct($dir = APP_PATH)
