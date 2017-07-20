@@ -27,6 +27,9 @@ class RequestEnd extends Fork {
     }
 
     public function run(){
+        $queue = Fork::$queue;
+        Fork::fork(true);
+        Fork::doFork($queue);
         if(function_exists('posix_kill') && function_exists('posix_getpid')){
             posix_kill(posix_getpid(), SIGINT);
             exit();
