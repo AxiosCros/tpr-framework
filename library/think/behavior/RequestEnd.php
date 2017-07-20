@@ -11,6 +11,7 @@
 
 namespace think\behavior;
 
+use think\Db;
 use think\Fork;
 use think\Request;
 
@@ -27,6 +28,7 @@ class RequestEnd extends Fork {
     }
 
     public function run(){
+        Db::clear();
         $queue = Fork::$queue;
         Fork::fork(true);
         Fork::doFork($queue);
