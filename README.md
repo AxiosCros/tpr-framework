@@ -80,7 +80,9 @@
   ```
 
 * 增加助手函数u(),方便url生成
+``` php
   > u($module = 'index'', $controller = 'index'', $action = 'index'')
+```
   
 * 增加D()方法
  ``` php
