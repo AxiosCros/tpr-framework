@@ -17,7 +17,6 @@ namespace traits\controller;
 
 use think\Config;
 use think\exception\HttpResponseException;
-use think\Fork;
 use think\Request;
 use think\Response;
 use think\response\Redirect;
@@ -171,9 +170,11 @@ trait Jump
         $this->response([], $code, $message, $header);
     }
 
-    protected function response($data = [], $code = 200, $message = 'success', array $header = [])
+    protected function response($data = [], $code = 200, $message = '', array $header = [])
     {
-        $message = empty($message) ? 'success' : $message;
+        if(empty($message)){
+            $message = c('code.' . strval($code), '');
+        }
         $result = [
             'code' => $code,
             'msg'  => lang($message),
