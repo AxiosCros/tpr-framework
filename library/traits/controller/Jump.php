@@ -172,7 +172,7 @@ trait Jump
 
     protected function response($data = [], $code = 200, $message = '', array $header = [])
     {
-        if(empty($message)){
+        if (empty($message)) {
             $message = c('code.' . strval($code), '');
         }
         $result = [
