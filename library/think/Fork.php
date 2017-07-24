@@ -37,10 +37,11 @@ class Fork
         }
     }
 
-    protected static function max(){
+    protected static function max()
+    {
         $pid_size = shell_exec('ps -fe |grep "php-fpm"|grep "pool"|wc -l');
 
-        if($pid_size >= self::$max){
+        if ($pid_size >= self::$max) {
             return true;
         }
 
@@ -49,7 +50,7 @@ class Fork
 
     public static function doWork($class, $func, $args = [])
     {
-        if(self::max()){
+        if (self::max()) {
             sleep(3);
             self::doWork($class, $func, $args);
         }
@@ -65,6 +66,7 @@ class Fork
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
+
         return false;
     }
 
@@ -77,13 +79,14 @@ class Fork
                 if ($killFather) {
                     exit();
                 }
+
                 return $pid;
-            } else if ($pid == 0) {
+            } elseif ($pid == 0) {
                 $ppid = pcntl_fork();
                 if ($ppid > 0) {
                     posix_kill(posix_getpid(), SIGINT);
                     exit();
-                } else if ($ppid == -1) {
+                } elseif ($ppid == -1) {
                     exit();
                 }
 
@@ -94,6 +97,7 @@ class Fork
                 return false;
             }
         }
+
         return false;
     }
 
@@ -101,10 +105,11 @@ class Fork
     {
         $queue = [
             'class' => $class,
-            'func' => $func,
-            'args' => $args
+            'func'  => $func,
+            'args'  => $args,
         ];
         array_push(self::$queue, $queue);
+
         return true;
     }
 }

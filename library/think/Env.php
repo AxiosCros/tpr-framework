@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -21,19 +22,22 @@ class Env
 
     /**
      * 获取环境变量值
-     * @param string $name 环境变量名（支持二级 .号分割）
+     *
+     * @param string $name    环境变量名（支持二级 .号分割）
      * @param string $default 默认值
+     *
      * @return mixed
      */
     public static function get($name, $default = null)
     {
-        $result = getenv(ENV_PREFIX . strtoupper(str_replace('.', '_', $name)));
+        $result = getenv(ENV_PREFIX.strtoupper(str_replace('.', '_', $name)));
         if (false !== $result) {
             if ('false' === $result) {
                 $result = false;
             } elseif ('true' === $result) {
                 $result = true;
             }
+
             return $result;
         } else {
             return $default;
@@ -56,12 +60,13 @@ class Env
 
     private static function init()
     {
-        if (empty(self::$file_path) && is_file(ROOT_PATH . '.env')) {
-            self::$file_path = ROOT_PATH . '.env';
+        if (empty(self::$file_path) && is_file(ROOT_PATH.'.env')) {
+            self::$file_path = ROOT_PATH.'.env';
         }
         if (empty(self::$env_array)) {
             self::$env_array = is_file(self::$file_path) ? parse_ini_file(self::$file_path, true) : [];
         }
+
         return self::$env_array;
     }
 
@@ -85,6 +90,7 @@ class Env
                 return $default;
             }
         }
+
         return $tmp;
     }
 
@@ -112,16 +118,17 @@ class Env
                     $tmpSection = &$tmpSection[$i];
                 }
             }
-        } else if (isset(self::$env_array[$index])) {
+        } elseif (isset(self::$env_array[$index])) {
             $envArraySection[$index] = $value;
         } else {
             return false;
         }
 
-        $name = ENV_PREFIX . strtoupper(str_replace('.', '_', $index));
+        $name = ENV_PREFIX.strtoupper(str_replace('.', '_', $index));
         putenv("$name=$value");
 
         self::$env_array = $envArraySection;
+
         return self::getFromFile($index);
     }
 
@@ -134,6 +141,7 @@ class Env
     {
         $envSection = self::$env_array;
         $text = self::envFileString($envSection);
+
         return file_put_contents(self::$file_path, $text);
     }
 
@@ -142,19 +150,19 @@ class Env
         $str = "\r\n";
 
         foreach ($data as $k1 => $v1) {
-            $str .= "[" . $k1 . "]\r\n";
+            $str .= '['.$k1."]\r\n";
             foreach ($v1 as $k2 => $v2) {
                 if (is_array($v2)) {
                     foreach ($v2 as $k3 => $v3) {
-                        $str .= $k2 . '[' . $k3 . '] = ' . $v3 . "\r\n";
+                        $str .= $k2.'['.$k3.'] = '.$v3."\r\n";
                     }
                 } else {
-                    $str .= $k2 . ' = ' . $v2 . "\r\n";
+                    $str .= $k2.' = '.$v2."\r\n";
                 }
             }
             $str .= "\r\n";
         }
+
         return $str;
     }
-
 }

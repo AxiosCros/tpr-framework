@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -14,17 +15,18 @@ namespace think\db\builder;
 use think\db\Builder;
 
 /**
- * mysql数据库驱动
+ * mysql数据库驱动.
  */
 class Mysql extends Builder
 {
     protected $updateSql = 'UPDATE %TABLE% %JOIN% SET %SET% %WHERE% %ORDER%%LIMIT% %LOCK%%COMMENT%';
 
     /**
-     * 字段和表名处理
-     * @access protected
+     * 字段和表名处理.
+     *
      * @param string $key
      * @param array  $options
+     *
      * @return string
      */
     protected function parseKey($key, $options = [])
@@ -33,7 +35,7 @@ class Mysql extends Builder
         if (strpos($key, '$.') && false === strpos($key, '(')) {
             // JSON字段支持
             list($field, $name) = explode('$.', $key);
-            $key                = 'json_extract(' . $field . ', \'$.' . $name . '\')';
+            $key = 'json_extract('.$field.', \'$.'.$name.'\')';
         } elseif (strpos($key, '.') && !preg_match('/[,\'\"\(\)`\s]/', $key)) {
             list($table, $key) = explode('.', $key, 2);
             if ('__TABLE__' == $table) {
@@ -44,25 +46,25 @@ class Mysql extends Builder
             }
         }
         if (!preg_match('/[,\'\"\*\(\)`.\s]/', $key)) {
-            $key = '`' . $key . '`';
+            $key = '`'.$key.'`';
         }
         if (isset($table)) {
             if (strpos($table, '.')) {
                 $table = str_replace('.', '`.`', $table);
             }
-            $key = '`' . $table . '`.' . $key;
+            $key = '`'.$table.'`.'.$key;
         }
+
         return $key;
     }
 
     /**
-     * 随机排序
-     * @access protected
+     * 随机排序.
+     *
      * @return string
      */
     protected function parseRand()
     {
         return 'rand()';
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -39,8 +40,8 @@ class Response
     protected $content = null;
 
     /**
-     * 构造函数
-     * @access   public
+     * 构造函数.
+     *
      * @param mixed $data    输出数据
      * @param int   $code
      * @param array $header
@@ -54,24 +55,25 @@ class Response
         }
         $this->contentType($this->contentType, $this->charset);
         $this->header = array_merge($this->header, $header);
-        $this->code   = $code;
+        $this->code = $code;
     }
 
     /**
      * 创建Response对象
-     * @access public
+     *
      * @param mixed  $data    输出数据
      * @param string $type    输出类型
      * @param int    $code
      * @param array  $header
      * @param array  $options 输出参数
+     *
      * @return Response|JsonResponse|ViewResponse|XmlResponse|RedirectResponse|JsonpResponse
      */
     public static function create($data = '', $type = '', $code = 200, array $header = [], $options = [])
     {
         $type = empty($type) ? 'null' : strtolower($type);
 
-        $class = false !== strpos($type, '\\') ? $type : '\\think\\response\\' . ucfirst($type);
+        $class = false !== strpos($type, '\\') ? $type : '\\think\\response\\'.ucfirst($type);
         if (class_exists($class)) {
             $response = new $class($data, $code, $header, $options);
         } else {
@@ -82,10 +84,11 @@ class Response
     }
 
     /**
-     * 发送数据到客户端
-     * @access public
-     * @return void
+     * 发送数据到客户端.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return void
      */
     public function send()
     {
@@ -103,9 +106,9 @@ class Response
         if (200 == $this->code) {
             $cache = Request::instance()->getCache();
             if ($cache) {
-                $this->header['Cache-Control'] = 'max-age=' . $cache[1] . ',must-revalidate';
-                $this->header['Last-Modified'] = gmdate('D, d M Y H:i:s') . ' GMT';
-                $this->header['Expires']       = gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + $cache[1]) . ' GMT';
+                $this->header['Cache-Control'] = 'max-age='.$cache[1].',must-revalidate';
+                $this->header['Last-Modified'] = gmdate('D, d M Y H:i:s').' GMT';
+                $this->header['Expires'] = gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + $cache[1]).' GMT';
                 Cache::set($cache[0], [$data, $this->header], $cache[1]);
             }
         }
@@ -118,7 +121,7 @@ class Response
                 if (is_null($val)) {
                     header($name);
                 } else {
-                    header($name . ':' . $val);
+                    header($name.':'.$val);
                 }
             }
         }
@@ -140,9 +143,10 @@ class Response
     }
 
     /**
-     * 处理数据
-     * @access protected
+     * 处理数据.
+     *
      * @param mixed $data 要处理的数据
+     *
      * @return mixed
      */
     protected function output($data)
@@ -151,34 +155,39 @@ class Response
     }
 
     /**
-     * 输出的参数
-     * @access public
+     * 输出的参数.
+     *
      * @param mixed $options 输出参数
+     *
      * @return $this
      */
     public function options($options = [])
     {
         $this->options = array_merge($this->options, $options);
+
         return $this;
     }
 
     /**
-     * 输出数据设置
-     * @access public
+     * 输出数据设置.
+     *
      * @param mixed $data 输出数据
+     *
      * @return $this
      */
     public function data($data)
     {
         $this->data = $data;
+
         return $this;
     }
 
     /**
-     * 设置响应头
-     * @access public
+     * 设置响应头.
+     *
      * @param string|array $name  参数名
      * @param string       $value 参数值
+     *
      * @return $this
      */
     public function header($name, $value = null)
@@ -188,12 +197,15 @@ class Response
         } else {
             $this->header[$name] = $value;
         }
+
         return $this;
     }
 
     /**
-     * 设置页面输出内容
+     * 设置页面输出内容.
+     *
      * @param $content
+     *
      * @return $this
      */
     public function content($content)
@@ -213,74 +225,94 @@ class Response
 
     /**
      * 发送HTTP状态
-     * @param integer $code 状态码
+     *
+     * @param int $code 状态码
+     *
      * @return $this
      */
     public function code($code)
     {
         $this->code = $code;
+
         return $this;
     }
 
     /**
-     * LastModified
+     * LastModified.
+     *
      * @param string $time
+     *
      * @return $this
      */
     public function lastModified($time)
     {
         $this->header['Last-Modified'] = $time;
+
         return $this;
     }
 
     /**
-     * Expires
+     * Expires.
+     *
      * @param string $time
+     *
      * @return $this
      */
     public function expires($time)
     {
         $this->header['Expires'] = $time;
+
         return $this;
     }
 
     /**
-     * ETag
+     * ETag.
+     *
      * @param string $eTag
+     *
      * @return $this
      */
     public function eTag($eTag)
     {
         $this->header['ETag'] = $eTag;
+
         return $this;
     }
 
     /**
-     * 页面缓存控制
+     * 页面缓存控制.
+     *
      * @param string $cache 状态码
+     *
      * @return $this
      */
     public function cacheControl($cache)
     {
         $this->header['Cache-control'] = $cache;
+
         return $this;
     }
 
     /**
-     * 页面输出类型
+     * 页面输出类型.
+     *
      * @param string $contentType 输出类型
      * @param string $charset     输出编码
+     *
      * @return $this
      */
     public function contentType($contentType, $charset = 'utf-8')
     {
-        $this->header['Content-Type'] = $contentType . '; charset=' . $charset;
+        $this->header['Content-Type'] = $contentType.'; charset='.$charset;
+
         return $this;
     }
 
     /**
-     * 获取头部信息
+     * 获取头部信息.
+     *
      * @param string $name 头部名称
+     *
      * @return mixed
      */
     public function getHeader($name = '')
@@ -293,7 +325,8 @@ class Response
     }
 
     /**
-     * 获取原始数据
+     * 获取原始数据.
+     *
      * @return mixed
      */
     public function getData()
@@ -302,7 +335,8 @@ class Response
     }
 
     /**
-     * 获取输出数据
+     * 获取输出数据.
+     *
      * @return mixed
      */
     public function getContent()
@@ -320,12 +354,14 @@ class Response
 
             $this->content = (string) $content;
         }
+
         return $this->content;
     }
 
     /**
      * 获取状态码
-     * @return integer
+     *
+     * @return int
      */
     public function getCode()
     {

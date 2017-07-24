@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -26,8 +27,8 @@ class MorphTo extends Relation
     protected $relation;
 
     /**
-     * 构造函数
-     * @access public
+     * 构造函数.
+     *
      * @param Model  $parent    上级模型对象
      * @param string $morphType 多态字段名
      * @param string $morphKey  外键名
@@ -36,42 +37,46 @@ class MorphTo extends Relation
      */
     public function __construct(Model $parent, $morphType, $morphKey, $alias = [], $relation = null)
     {
-        $this->parent    = $parent;
+        $this->parent = $parent;
         $this->morphType = $morphType;
-        $this->morphKey  = $morphKey;
-        $this->alias     = $alias;
-        $this->relation  = $relation;
+        $this->morphKey = $morphKey;
+        $this->alias = $alias;
+        $this->relation = $relation;
     }
 
     /**
-     * 延迟获取关联数据
+     * 延迟获取关联数据.
+     *
      * @param string   $subRelation 子关联名
      * @param \Closure $closure     闭包查询条件
+     *
      * @return mixed
      */
     public function getRelation($subRelation = '', $closure = null)
     {
-        $morphKey  = $this->morphKey;
+        $morphKey = $this->morphKey;
         $morphType = $this->morphType;
         // 多态模型
         $model = $this->parseModel($this->parent->$morphType);
         // 主键数据
-        $pk            = $this->parent->$morphKey;
-        $relationModel = (new $model)->relation($subRelation)->find($pk);
+        $pk = $this->parent->$morphKey;
+        $relationModel = (new $model())->relation($subRelation)->find($pk);
 
         if ($relationModel) {
             $relationModel->setParent(clone $this->parent);
         }
+
         return $relationModel;
     }
 
     /**
-     * 根据关联条件查询当前模型
-     * @access public
-     * @param string  $operator 比较操作符
-     * @param integer $count    个数
-     * @param string  $id       关联表的统计字段
-     * @param string  $joinType JOIN类型
+     * 根据关联条件查询当前模型.
+     *
+     * @param string $operator 比较操作符
+     * @param int    $count    个数
+     * @param string $id       关联表的统计字段
+     * @param string $joinType JOIN类型
+     *
      * @return Query
      */
     public function has($operator = '>=', $count = 1, $id = '*', $joinType = 'INNER')
@@ -80,9 +85,10 @@ class MorphTo extends Relation
     }
 
     /**
-     * 根据关联条件查询当前模型
-     * @access public
+     * 根据关联条件查询当前模型.
+     *
      * @param mixed $where 查询条件（数组或者闭包）
+     *
      * @return Query
      */
     public function hasWhere($where = [])
@@ -91,9 +97,10 @@ class MorphTo extends Relation
     }
 
     /**
-     * 解析模型的完整命名空间
-     * @access public
+     * 解析模型的完整命名空间.
+     *
      * @param string $model 模型名（或者完整类名）
+     *
      * @return string
      */
     protected function parseModel($model)
@@ -107,24 +114,27 @@ class MorphTo extends Relation
             array_push($path, Loader::parseName($model, 1));
             $model = implode('\\', $path);
         }
+
         return $model;
     }
 
     /**
-     * 设置多态别名
-     * @access public
+     * 设置多态别名.
+     *
      * @param array $alias 别名定义
+     *
      * @return $this
      */
     public function setAlias($alias)
     {
         $this->alias = $alias;
+
         return $this;
     }
 
     /**
-     * 移除关联查询参数
-     * @access public
+     * 移除关联查询参数.
+     *
      * @return $this
      */
     public function removeOption()
@@ -133,20 +143,22 @@ class MorphTo extends Relation
     }
 
     /**
-     * 预载入关联查询
-     * @access public
+     * 预载入关联查询.
+     *
      * @param array    $resultSet   数据集
      * @param string   $relation    当前关联名
      * @param string   $subRelation 子关联名
      * @param \Closure $closure     闭包
-     * @return void
+     *
      * @throws Exception
+     *
+     * @return void
      */
     public function eagerlyResultSet(&$resultSet, $relation, $subRelation, $closure)
     {
-        $morphKey  = $this->morphKey;
+        $morphKey = $this->morphKey;
         $morphType = $this->morphType;
-        $range     = [];
+        $range = [];
         foreach ($resultSet as $result) {
             // 获取关联外键列表
             if (!empty($result->$morphKey)) {
@@ -160,10 +172,10 @@ class MorphTo extends Relation
             foreach ($range as $key => $val) {
                 // 多态类型映射
                 $model = $this->parseModel($key);
-                $obj   = new $model;
-                $pk    = $obj->getPk();
-                $list  = $obj->all($val, $subRelation);
-                $data  = [];
+                $obj = new $model();
+                $pk = $obj->getPk();
+                $list = $obj->all($val, $subRelation);
+                $data = [];
                 foreach ($list as $k => $vo) {
                     $data[$vo->$pk] = $vo;
                 }
@@ -171,7 +183,7 @@ class MorphTo extends Relation
                     if ($key == $result->$morphType) {
                         // 关联模型
                         if (!isset($data[$result->$morphKey])) {
-                            throw new Exception('relation data not exists :' . $this->model);
+                            throw new Exception('relation data not exists :'.$this->model);
                         } else {
                             $relationModel = $data[$result->$morphKey];
                             $relationModel->setParent(clone $result);
@@ -186,17 +198,18 @@ class MorphTo extends Relation
     }
 
     /**
-     * 预载入关联查询
-     * @access public
+     * 预载入关联查询.
+     *
      * @param Model    $result      数据对象
      * @param string   $relation    当前关联名
      * @param string   $subRelation 子关联名
      * @param \Closure $closure     闭包
+     *
      * @return void
      */
     public function eagerlyResult(&$result, $relation, $subRelation, $closure)
     {
-        $morphKey  = $this->morphKey;
+        $morphKey = $this->morphKey;
         $morphType = $this->morphType;
         // 多态类型映射
         $model = $this->parseModel($result->{$this->morphType});
@@ -205,29 +218,31 @@ class MorphTo extends Relation
 
     /**
      * 关联统计
-     * @access public
+     *
      * @param Model    $result  数据对象
      * @param \Closure $closure 闭包
-     * @return integer
+     *
+     * @return int
      */
     public function relationCount($result, $closure)
     {
     }
 
     /**
-     * 多态MorphTo 关联模型预查询
-     * @access   public
+     * 多态MorphTo 关联模型预查询.
+     *
      * @param object $model       关联模型对象
      * @param string $relation    关联名
      * @param        $result
      * @param string $subRelation 子关联
+     *
      * @return void
      */
     protected function eagerlyMorphToOne($model, $relation, &$result, $subRelation = '')
     {
         // 预载入关联查询 支持嵌套预载入
-        $pk   = $this->parent->{$this->morphKey};
-        $data = (new $model)->with($subRelation)->find($pk);
+        $pk = $this->parent->{$this->morphKey};
+        $data = (new $model())->with($subRelation)->find($pk);
         if ($data) {
             $data->setParent(clone $result);
             $data->isUpdate(true);
@@ -236,16 +251,17 @@ class MorphTo extends Relation
     }
 
     /**
-     * 添加关联数据
-     * @access public
-     * @param Model $model       关联模型对象
+     * 添加关联数据.
+     *
+     * @param Model $model 关联模型对象
+     *
      * @return Model
      */
     public function associate($model)
     {
-        $morphKey  = $this->morphKey;
+        $morphKey = $this->morphKey;
         $morphType = $this->morphType;
-        $pk        = $model->getPk();
+        $pk = $model->getPk();
 
         $this->parent->setAttr($morphKey, $model->$pk);
         $this->parent->setAttr($morphType, get_class($model));
@@ -255,13 +271,13 @@ class MorphTo extends Relation
     }
 
     /**
-     * 注销关联数据
-     * @access public
+     * 注销关联数据.
+     *
      * @return Model
      */
     public function dissociate()
     {
-        $morphKey  = $this->morphKey;
+        $morphKey = $this->morphKey;
         $morphType = $this->morphType;
 
         $this->parent->setAttr($morphKey, null);
@@ -272,10 +288,11 @@ class MorphTo extends Relation
     }
 
     /**
-     * 执行基础查询（进执行一次）
-     * @access protected
+     * 执行基础查询（进执行一次）.
+     *
      * @return void
      */
     protected function baseQuery()
-    {}
+    {
+    }
 }

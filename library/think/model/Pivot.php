@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -15,18 +16,17 @@ use think\Model;
 
 class Pivot extends Model
 {
-
     /** @var Model */
     public $parent;
 
     protected $autoWriteTimestamp = false;
 
     /**
-     * 架构函数
-     * @access public
-     * @param Model         $parent 上级模型
-     * @param array|object  $data 数据
-     * @param string        $table 中间数据表名
+     * 架构函数.
+     *
+     * @param Model        $parent 上级模型
+     * @param array|object $data   数据
+     * @param string       $table  中间数据表名
      */
     public function __construct(Model $parent, $data = [], $table = '')
     {
@@ -40,5 +40,4 @@ class Pivot extends Model
 
         $this->class = $this->name;
     }
-
 }

@@ -10,7 +10,7 @@
  *         $this->error();
  *         $this->redirect();
  *     }
- * }
+ * }.
  */
 
 namespace traits\controller;
@@ -29,13 +29,14 @@ trait Jump
     protected $return_type;
 
     /**
-     * 操作成功跳转的快捷方法
-     * @access protected
-     * @param mixed $msg 提示信息
-     * @param string $url 跳转的URL地址
-     * @param mixed $data 返回的数据
-     * @param integer $wait 跳转等待时间
-     * @param array $header 发送的Header信息
+     * 操作成功跳转的快捷方法.
+     *
+     * @param mixed  $msg    提示信息
+     * @param string $url    跳转的URL地址
+     * @param mixed  $data   返回的数据
+     * @param int    $wait   跳转等待时间
+     * @param array  $header 发送的Header信息
+     *
      * @return void
      */
     protected function success($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
@@ -45,16 +46,16 @@ trait Jump
             $code = $msg;
             $msg = '';
         }
-        if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
-            $url = $_SERVER["HTTP_REFERER"];
+        if (is_null($url) && isset($_SERVER['HTTP_REFERER'])) {
+            $url = $_SERVER['HTTP_REFERER'];
         } elseif ('' !== $url) {
             $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : Url::build($url);
         }
         $result = [
             'code' => $code,
-            'msg' => $msg,
+            'msg'  => $msg,
             'data' => $data,
-            'url' => $url,
+            'url'  => $url,
             'wait' => $wait,
         ];
 
@@ -68,13 +69,14 @@ trait Jump
     }
 
     /**
-     * 操作错误跳转的快捷方法
-     * @access protected
-     * @param mixed $msg 提示信息
-     * @param string $url 跳转的URL地址
-     * @param mixed $data 返回的数据
-     * @param integer $wait 跳转等待时间
-     * @param array $header 发送的Header信息
+     * 操作错误跳转的快捷方法.
+     *
+     * @param mixed  $msg    提示信息
+     * @param string $url    跳转的URL地址
+     * @param mixed  $data   返回的数据
+     * @param int    $wait   跳转等待时间
+     * @param array  $header 发送的Header信息
+     *
      * @return void
      */
     protected function error($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
@@ -91,9 +93,9 @@ trait Jump
         }
         $result = [
             'code' => $code,
-            'msg' => $msg,
+            'msg'  => $msg,
             'data' => $data,
-            'url' => $url,
+            'url'  => $url,
             'wait' => $wait,
         ];
 
@@ -107,20 +109,21 @@ trait Jump
     }
 
     /**
-     * 返回封装后的API数据到客户端
-     * @access protected
-     * @param mixed $data 要返回的数据
-     * @param integer $code 返回的code
-     * @param mixed $msg 提示信息
-     * @param string $type 返回数据格式
-     * @param array $header 发送的Header信息
+     * 返回封装后的API数据到客户端.
+     *
+     * @param mixed  $data   要返回的数据
+     * @param int    $code   返回的code
+     * @param mixed  $msg    提示信息
+     * @param string $type   返回数据格式
+     * @param array  $header 发送的Header信息
+     *
      * @return void
      */
     protected function result($data, $code = 0, $msg = '', $type = '', array $header = [])
     {
         $result = [
             'code' => $code,
-            'msg' => $msg,
+            'msg'  => $msg,
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
@@ -130,18 +133,19 @@ trait Jump
     }
 
     /**
-     * URL重定向
-     * @access protected
-     * @param string $url 跳转的URL表达式
-     * @param array|integer $params 其它URL参数
-     * @param integer $code http code
-     * @param array $with 隐式传参
+     * URL重定向.
+     *
+     * @param string    $url    跳转的URL表达式
+     * @param array|int $params 其它URL参数
+     * @param int       $code   http code
+     * @param array     $with   隐式传参
+     *
      * @return void
      */
     protected function redirect($url, $params = [], $code = 302, $with = [])
     {
         $response = new Redirect($url);
-        if (is_integer($params)) {
+        if (is_int($params)) {
             $code = $params;
             $params = [];
         }
@@ -150,20 +154,21 @@ trait Jump
     }
 
     /**
-     * 获取当前的response 输出类型
-     * @access protected
+     * 获取当前的response 输出类型.
+     *
      * @return string
      */
     protected function getResponseType()
     {
         $isAjax = Request::instance()->isAjax();
+
         return $isAjax ? c('default_ajax_return', 'json') : c('default_return_type');
     }
 
     /**
-     * @param int $code
+     * @param int    $code
      * @param string $message
-     * @param array $header
+     * @param array  $header
      */
     protected function wrong($code = 500, $message = '', $header = [])
     {
@@ -173,7 +178,7 @@ trait Jump
     protected function response($data = [], $code = 200, $message = '', array $header = [])
     {
         if (empty($message)) {
-            $message = c('code.' . strval($code), '');
+            $message = c('code.'.strval($code), '');
         }
         $result = [
             'code' => $code,

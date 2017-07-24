@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -19,6 +20,7 @@ trait Instance
 
     /**
      * @param array $options
+     *
      * @return static
      */
     public static function instance($options = [])
@@ -26,6 +28,7 @@ trait Instance
         if (is_null(self::$instance)) {
             self::$instance = new self($options);
         }
+
         return self::$instance;
     }
 
@@ -39,7 +42,7 @@ trait Instance
         if (0 === strpos($method, '_') && is_callable([self::$instance, $call])) {
             return call_user_func_array([self::$instance, $call], $params);
         } else {
-            throw new Exception("method not exists:" . $method);
+            throw new Exception('method not exists:'.$method);
         }
     }
 }

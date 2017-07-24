@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -14,20 +15,21 @@ namespace think\db\builder;
 use think\db\Builder;
 
 /**
- * Sqlsrv数据库驱动
+ * Sqlsrv数据库驱动.
  */
 class Sqlsrv extends Builder
 {
-    protected $selectSql       = 'SELECT T1.* FROM (SELECT thinkphp.*, ROW_NUMBER() OVER (%ORDER%) AS ROW_NUMBER FROM (SELECT %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%) AS thinkphp) AS T1 %LIMIT%%COMMENT%';
+    protected $selectSql = 'SELECT T1.* FROM (SELECT thinkphp.*, ROW_NUMBER() OVER (%ORDER%) AS ROW_NUMBER FROM (SELECT %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%) AS thinkphp) AS T1 %LIMIT%%COMMENT%';
     protected $selectInsertSql = 'SELECT %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%';
-    protected $updateSql       = 'UPDATE %TABLE% SET %SET% FROM %TABLE% %JOIN% %WHERE% %LIMIT% %LOCK%%COMMENT%';
-    protected $deleteSql       = 'DELETE FROM %TABLE%  %USING% FROM %TABLE%  %JOIN% %WHERE% %LIMIT% %LOCK%%COMMENT%';
+    protected $updateSql = 'UPDATE %TABLE% SET %SET% FROM %TABLE% %JOIN% %WHERE% %LIMIT% %LOCK%%COMMENT%';
+    protected $deleteSql = 'DELETE FROM %TABLE%  %USING% FROM %TABLE%  %JOIN% %WHERE% %LIMIT% %LOCK%%COMMENT%';
 
     /**
-     * order分析
-     * @access protected
+     * order分析.
+     *
      * @param mixed $order
      * @param array $options
+     *
      * @return string
      */
     protected function parseOrder($order, $options = [])
@@ -42,18 +44,19 @@ class Sqlsrv extends Builder
                         $array[] = $this->parseRand();
                     }
                 } else {
-                    $sort    = in_array(strtolower(trim($val)), ['asc', 'desc']) ? ' ' . $val : '';
-                    $array[] = $this->parseKey($key, $options) . ' ' . $sort;
+                    $sort = in_array(strtolower(trim($val)), ['asc', 'desc']) ? ' '.$val : '';
+                    $array[] = $this->parseKey($key, $options).' '.$sort;
                 }
             }
             $order = implode(',', $array);
         }
-        return !empty($order) ? ' ORDER BY ' . $order : ' ORDER BY rand()';
+
+        return !empty($order) ? ' ORDER BY '.$order : ' ORDER BY rand()';
     }
 
     /**
-     * 随机排序
-     * @access protected
+     * 随机排序.
+     *
      * @return string
      */
     protected function parseRand()
@@ -62,10 +65,11 @@ class Sqlsrv extends Builder
     }
 
     /**
-     * 字段和表名处理
-     * @access protected
+     * 字段和表名处理.
+     *
      * @param string $key
      * @param array  $options
+     *
      * @return string
      */
     protected function parseKey($key, $options = [])
@@ -81,18 +85,20 @@ class Sqlsrv extends Builder
             }
         }
         if (!is_numeric($key) && !preg_match('/[,\'\"\*\(\)\[.\s]/', $key)) {
-            $key = '[' . $key . ']';
+            $key = '['.$key.']';
         }
         if (isset($table)) {
-            $key = '[' . $table . '].' . $key;
+            $key = '['.$table.'].'.$key;
         }
+
         return $key;
     }
 
     /**
-     * limit
-     * @access protected
+     * limit.
+     *
      * @param mixed $limit
+     *
      * @return string
      */
     protected function parseLimit($limit)
@@ -103,17 +109,18 @@ class Sqlsrv extends Builder
 
         $limit = explode(',', $limit);
         if (count($limit) > 1) {
-            $limitStr = '(T1.ROW_NUMBER BETWEEN ' . $limit[0] . ' + 1 AND ' . $limit[0] . ' + ' . $limit[1] . ')';
+            $limitStr = '(T1.ROW_NUMBER BETWEEN '.$limit[0].' + 1 AND '.$limit[0].' + '.$limit[1].')';
         } else {
-            $limitStr = '(T1.ROW_NUMBER BETWEEN 1 AND ' . $limit[0] . ")";
+            $limitStr = '(T1.ROW_NUMBER BETWEEN 1 AND '.$limit[0].')';
         }
-        return 'WHERE ' . $limitStr;
+
+        return 'WHERE '.$limitStr;
     }
 
     public function selectInsert($fields, $table, $options)
     {
         $this->selectSql = $this->selectInsertSql;
+
         return parent::selectInsert($fields, $table, $options);
     }
-
 }

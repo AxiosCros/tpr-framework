@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -14,21 +15,22 @@ namespace think\exception;
 use think\Exception;
 
 /**
- * Database相关异常处理类
+ * Database相关异常处理类.
  */
 class DbException extends Exception
 {
     /**
      * DbException constructor.
-     * @param string    $message
-     * @param array     $config
-     * @param string    $sql
-     * @param int       $code
+     *
+     * @param string $message
+     * @param array  $config
+     * @param string $sql
+     * @param int    $code
      */
     public function __construct($message, array $config, $sql, $code = 10500)
     {
         $this->message = $message;
-        $this->code    = $code;
+        $this->code = $code;
 
         $this->setData('Database Status', [
             'Error Code'    => $code,
@@ -38,5 +40,4 @@ class DbException extends Exception
 
         $this->setData('Database Config', $config);
     }
-
 }

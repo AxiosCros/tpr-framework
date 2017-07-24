@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -12,7 +13,7 @@
 namespace think\cache;
 
 /**
- * 缓存基础类
+ * 缓存基础类.
  */
 abstract class Driver
 {
@@ -21,81 +22,90 @@ abstract class Driver
     protected $tag;
 
     /**
-     * 判断缓存是否存在
-     * @access public
+     * 判断缓存是否存在.
+     *
      * @param string $name 缓存变量名
+     *
      * @return bool
      */
     abstract public function has($name);
 
     /**
-     * 读取缓存
-     * @access public
-     * @param string $name 缓存变量名
-     * @param mixed $default 默认值
+     * 读取缓存.
+     *
+     * @param string $name    缓存变量名
+     * @param mixed  $default 默认值
+     *
      * @return mixed
      */
     abstract public function get($name, $default = false);
 
     /**
-     * 写入缓存
-     * @access public
-     * @param string $name 缓存变量名
-     * @param mixed $value 存储数据
-     * @param int $expire 有效时间 0为永久
-     * @return boolean
+     * 写入缓存.
+     *
+     * @param string $name   缓存变量名
+     * @param mixed  $value  存储数据
+     * @param int    $expire 有效时间 0为永久
+     *
+     * @return bool
      */
     abstract public function set($name, $value, $expire = null);
 
     /**
-     * 自增缓存（针对数值缓存）
-     * @access public
+     * 自增缓存（针对数值缓存）.
+     *
      * @param string $name 缓存变量名
-     * @param int $step 步长
+     * @param int    $step 步长
+     *
      * @return false|int
      */
     abstract public function inc($name, $step = 1);
 
     /**
-     * 自减缓存（针对数值缓存）
-     * @access public
+     * 自减缓存（针对数值缓存）.
+     *
      * @param string $name 缓存变量名
-     * @param int $step 步长
+     * @param int    $step 步长
+     *
      * @return false|int
      */
     abstract public function dec($name, $step = 1);
 
     /**
-     * 删除缓存
-     * @access public
+     * 删除缓存.
+     *
      * @param string $name 缓存变量名
-     * @return boolean
+     *
+     * @return bool
      */
     abstract public function rm($name);
 
     /**
-     * 清除缓存
-     * @access public
+     * 清除缓存.
+     *
      * @param string $tag 标签名
-     * @return boolean
+     *
+     * @return bool
      */
     abstract public function clear($tag = null);
 
     /**
-     * 获取实际的缓存标识
-     * @access public
+     * 获取实际的缓存标识.
+     *
      * @param string $name 缓存名
+     *
      * @return string
      */
     protected function getCacheKey($name)
     {
-        return $this->options['prefix'] . $name;
+        return $this->options['prefix'].$name;
     }
 
     /**
-     * 读取缓存并删除
-     * @access public
+     * 读取缓存并删除.
+     *
      * @param string $name 缓存变量名
+     *
      * @return mixed
      */
     public function pull($name)
@@ -103,6 +113,7 @@ abstract class Driver
         $result = $this->get($name, false);
         if ($result) {
             $this->rm($name);
+
             return $result;
         } else {
             return false;
@@ -110,11 +121,12 @@ abstract class Driver
     }
 
     /**
-     * 如果不存在则写入缓存
-     * @access public
-     * @param string $name 缓存变量名
-     * @param mixed $value 存储数据
-     * @param int $expire 有效时间 0为永久
+     * 如果不存在则写入缓存.
+     *
+     * @param string $name   缓存变量名
+     * @param mixed  $value  存储数据
+     * @param int    $expire 有效时间 0为永久
+     *
      * @return mixed
      */
     public function remember($name, $value, $expire = null)
@@ -123,22 +135,24 @@ abstract class Driver
             if ($value instanceof \Closure) {
                 $value = call_user_func($value);
             } elseif (is_array($value) && $value[0] instanceof \Closure) {
-                $parameter = !is_array($value[1]) ? (array)$value[1] : $value[1];
+                $parameter = !is_array($value[1]) ? (array) $value[1] : $value[1];
                 $value = call_user_func_array($value[0], $parameter);
             }
             $this->set($name, $value, $expire);
         } else {
             $value = $this->get($name);
         }
+
         return $value;
     }
 
     /**
-     * 缓存标签
-     * @access public
-     * @param string $name 标签名
-     * @param string|array $keys 缓存标识
-     * @param bool $overlay 是否覆盖
+     * 缓存标签.
+     *
+     * @param string       $name    标签名
+     * @param string|array $keys    缓存标识
+     * @param bool         $overlay 是否覆盖
+     *
      * @return $this
      */
     public function tag($name, $keys = null, $overlay = false)
@@ -146,7 +160,7 @@ abstract class Driver
         if (is_null($keys)) {
             $this->tag = $name;
         } else {
-            $key = 'tag_' . md5($name);
+            $key = 'tag_'.md5($name);
             if (is_string($keys)) {
                 $keys = explode(',', $keys);
             }
@@ -158,23 +172,25 @@ abstract class Driver
             }
             $this->set($key, implode(',', $value));
         }
+
         return $this;
     }
 
     /**
-     * 更新标签
-     * @access public
+     * 更新标签.
+     *
      * @param string $name 缓存标识
+     *
      * @return void
      */
     protected function setTagItem($name)
     {
         if ($this->tag) {
-            $key = 'tag_' . md5($this->tag);
+            $key = 'tag_'.md5($this->tag);
             $this->tag = null;
             if ($this->has($key)) {
                 $value = $this->get($key);
-                $value .= ',' . $name;
+                $value .= ','.$name;
             } else {
                 $value = $name;
             }
@@ -183,14 +199,15 @@ abstract class Driver
     }
 
     /**
-     * 获取标签包含的缓存标识
-     * @access public
+     * 获取标签包含的缓存标识.
+     *
      * @param string $tag 缓存标签
+     *
      * @return array
      */
     protected function getTagItem($tag)
     {
-        $key = 'tag_' . md5($tag);
+        $key = 'tag_'.md5($tag);
         $value = $this->get($key);
         if ($value) {
             return explode(',', $value);
@@ -200,9 +217,8 @@ abstract class Driver
     }
 
     /**
-     * 返回句柄对象，可执行其它高级方法
+     * 返回句柄对象，可执行其它高级方法.
      *
-     * @access public
      * @return object
      */
     public function handler()

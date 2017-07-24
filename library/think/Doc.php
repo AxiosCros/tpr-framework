@@ -25,10 +25,10 @@ class Doc
 
     public static $typeList = [
         'char', 'string', 'int', 'float', 'boolean', 'bool', 'date',
-        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed'
+        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed',
     ];
 
-    function __construct($dir = APP_PATH)
+    public function __construct($dir = APP_PATH)
     {
         self::$dir = $dir;
         self::$apiClassList = self::scanApiClass($dir);
@@ -40,6 +40,7 @@ class Doc
         self::$connector = $connector;
         self::$instance = new static($dir);
         self::$dir = $dir;
+
         return self::$instance;
     }
 
@@ -89,6 +90,7 @@ class Doc
             }
             $doc['methods'] = $methods;
         }
+
         return $doc;
     }
 
@@ -99,10 +101,10 @@ class Doc
         }
         $reflectionClass = new \ReflectionClass($class);
         $method = $reflectionClass->getMethod($method_name);
-        $temp = explode("\\", $class);
+        $temp = explode('\\', $class);
         $m = [];
         $m['name'] = $method->name;
-        $m['path'] = strtolower($temp[1]) . "/" . strtolower($temp[3]) . "/" . $method->name;
+        $m['path'] = strtolower($temp[1]).'/'.strtolower($temp[3]).'/'.$method->name;
         $rule = Route::name($m['path']);
         $route = '';
         if (!empty($rule)) {
@@ -111,6 +113,7 @@ class Doc
         $m['route'] = $route;
         $method_comment = self::trans($method->getDocComment());
         $m['comment'] = $method_comment;
+
         return $m;
     }
 
@@ -169,22 +172,23 @@ class Doc
     {
         $connector = self::$connector;
         self::$isConnect = strpos($content, $connector) === false ? false : true;
-        self::$content = self::$content . $content;
+        self::$content = self::$content.$content;
         if (self::$isConnect) {
             self::$content = str_replace(self::$connector, '', self::$content);
+
             return true;
         }
         $content = self::$content;
         self::$content = '';
         if (strpos($content, ' ') !== false) {
-            $content = preg_replace("/[\s]+/is", " ", $content);
+            $content = preg_replace("/[\s]+/is", ' ', $content);
             $contentArray = explode(' ', $content);
             if (isset($contentArray[0]) && !self::isType($contentArray[0])) {
                 return $content;
             }
             $data = [
                 'type' => isset($contentArray[0]) ? $contentArray[0] : '',
-                'name' => isset($contentArray[1]) ? $contentArray[1] : ''
+                'name' => isset($contentArray[1]) ? $contentArray[1] : '',
             ];
             $desc = '';
             foreach ($contentArray as $k => $c) {
@@ -192,13 +196,14 @@ class Doc
                     continue;
                 }
                 if (!empty($c)) {
-                    $desc = $desc . trim($c) . ' ';
+                    $desc = $desc.trim($c).' ';
                 }
             }
 
             $data['desc'] = $desc;
             $content = $data;
         }
+
         return $content;
     }
 
@@ -216,18 +221,19 @@ class Doc
                 return true;
             }
         }
+
         return false;
     }
 
     public static function deepScanDir($dir)
     {
-        $fileArr = array();
-        $dirArr = array();
+        $fileArr = [];
+        $dirArr = [];
         $dir = rtrim($dir, '//');
         if (is_dir($dir)) {
             $dirHandle = opendir($dir);
             while (false !== ($fileName = readdir($dirHandle))) {
-                $subFile = $dir . DIRECTORY_SEPARATOR . $fileName;
+                $subFile = $dir.DIRECTORY_SEPARATOR.$fileName;
                 if (is_file($subFile)) {
                     $fileArr[] = $subFile;
                 } elseif (is_dir($subFile) && str_replace('.', '', $fileName) != '') {
@@ -239,17 +245,18 @@ class Doc
             }
             closedir($dirHandle);
         }
-        return array(
-            'dir' => $dirArr,
-            'file' => $fileArr
-        );
+
+        return [
+            'dir'  => $dirArr,
+            'file' => $fileArr,
+        ];
     }
 
     public static function scanApiClass($dir = APP_PATH)
     {
         if (is_string($dir)) {
             return self::scan($dir);
-        } else if (is_array($dir)) {
+        } elseif (is_array($dir)) {
             $class_list = [];
             foreach ($dir as $d) {
                 if (is_string($d)) {
@@ -259,8 +266,10 @@ class Doc
                     }
                 }
             }
+
             return $class_list;
         }
+
         return [];
     }
 
@@ -277,9 +286,10 @@ class Doc
             $namespace_end = strpos($content, ';');
             $namespace = substr($content, $namespace_begin, $namespace_end - $namespace_begin);
             $class_name = basename($f, '.php');
-            $class = $namespace . '\\' . $class_name;
+            $class = $namespace.'\\'.$class_name;
             $ApiList[$n++] = $class;
         }
+
         return $ApiList;
     }
 }

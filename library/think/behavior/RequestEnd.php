@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TPR [ Design For Api Develop ]
 // +----------------------------------------------------------------------
@@ -15,28 +16,27 @@ use think\Db;
 use think\Fork;
 use think\Request;
 
-class RequestEnd extends Fork {
-
+class RequestEnd extends Fork
+{
     public $param;
 
     public $request;
 
-    function __construct()
+    public function __construct()
     {
         $this->request = Request::instance();
         $this->param = $this->request->param();
     }
 
-    public function run(){
+    public function run()
+    {
         Db::clear();
         $queue = Fork::$queue;
         Fork::fork(true);
         Fork::doFork($queue);
-        if(function_exists('posix_kill') && function_exists('posix_getpid')){
+        if (function_exists('posix_kill') && function_exists('posix_getpid')) {
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
     }
-
-
 }

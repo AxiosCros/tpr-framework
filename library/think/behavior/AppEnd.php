@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TPR [ Design For Api Develop ]
 // +----------------------------------------------------------------------
@@ -14,23 +15,25 @@ namespace think\behavior;
 use think\cache\CacheRequest;
 use think\Request;
 
-class AppEnd{
-
+class AppEnd
+{
     public $request;
 
     public $req;
 
-    function __construct()
+    public function __construct()
     {
-        $this->request    = Request::instance();
-        $this->req        = $this->request->req;
+        $this->request = Request::instance();
+        $this->req = $this->request->req;
     }
 
-    public function run(){
+    public function run()
+    {
         $this->cache();
     }
 
-    private function cache(){
-        CacheRequest::set($this->req,$this->request);
+    private function cache()
+    {
+        CacheRequest::set($this->req, $this->request);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -15,9 +16,10 @@ use think\cache\Driver;
 
 /**
  * Redis缓存驱动，适合单机部署、有前端代理实现高可用的场景，性能最好
- * 有需要在业务层实现读写分离、或者使用RedisCluster的需求，请使用Redisd驱动
+ * 有需要在业务层实现读写分离、或者使用RedisCluster的需求，请使用Redisd驱动.
  *
  * 要求安装phpredis扩展：https://github.com/nicolasff/phpredis
+ *
  * @author    尘缘 <130775@qq.com>
  */
 class Redis extends Driver
@@ -34,9 +36,9 @@ class Redis extends Driver
     ];
 
     /**
-     * 构造函数
+     * 构造函数.
+     *
      * @param array $options 缓存参数
-     * @access public
      */
     public function __construct($options = [])
     {
@@ -46,8 +48,8 @@ class Redis extends Driver
         if (!empty($options)) {
             $this->options = array_merge($this->options, $options);
         }
-        $func          = $this->options['persistent'] ? 'pconnect' : 'connect';
-        $this->handler = new \Redis;
+        $func = $this->options['persistent'] ? 'pconnect' : 'connect';
+        $this->handler = new \Redis();
         $this->handler->$func($this->options['host'], $this->options['port'], $this->options['timeout']);
 
         if ('' != $this->options['password']) {
@@ -60,9 +62,10 @@ class Redis extends Driver
     }
 
     /**
-     * 判断缓存
-     * @access public
+     * 判断缓存.
+     *
      * @param string $name 缓存变量名
+     *
      * @return bool
      */
     public function has($name)
@@ -71,10 +74,11 @@ class Redis extends Driver
     }
 
     /**
-     * 读取缓存
-     * @access public
-     * @param string $name 缓存变量名
+     * 读取缓存.
+     *
+     * @param string $name    缓存变量名
      * @param mixed  $default 默认值
+     *
      * @return mixed
      */
     public function get($name, $default = false)
@@ -89,12 +93,13 @@ class Redis extends Driver
     }
 
     /**
-     * 写入缓存
-     * @access public
-     * @param string    $name 缓存变量名
-     * @param mixed     $value  存储数据
-     * @param integer   $expire  有效时间（秒）
-     * @return boolean
+     * 写入缓存.
+     *
+     * @param string $name   缓存变量名
+     * @param mixed  $value  存储数据
+     * @param int    $expire 有效时间（秒）
+     *
+     * @return bool
      */
     public function set($name, $value, $expire = null)
     {
@@ -113,40 +118,46 @@ class Redis extends Driver
             $result = $this->handler->set($key, $value);
         }
         isset($first) && $this->setTagItem($key);
+
         return $result;
     }
 
     /**
-     * 自增缓存（针对数值缓存）
-     * @access public
-     * @param string    $name 缓存变量名
-     * @param int       $step 步长
+     * 自增缓存（针对数值缓存）.
+     *
+     * @param string $name 缓存变量名
+     * @param int    $step 步长
+     *
      * @return false|int
      */
     public function inc($name, $step = 1)
     {
         $key = $this->getCacheKey($name);
+
         return $this->handler->incrby($key, $step);
     }
 
     /**
-     * 自减缓存（针对数值缓存）
-     * @access public
-     * @param string    $name 缓存变量名
-     * @param int       $step 步长
+     * 自减缓存（针对数值缓存）.
+     *
+     * @param string $name 缓存变量名
+     * @param int    $step 步长
+     *
      * @return false|int
      */
     public function dec($name, $step = 1)
     {
         $key = $this->getCacheKey($name);
+
         return $this->handler->decrby($key, $step);
     }
 
     /**
-     * 删除缓存
-     * @access public
+     * 删除缓存.
+     *
      * @param string $name 缓存变量名
-     * @return boolean
+     *
+     * @return bool
      */
     public function rm($name)
     {
@@ -154,10 +165,11 @@ class Redis extends Driver
     }
 
     /**
-     * 清除缓存
-     * @access public
+     * 清除缓存.
+     *
      * @param string $tag 标签名
-     * @return boolean
+     *
+     * @return bool
      */
     public function clear($tag = null)
     {
@@ -167,10 +179,11 @@ class Redis extends Driver
             foreach ($keys as $key) {
                 $this->handler->delete($key);
             }
-            $this->rm('tag_' . md5($tag));
+            $this->rm('tag_'.md5($tag));
+
             return true;
         }
+
         return $this->handler->flushDB();
     }
-
 }

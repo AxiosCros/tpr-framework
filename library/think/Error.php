@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -19,7 +20,8 @@ use think\exception\ThrowableError;
 class Error
 {
     /**
-     * 注册异常处理
+     * 注册异常处理.
+     *
      * @return void
      */
     public static function register()
@@ -31,8 +33,9 @@ class Error
     }
 
     /**
-     * Exception Handler
-     * @param  \Exception|\Throwable $e
+     * Exception Handler.
+     *
+     * @param \Exception|\Throwable $e
      */
     public static function appException($e)
     {
@@ -42,19 +45,21 @@ class Error
 
         self::getExceptionHandler()->report($e);
         if (IS_CLI) {
-            self::getExceptionHandler()->renderForConsole(new ConsoleOutput, $e);
+            self::getExceptionHandler()->renderForConsole(new ConsoleOutput(), $e);
         } else {
             self::getExceptionHandler()->render($e)->send();
         }
     }
 
     /**
-     * Error Handler
-     * @param  integer $errno   错误编号
-     * @param  integer $errstr  详细错误信息
-     * @param  string  $errfile 出错的文件
-     * @param  integer $errline 出错行号
-     * @param array    $errcontext
+     * Error Handler.
+     *
+     * @param int    $errno      错误编号
+     * @param int    $errstr     详细错误信息
+     * @param string $errfile    出错的文件
+     * @param int    $errline    出错行号
+     * @param array  $errcontext
+     *
      * @throws ErrorException
      */
     public static function appError($errno, $errstr, $errfile = '', $errline = 0, $errcontext = [])
@@ -69,7 +74,7 @@ class Error
     }
 
     /**
-     * Shutdown Handler
+     * Shutdown Handler.
      */
     public static function appShutdown()
     {
@@ -85,9 +90,10 @@ class Error
     }
 
     /**
-     * 确定错误类型是否致命
+     * 确定错误类型是否致命.
      *
-     * @param  int $type
+     * @param int $type
+     *
      * @return bool
      */
     protected static function isFatal($type)
@@ -106,12 +112,13 @@ class Error
         if (!$handle) {
             // 异常处理handle
             $class = Config::get('exception_handle');
-            if ($class && class_exists($class) && is_subclass_of($class, "\\think\\exception\\Handle")) {
-                $handle = new $class;
+            if ($class && class_exists($class) && is_subclass_of($class, '\\think\\exception\\Handle')) {
+                $handle = new $class();
             } else {
-                $handle = new Handle;
+                $handle = new Handle();
             }
         }
+
         return $handle;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TPR [ Design For Api Develop ]
 // +----------------------------------------------------------------------
@@ -16,24 +17,23 @@ use think\Request;
 use think\Tool;
 
 /**
- * Class LogWriteDone
- * @package axios\tpr\behavior
- *
- * need library/think/Log.php 161
- *  ->   Hook::listen('log_write_done', $log);
+ * Class LogWriteDone.
  */
-class LogWriteDone extends Fork {
+class LogWriteDone extends Fork
+{
     public $param;
     public $request;
-    function __construct()
+
+    public function __construct()
     {
         $this->request = Request::instance();
         $this->param = $this->request->param();
     }
 
-    public function run(){
+    public function run()
+    {
         $identity = Tool::identity();
-        if($identity==2 && function_exists('posix_kill') && function_exists('posix_getpid')){
+        if ($identity == 2 && function_exists('posix_kill') && function_exists('posix_getpid')) {
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
