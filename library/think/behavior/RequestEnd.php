@@ -11,6 +11,7 @@
 
 namespace think\behavior;
 
+use think\Db;
 use think\Fork;
 use think\Request;
 
@@ -27,9 +28,15 @@ class RequestEnd extends Fork {
     }
 
     public function run(){
+        Db::clear();
+        $queue = Fork::$queue;
+        Fork::fork(true);
+        Fork::doFork($queue);
         if(function_exists('posix_kill') && function_exists('posix_getpid')){
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
     }
+
+
 }

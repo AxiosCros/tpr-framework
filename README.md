@@ -18,7 +18,8 @@
 ## 修改记录简介
 * 修改一些宏定义变量的默认值
  > 即修改了默认的项目目录结构，将配置目录与应用目录分离
- ``` php
+ 
+``` php
  ├─application           应用目录
  │  ├─common             公共模块目录（可以更改）
  │  └─module_name        模块目录
@@ -49,7 +50,8 @@
  ├─LICENSE.txt           授权说明文件
  ├─README.md             README 文件
  └─think                 命令行入口文件
- ```
+```
+
 * 系统语言包加载 增加 CONF_PATH/lang/ 目录
 
 * traits\controller\Jump 增加wrong和response方法用于接口数据回调
@@ -78,7 +80,9 @@
   ```
 
 * 增加助手函数u(),方便url生成
+``` php
   > u($module = 'index'', $controller = 'index'', $action = 'index'')
+```
   
 * 增加D()方法
  ``` php
