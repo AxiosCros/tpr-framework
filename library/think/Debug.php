@@ -209,4 +209,24 @@ class Debug
             }
         }
     }
+
+    /**
+     * 手动log
+     * @param $filename
+     * @param string $content
+     * @param bool $append
+     */
+    public static function save($filename, $content = 'default', $append = true)
+    {
+        $type = $append ? 'a+' : 'w+';
+        $fp = fopen($filename, $type);
+        if (flock($fp, LOCK_EX)) {
+            if (is_array($content) || is_object($content)) {
+                $content = dump($content, false);
+            }
+            fwrite($fp, $content . "\r\n");
+            flock($fp, LOCK_UN);
+        }
+        fclose($fp);
+    }
 }
