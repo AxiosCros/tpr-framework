@@ -185,6 +185,10 @@ class Tool {
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
         $output = curl_exec($ch);
 
         curl_close($ch);
