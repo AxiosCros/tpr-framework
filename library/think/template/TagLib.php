@@ -221,6 +221,7 @@ class TagLib
      * @param string $name 标签名
      * @param string $alias 别名
      * @return array
+     * @throws Exception
      */
     public function parseAttr($str, $name, $alias = '')
     {

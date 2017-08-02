@@ -16,6 +16,9 @@ use think\Exception;
 
 class Memcached extends SessionHandler
 {
+    /**
+     * @var \Memcached
+     */
     protected $handler = null;
     protected $config  = [
         'host'         => '127.0.0.1', // memcache主机
@@ -35,10 +38,12 @@ class Memcached extends SessionHandler
     /**
      * 打开Session
      * @access public
-     * @param string    $savePath
-     * @param mixed     $sessName
+     * @param string $savePath
+     * @param string $sessionName
+     * @return bool
+     * @throws Exception
      */
-    public function open($savePath, $sessName)
+    public function open($savePath, $sessionName)
     {
         // 检测php环境
         if (!extension_loaded('memcached')) {
@@ -63,7 +68,7 @@ class Memcached extends SessionHandler
         $this->handler->addServers($servers);
         if ('' != $this->config['username']) {
             $this->handler->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
-            $this->handler->setSaslAuthData($this->config['username'], $this->config['password']);
+//            $this->handler->setSaslAuthData($this->config['username'], $this->config['password']);
         }
         return true;
     }
@@ -83,43 +88,44 @@ class Memcached extends SessionHandler
     /**
      * 读取Session
      * @access public
-     * @param string $sessID
+     * @param string $sessionID
+     * @return string
      */
-    public function read($sessID)
+    public function read($sessionID)
     {
-        return (string) $this->handler->get($this->config['session_name'] . $sessID);
+        return (string) $this->handler->get($this->config['session_name'] . $sessionID);
     }
 
     /**
      * 写入Session
      * @access public
-     * @param string $sessID
-     * @param String $sessData
+     * @param string $sessionID
+     * @param String $sessionData
      * @return bool
      */
-    public function write($sessID, $sessData)
+    public function write($sessionID, $sessionData)
     {
-        return $this->handler->set($this->config['session_name'] . $sessID, $sessData, $this->config['expire']);
+        return $this->handler->set($this->config['session_name'] . $sessionID, $sessionData, $this->config['expire']);
     }
 
     /**
      * 删除Session
      * @access public
-     * @param string $sessID
+     * @param string $sessionID
      * @return bool
      */
-    public function destroy($sessID)
+    public function destroy($sessionID)
     {
-        return $this->handler->delete($this->config['session_name'] . $sessID);
+        return $this->handler->delete($this->config['session_name'] . $sessionID);
     }
 
     /**
      * Session 垃圾回收
      * @access public
-     * @param string $sessMaxLifeTime
+     * @param string $sessionMaxLifeTime
      * @return true
      */
-    public function gc($sessMaxLifeTime)
+    public function gc($sessionMaxLifeTime)
     {
         return true;
     }

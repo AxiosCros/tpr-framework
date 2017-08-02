@@ -62,6 +62,7 @@ class Cx extends Taglib
      */
     public function tagPhp($tag, $content)
     {
+        unset($tag);
         $parseStr = '<?php ' . $content . ' ?>';
         return $parseStr;
     }
@@ -76,7 +77,7 @@ class Cx extends Taglib
      * @access public
      * @param array $tag 标签属性
      * @param string $content 标签内容
-     * @return string|void
+     * @return string
      */
     public function tagVolist($tag, $content)
     {
@@ -116,7 +117,7 @@ class Cx extends Taglib
         if (!empty($parseStr)) {
             return $parseStr;
         }
-        return;
+        return null;
     }
 
     /**
@@ -128,7 +129,7 @@ class Cx extends Taglib
      * @access public
      * @param array $tag 标签属性
      * @param string $content 标签内容
-     * @return string|void
+     * @return string
      */
     public function tagForeach($tag, $content)
     {
@@ -195,7 +196,7 @@ class Cx extends Taglib
         if (!empty($parseStr)) {
             return $parseStr;
         }
-        return;
+        return null;
     }
 
     /**
@@ -229,6 +230,7 @@ class Cx extends Taglib
      */
     public function tagElseif($tag, $content)
     {
+        unset($content);
         $condition = !empty($tag['expression']) ? $tag['expression'] : $tag['condition'];
         $condition = $this->parseCondition($condition);
         $parseStr  = '<?php elseif(' . $condition . '): ?>';
@@ -244,6 +246,7 @@ class Cx extends Taglib
      */
     public function tagElse($tag)
     {
+        unset($tag);
         $parseStr = '<?php else: ?>';
         return $parseStr;
     }
@@ -305,11 +308,11 @@ class Cx extends Taglib
      * 使用： {default /}ddfdf
      * @access public
      * @param array $tag 标签属性
-     * @param string $content 标签内容
      * @return string
      */
     public function tagDefault($tag)
     {
+        unset($tag);
         $parseStr = '<?php default: ?>';
         return $parseStr;
     }
@@ -490,8 +493,10 @@ class Cx extends Taglib
      */
     public function tagLoad($tag, $content)
     {
+        unset($content);
         $file     = isset($tag['file']) ? $tag['file'] : $tag['href'];
         $type     = isset($tag['type']) ? strtolower($tag['type']) : '';
+        unset($type);
         $parseStr = '';
         $endStr   = '';
         // 判断是否存在加载条件 允许使用函数判断(默认为isset)
@@ -533,6 +538,7 @@ class Cx extends Taglib
      */
     public function tagAssign($tag, $content)
     {
+        unset($content);
         $name = $this->autoBuildVar($tag['name']);
         $flag = substr($tag['value'], 0, 1);
         if ('$' == $flag || ':' == $flag) {
@@ -555,6 +561,7 @@ class Cx extends Taglib
      */
     public function tagDefine($tag, $content)
     {
+        unset($content);
         $name = '\'' . $tag['name'] . '\'';
         $flag = substr($tag['value'], 0, 1);
         if ('$' == $flag || ':' == $flag) {
@@ -630,6 +637,7 @@ class Cx extends Taglib
      */
     public function tagUrl($tag, $content)
     {
+        unset($content);
         $url    = isset($tag['link']) ? $tag['link'] : '';
         $vars   = isset($tag['vars']) ? $tag['vars'] : '';
         $suffix = isset($tag['suffix']) ? $tag['suffix'] : 'true';

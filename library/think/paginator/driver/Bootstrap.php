@@ -124,6 +124,7 @@ class Bootstrap extends Paginator
                 );
             }
         }
+        return null;
     }
 
     /**

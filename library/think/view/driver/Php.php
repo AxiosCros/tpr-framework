@@ -148,7 +148,7 @@ class Php
      * @access private
      * @param string|array  $name 参数名
      * @param mixed         $value 参数值
-     * @return void
+     * @return null
      */
     public function config($name, $value = null)
     {

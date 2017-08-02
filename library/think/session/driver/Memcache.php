@@ -16,6 +16,9 @@ use think\Exception;
 
 class Memcache extends SessionHandler
 {
+    /**
+     * @var \Memcache
+     */
     protected $handler = null;
     protected $config  = [
         'host'         => '127.0.0.1', // memcache主机
@@ -34,10 +37,12 @@ class Memcache extends SessionHandler
     /**
      * 打开Session
      * @access public
-     * @param string    $savePath
-     * @param mixed     $sessName
+     * @param string $savePath
+     * @param string $sessionName
+     * @return bool
+     * @throws Exception
      */
-    public function open($savePath, $sessName)
+    public function open($savePath, $sessionName)
     {
         // 检测php环境
         if (!extension_loaded('memcache')) {
@@ -76,6 +81,7 @@ class Memcache extends SessionHandler
      * 读取Session
      * @access public
      * @param string $sessID
+     * @return string
      */
     public function read($sessID)
     {
@@ -85,13 +91,13 @@ class Memcache extends SessionHandler
     /**
      * 写入Session
      * @access public
-     * @param string    $sessID
-     * @param String    $sessData
+     * @param string    $sessionID
+     * @param String    $sessionData
      * @return bool
      */
-    public function write($sessID, $sessData)
+    public function write($sessionID, $sessionData)
     {
-        return $this->handler->set($this->config['session_name'] . $sessID, $sessData, 0, $this->config['expire']);
+        return $this->handler->set($this->config['session_name'] . $sessionID, $sessionData, 0, $this->config['expire']);
     }
 
     /**

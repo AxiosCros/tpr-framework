@@ -19,7 +19,7 @@ class File
      * 写入编译缓存
      * @param string $cacheFile 缓存的文件名
      * @param string $content 缓存的内容
-     * @return void|array
+     * @throws Exception
      */
     public function write($cacheFile, $content)
     {

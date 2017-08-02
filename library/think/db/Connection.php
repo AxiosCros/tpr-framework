@@ -264,6 +264,7 @@ abstract class Connection
      */
     public function connect(array $config = [], $linkNum = 0, $autoConnection = false)
     {
+        $startTime = microtime(true);
         if (!isset($this->links[$linkNum])) {
             if (!$config) {
                 $config = $this->config;
@@ -286,9 +287,6 @@ abstract class Connection
             try {
                 if (empty($config['dsn'])) {
                     $config['dsn'] = $this->parseDsn($config);
-                }
-                if ($config['debug']) {
-                    $startTime = microtime(true);
                 }
                 $this->links[$linkNum] = new PDO($config['dsn'], $config['username'], $config['password'], $params);
                 if ($config['debug']) {
@@ -337,9 +335,9 @@ abstract class Connection
      * @param array         $bind 参数绑定
      * @param bool          $master 是否在主服务器读操作
      * @param bool          $pdo 是否返回PDO对象
-     * @return mixed
-     * @throws BindParamException
+     * @return array|bool
      * @throws PDOException
+     * @throws \ErrorException
      */
     public function query($sql, $bind = [], $master = false, $pdo = false)
     {
@@ -399,9 +397,9 @@ abstract class Connection
      * @access public
      * @param string        $sql sql指令
      * @param array         $bind 参数绑定
-     * @return int
-     * @throws BindParamException
+     * @return bool|int
      * @throws PDOException
+     * @throws \ErrorException
      */
     public function execute($sql, $bind = [])
     {
@@ -552,7 +550,7 @@ abstract class Connection
      * @access protected
      * @param bool   $pdo 是否返回PDOStatement
      * @param bool   $procedure 是否存储过程
-     * @return array
+     * @return array|PDOStatement
      */
     protected function getResult($pdo = false, $procedure = false)
     {
@@ -618,7 +616,8 @@ abstract class Connection
     /**
      * 启动事务
      * @access public
-     * @return void
+     * @return bool
+     * @throws \ErrorException
      */
     public function startTrans()
     {
@@ -648,6 +647,7 @@ abstract class Connection
             }
             throw $e;
         }
+        return null;
     }
 
     /**
@@ -722,7 +722,8 @@ abstract class Connection
      * 批处理的指令都认为是execute操作
      * @access public
      * @param array $sqlArray SQL批处理指令
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     public function batchQuery($sqlArray = [])
     {
@@ -782,7 +783,7 @@ abstract class Connection
     /**
      * 是否断线
      * @access protected
-     * @param \PDOException  $e 异常对象
+     * @param \ErrorException|\PDOException  $e 异常对象
      * @return bool
      */
     protected function isBreak($e)
@@ -940,6 +941,7 @@ abstract class Connection
                 Log::record('[ EXPLAIN : ' . var_export($explain, true) . ' ]', 'sql');
             }
         }
+        return null;
     }
 
     /**

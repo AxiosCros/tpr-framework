@@ -25,7 +25,7 @@ abstract class Relation
 {
     // 父模型对象
     protected $parent;
-    /** @var  Model 当前关联的模型类 */
+    /** @var  \think\Model 当前关联的模型类 */
     protected $model;
     /** @var Query 关联模型查询对象 */
     protected $query;

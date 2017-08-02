@@ -157,6 +157,7 @@ class Think
             $this->template->$name = $value;
             $this->config[$name]   = $value;
         }
+        return null;
     }
 
     public function __call($method, $params)

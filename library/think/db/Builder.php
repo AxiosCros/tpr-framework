@@ -46,7 +46,7 @@ abstract class Builder
     /**
      * 获取当前的连接对象实例
      * @access public
-     * @return void
+     * @return Connection
      */
     public function getConnection()
     {
@@ -56,7 +56,7 @@ abstract class Builder
     /**
      * 获取当前的Query对象实例
      * @access public
-     * @return void
+     * @return Query
      */
     public function getQuery()
     {
@@ -80,6 +80,7 @@ abstract class Builder
      * @param array     $data 数据
      * @param array     $options 查询参数
      * @return array
+     * @throws Exception
      */
     protected function parseData($data, $options)
     {
@@ -133,6 +134,7 @@ abstract class Builder
      */
     protected function parseKey($key, $options = [])
     {
+        unset($options);
         return $key;
     }
 
@@ -145,6 +147,7 @@ abstract class Builder
      */
     protected function parseValue($value, $field = '')
     {
+        unset($field);
         if (is_string($value)) {
             $value = strpos($value, ':') === 0 && $this->query->isBind(substr($value, 1)) ? $value : $this->connection->quote($value);
         } elseif (is_array($value)) {
@@ -166,6 +169,7 @@ abstract class Builder
      */
     protected function parseField($fields, $options = [])
     {
+        $fieldsStr = '';
         if ('*' == $fields || empty($fields)) {
             $fieldsStr = '*';
         } elseif (is_array($fields)) {
@@ -297,6 +301,7 @@ abstract class Builder
     {
         // 字段分析
         $key = $field ? $this->parseKey($field, $options) : '';
+        $str ='';
 
         // 查询规则和条件
         if (!is_array($val)) {
@@ -347,6 +352,7 @@ abstract class Builder
         }
 
         $whereStr = '';
+        $array = [];
         if (in_array($exp, ['=', '<>', '>', '>=', '<', '<='])) {
             // 比较运算
             if ($value instanceof \Closure) {
@@ -490,7 +496,7 @@ abstract class Builder
     /**
      * limit分析
      * @access protected
-     * @param mixed $lmit
+     * @param mixed $limit
      * @return string
      */
     protected function parseLimit($limit)
@@ -610,6 +616,7 @@ abstract class Builder
      */
     protected function parseUnion($union)
     {
+        $sql = '';
         if (empty($union)) {
             return '';
         }
@@ -647,7 +654,7 @@ abstract class Builder
     /**
      * 设置锁机制
      * @access protected
-     * @param bool $locl
+     * @param bool $lock
      * @return string
      */
     protected function parseLock($lock = false)
@@ -720,7 +727,8 @@ abstract class Builder
      * @param array     $dataSet 数据集
      * @param array     $options 表达式
      * @param bool      $replace 是否replace
-     * @return string
+     * @return mixed
+     * @throws Exception
      */
     public function insertAll($dataSet, $options, $replace = false)
     {
@@ -789,13 +797,14 @@ abstract class Builder
     /**
      * 生成update SQL
      * @access public
-     * @param array     $fields 数据
+     * @param array     $data 数据
      * @param array     $options 表达式
      * @return string
      */
     public function update($data, $options)
     {
-        $table = $this->parseTable($options['table'], $options);
+//        $table = $this->parseTable($options['table'], $options);
+        $set = [];
         $data  = $this->parseData($data, $options);
         if (empty($data)) {
             return '';
