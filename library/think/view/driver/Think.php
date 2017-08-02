@@ -71,6 +71,7 @@ class Think
      */
     public function fetch($template, $data = [], $config = [])
     {
+        $this->config = array_merge($this->config , $config);
         if ('' == pathinfo($template, PATHINFO_EXTENSION)) {
             // 获取模板文件名
             $template = $this->parseTemplate($template);
