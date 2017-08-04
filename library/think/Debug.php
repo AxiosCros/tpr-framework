@@ -181,6 +181,10 @@ class Debug
         }
     }
 
+    /**
+     * @param Response $response
+     * @param $content
+     */
     public static function inject(Response $response, &$content)
     {
         $config = Config::get('trace');

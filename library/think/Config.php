@@ -157,6 +157,7 @@ class Config
 
     /**
      * 重置配置参数
+     * @param string $range
      */
     public static function reset($range = '')
     {
