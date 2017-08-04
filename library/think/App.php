@@ -422,7 +422,40 @@ class App
 
             // 初始化应用
             self::init();
+
             $config = self::importConfig(APP_PATH);
+
+            // 开启路由，导入路由配置
+            if (is_file(RUNTIME_PATH . 'route.php')) {
+                // 读取路由缓存
+                $rules = include RUNTIME_PATH . 'route.php';
+                if (is_array($rules)) {
+                    Route::rules($rules);
+                }
+            } else {
+                if(is_file( CONF_PATH . 'route.php')){
+                    $rules = include CONF_PATH . 'route.php';
+                    Route::import($rules);
+                }
+
+                $files = $config['route_config_file'];
+                foreach ($files as $file) {
+                    if (is_file(CONF_PATH . 'route/' .$file . CONF_EXT)) {
+                        // 导入路由配置
+                        $rules = include CONF_PATH . 'route/' .$file . CONF_EXT;
+                        if (is_array($rules)) {
+                            Route::import($rules);
+                        }
+                    }
+                }
+
+                if(is_file(APP_PATH . 'route.php')){
+                    $rules = include APP_PATH . 'route.php';
+                    Route::import($rules);
+                }
+            }
+
+
 
             self::$suffix = $config['class_suffix'];
 
@@ -550,26 +583,6 @@ class App
         // 路由检测
         $check = !is_null(self::$routeCheck) ? self::$routeCheck : $config['url_route_on'];
         if ($check) {
-            // 开启路由
-            if (is_file(RUNTIME_PATH . 'route.php')) {
-                // 读取路由缓存
-                $rules = include RUNTIME_PATH . 'route.php';
-                if (is_array($rules)) {
-                    Route::rules($rules);
-                }
-            } else {
-                $files = $config['route_config_file'];
-                foreach ($files as $file) {
-                    if (is_file(CONF_PATH . $file . CONF_EXT)) {
-                        // 导入路由配置
-                        $rules = include CONF_PATH . $file . CONF_EXT;
-                        if (is_array($rules)) {
-                            Route::import($rules);
-                        }
-                    }
-                }
-            }
-
             // 路由检测（根据路由定义返回不同的URL调度）
             $result = Route::check($request, $path, $depr, $config['url_domain_deploy']);
             $must = !is_null(self::$routeMust) ? self::$routeMust : $config['url_route_must'];
