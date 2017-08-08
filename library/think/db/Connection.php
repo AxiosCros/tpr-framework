@@ -617,7 +617,7 @@ abstract class Connection
      * 启动事务
      * @access public
      * @return bool
-     * @throws \ErrorException
+     * @throws \Exception
      */
     public function startTrans()
     {
@@ -641,7 +641,7 @@ abstract class Connection
                 return $this->close()->startTrans();
             }
             throw $e;
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             if ($this->isBreak($e)) {
                 return $this->close()->startTrans();
             }
@@ -783,7 +783,7 @@ abstract class Connection
     /**
      * 是否断线
      * @access protected
-     * @param \ErrorException|\PDOException  $e 异常对象
+     * @param \Exception|\PDOException  $e 异常对象
      * @return bool
      */
     protected function isBreak($e)
