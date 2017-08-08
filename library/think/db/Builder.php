@@ -351,6 +351,11 @@ abstract class Builder
             }
         }
 
+        if (is_object($value) && method_exists($value, '__toString')) {
+            // 对象数据写入
+            $value = $value->__toString();
+        }
+
         $whereStr = '';
         $array = [];
         if (in_array($exp, ['=', '<>', '>', '>=', '<', '<='])) {
