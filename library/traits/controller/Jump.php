@@ -175,9 +175,13 @@ trait Jump
         if (empty($message)) {
             $message = c('code.' . strval($code), '');
         }
+        $message = lang($message);
+        if (is_array($message)) {
+            $message = $code == 200 ? lang('success') : '';
+        }
         $result = [
             'code' => $code,
-            'msg'  => lang($message),
+            'msg' => $message,
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
