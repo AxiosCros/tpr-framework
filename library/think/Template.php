@@ -54,11 +54,17 @@ class Template
 
     private $literal     = [];
     private $includeFile = []; // 记录所有模板包含的文件路径及更新时间
+
+    /**
+     * @var \think\template\driver\File
+     */
     protected $storage;
 
     /**
      * 构造函数
+     * Template constructor.
      * @access public
+     * @param array $config
      */
     public function __construct(array $config = [])
     {
@@ -672,6 +678,11 @@ class Template
     }
 
     /**
+     * @var \think\template\taglib\Cx
+     */
+    private $tLib;
+
+    /**
      * TagLib库解析
      * @access public
      * @param  string   $tagLib 要解析的标签库
@@ -688,8 +699,8 @@ class Template
         } else {
             $className = '\\think\\template\\taglib\\' . ucwords($tagLib);
         }
-        $tLib = new $className($this);
-        $tLib->parseTag($content, $hide ? '' : $tagLib);
+        $this->tLib = new $className($this);
+        $this->tLib->parseTag($content, $hide ? '' : $tagLib);
         return null;
     }
 
@@ -782,12 +793,11 @@ class Template
                                         $str = '<?php echo !empty(' . $name . ')' . $_name . '?' . $name . $str . '; ?>';
                                         break;
                                     default:
-                                        if (strpos($str, ':')) {
-                                            // {$varname ? 'a' : 'b'} $varname为真时输出a,否则输出b
-                                            $str = '<?php echo !empty(' . $name . ')' . $_name . '?' . $str . '; ?>';
-                                        } else {
-                                            $str = '<?php echo ' . $_name . '?' . $str . '; ?>';
+                                        if (isset($array[1]))  {
+                                            $this->parseVar($array[2]);
+                                            $name = $name . $array[1] . $array[2];
                                         }
+                                        $str = '<?php echo ' . $name . '?' . $str . '; ?>';
                                 }
                             }
                         } else {
@@ -1131,19 +1141,19 @@ class Template
                     $regex = '<!--###literal(\d+)###-->';
                     break;
                 case 'include':
-                    $name = 'file';
+                    $name = 'file';break;
                 case 'taglib':
                 case 'layout':
                 case 'extend':
-                    if (empty($name)) {
-                        $name = 'name';
-                    }
-                    if ($single) {
-                        $regex = $begin . $tagName . '\b(?>(?:(?!' . $name . '=).)*)\b' . $name . '=([\'\"])(?P<name>[\$\w\-\/\.\:@,\\\\]+)\\1(?>[^' . $end . ']*)' . $end;
-                    } else {
-                        $regex = $begin . $tagName . '\b(?>(?:(?!' . $name . '=).)*)\b' . $name . '=([\'\"])(?P<name>[\$\w\-\/\.\:@,\\\\]+)\\1(?>(?:(?!' . $end . ').)*)' . $end;
-                    }
                     break;
+            }
+            if (empty($name)) {
+                $name = 'name';
+            }
+            if ($single) {
+                $regex = empty($regex) ? $begin . $tagName . '\b(?>(?:(?!' . $name . '=).)*)\b' . $name . '=([\'\"])(?P<name>[\$\w\-\/\.\:@,\\\\]+)\\1(?>[^' . $end . ']*)' . $end : $regex;
+            } else {
+                $regex = empty($regex) ? $begin . $tagName . '\b(?>(?:(?!' . $name . '=).)*)\b' . $name . '=([\'\"])(?P<name>[\$\w\-\/\.\:@,\\\\]+)\\1(?>(?:(?!' . $end . ').)*)' . $end : $regex;
             }
         }
         return '/' . $regex . '/is';

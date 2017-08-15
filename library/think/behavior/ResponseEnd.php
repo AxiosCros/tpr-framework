@@ -8,8 +8,8 @@
  */
 namespace think\behavior;
 
+use think\exception\ClassNotFoundException;
 use think\Request;
-use think\Loader;
 use think\Config;
 
 class ResponseEnd {
@@ -28,8 +28,8 @@ class ResponseEnd {
         $this->module     = strtolower($this->request->module());
         $this->controller = strtolower($this->request->controller());
         $this->action     = $this->request->action();
-        $this->req        = $this->request->req;
-        $this->mca        = $this->request->mca;
+        $this->req        = $this->request->getContent();
+        $this->mca        = $this->module.'/'.$this->controller.'/'.$this->action;
     }
 
     public function run(){
@@ -38,18 +38,17 @@ class ResponseEnd {
 
     private function middleware(){
         $middleware_config =  Config::get('middleware.after');
-        if(isset($middleware_config[$this->mca])){
-            $middleware_config = $middleware_config[$this->mca];
-            $Middleware = validate($middleware_config[0]);
-            if(isset($middleware_config[1]) && method_exists($Middleware,$middleware_config[1])){
-                call_user_func_array([$Middleware,$middleware_config[1]],[$this->request]);
-            }
-        }else{
-            $class = Loader::parseClass(strtolower($this->module), 'middleware',strtolower($this->controller),false);
-            if(class_exists($class)){
-                $Middleware = Loader::validate($this->controller, 'middleware', false,$this->module);
-                if(method_exists($Middleware,'after')){
-                    call_user_func_array([$Middleware,'after'],array($this->request,$this->req));
+        if(!empty($middleware_config)){
+            if(isset($middleware_config[$this->mca])){
+                $middleware_config = $middleware_config[$this->mca];
+                try{
+                    $Middleware = validate($middleware_config[0]);
+                }catch (ClassNotFoundException $e){
+                    throw new ClassNotFoundException('class not exists:' . $middleware_config[0],__CLASS__);
+                }
+
+                if(isset($middleware_config[1]) && method_exists($Middleware,$middleware_config[1])){
+                    call_user_func_array([$Middleware,$middleware_config[1]],[$this->request]);
                 }
             }
         }

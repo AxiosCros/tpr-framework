@@ -35,7 +35,6 @@ class ActionBegin{
         $this->controller = strtolower($this->request->controller());
         $this->action     = $this->request->action();
         $this->mca        = $this->module.'/'.$this->controller.'/'.$this->action;
-        $this->request->mca = $this->mca;
     }
 
     public function run(){
@@ -93,15 +92,10 @@ class ActionBegin{
                     throw new ClassNotFoundException('class not exists:' . $middleware_config[0],__CLASS__);
                 }
 
-                call_user_func_array([$Middleware,$middleware_config[1]],[$this->request]);
+                if(isset($middleware_config[1]) && method_exists($Middleware,$middleware_config[1])){
+                    call_user_func_array([$Middleware,$middleware_config[1]],[$this->request]);
+                }
             }
-//            else{
-//                $class = Loader::parseClass(strtolower($this->module), 'middleware',strtolower($this->controller),false);
-//                if(class_exists($class)){
-//                    $Middleware = Loader::validate($this->controller, 'middleware', false,$this->module);
-//                    call_user_func_array([$Middleware,'before'],array($this->request));
-//                }
-//            }
         }
     }
 }

@@ -192,7 +192,6 @@ trait Jump
     protected function ajaxReturn($result = [], array $header = [])
     {
         $type = !empty($this->return_type) ? $this->return_type : c('default_ajax_return', 'json');
-        Request::instance()->req = $result;
         $type = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);
