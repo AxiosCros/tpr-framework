@@ -33,6 +33,9 @@ class Query
     // 数据库Connection对象实例
     protected $connection;
     // 数据库Builder对象实例
+    /**
+     * @var Builder
+     */
     protected $builder;
     // 当前模型类名称
     protected $model;
@@ -395,6 +398,7 @@ class Query
     public function value($field, $default = null, $force = false)
     {
         $result = false;
+        $key = '';
         if (empty($this->options['fetch_sql']) && !empty($this->options['cache'])) {
             // 判断查询缓存
             $cache = $this->options['cache'];
@@ -433,7 +437,7 @@ class Query
      * @access public
      * @param string $field 字段名 多个字段用逗号分隔
      * @param string $key   索引
-     * @return array
+     * @return array|\PDOStatement|string
      */
     public function column($field, $key = '')
     {
@@ -473,6 +477,7 @@ class Query
                     $key    = $key ?: $key1;
                     if (strpos($key, '.')) {
                         list($alias, $key) = explode('.', $key);
+                        unset($alias);
                     }
                     foreach ($resultSet as $val) {
                         if ($count > 2) {
@@ -695,6 +700,7 @@ class Query
      * ['prefix_table或者子查询'=>'alias'] 'prefix_table alias' 'table alias'
      * @access public
      * @param array|string $join
+     * @param $alias
      * @return array|string
      */
     protected function getJoinTable($join, &$alias = null)
@@ -862,8 +868,8 @@ class Query
     /**
      * 指定JOIN查询字段
      * @access public
-     * @param string|array $table 数据表
-     * @param string|array $field 查询字段
+     * @param $join
+     * @param string|array|bool $field 查询字段
      * @param string|array $on    JOIN条件
      * @param string       $type  JOIN类型
      * @return $this
@@ -2235,6 +2241,7 @@ class Query
                     $data[$pk] = $where[$pk];
                 } elseif (is_string($pk) && isset($key) && strpos($key, '|')) {
                     list($a, $val) = explode('|', $key);
+                    unset($a);
                     $data[$pk]     = $val;
                 }
                 $options['data'] = $data;
@@ -2294,6 +2301,7 @@ class Query
         }
 
         $resultSet = false;
+        $key = '';
         if (empty($options['fetch_sql']) && !empty($options['cache'])) {
             // 判断查询缓存
             $cache = $options['cache'];
@@ -2334,8 +2342,9 @@ class Query
             // 生成模型对象
             $modelName = $this->model;
             if (count($resultSet) > 0) {
+                $model = null;
                 foreach ($resultSet as $key => $result) {
-                    /** @var Model $result */
+                    /** @var Model $model */
                     $model = new $modelName($result);
                     $model->isUpdate(true);
 
@@ -2351,12 +2360,14 @@ class Query
                 }
                 if (!empty($options['with'])) {
                     // 预载入
-                    $model->eagerlyResultSet($resultSet, $options['with']);
+                    is_null($model) or $model->eagerlyResultSet($resultSet, $options['with']);
                 }
                 // 模型数据集转换
                 $resultSet = $model->toCollection($resultSet);
             } else {
-                $resultSet = (new $modelName)->toCollection($resultSet);
+                /** @var Model $model */
+                $model = new $modelName;
+                $resultSet = $model->toCollection($resultSet);
             }
         } elseif ('collection' == $this->connection->getConfig('resultset_type')) {
             // 返回Collection对象
@@ -2391,6 +2402,7 @@ class Query
      * @param mixed     $value   缓存数据
      * @param array     $options 缓存参数
      * @param array     $bind    绑定参数
+     * @return string
      */
     protected function getCacheKey($value, $options, $bind = [])
     {
@@ -2447,6 +2459,7 @@ class Query
             }
             $result = Cache::get($key);
         }
+        $key = '';
         if (false === $result) {
             // 生成查询SQL
             $sql = $this->builder->select($options);
@@ -2460,6 +2473,7 @@ class Query
                 if (!is_array($data)) {
                     if (isset($key) && strpos($key, '|')) {
                         list($a, $val) = explode('|', $key);
+                        unset($a);
                         $item[$pk]     = $val;
                     } else {
                         $item[$pk] = $data;
@@ -2492,6 +2506,7 @@ class Query
             if (!empty($this->model)) {
                 // 返回模型对象
                 $model  = $this->model;
+                /** @var Model $result **/
                 $result = new $model($result);
                 $result->isUpdate(true, isset($options['where']['AND']) ? $options['where']['AND'] : null);
                 // 关联查询
@@ -2579,6 +2594,7 @@ class Query
         $resultSet = $this->limit($count)->order($column, 'asc')->select();
         if (strpos($column, '.')) {
             list($alias, $key) = explode('.', $column);
+            unset($alias);
         } else {
             $key = $column;
         }
@@ -2590,7 +2606,8 @@ class Query
             if (false === call_user_func($callback, $resultSet)) {
                 return false;
             }
-            $end       = end($resultSet);
+
+            $end    = end($resultSet);
             $lastId    = is_array($end) ? $end[$key] : $end->$key;
             $resultSet = $this->options($options)
                 ->limit($count)
@@ -2682,6 +2699,7 @@ class Query
         if ($result) {
             if (!is_array($data) && is_string($pk) && isset($key) && strpos($key, '|')) {
                 list($a, $val) = explode('|', $key);
+                unset($a);
                 $item[$pk]     = $val;
                 $data          = $item;
             }

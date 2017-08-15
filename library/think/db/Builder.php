@@ -22,7 +22,13 @@ abstract class Builder
     protected $query;
 
     // 数据库表达式
-    protected $exp = ['eq' => '=', 'neq' => '<>', 'gt' => '>', 'egt' => '>=', 'lt' => '<', 'elt' => '<=', 'notlike' => 'NOT LIKE', 'not like' => 'NOT LIKE', 'like' => 'LIKE', 'in' => 'IN', 'exp' => 'EXP', 'notin' => 'NOT IN', 'not in' => 'NOT IN', 'between' => 'BETWEEN', 'not between' => 'NOT BETWEEN', 'notbetween' => 'NOT BETWEEN', 'exists' => 'EXISTS', 'notexists' => 'NOT EXISTS', 'not exists' => 'NOT EXISTS', 'null' => 'NULL', 'notnull' => 'NOT NULL', 'not null' => 'NOT NULL', '> time' => '> TIME', '< time' => '< TIME', '>= time' => '>= TIME', '<= time' => '<= TIME', 'between time' => 'BETWEEN TIME', 'not between time' => 'NOT BETWEEN TIME', 'notbetween time' => 'NOT BETWEEN TIME'];
+    protected $exp = ['eq' => '=', 'neq' => '<>', 'gt' => '>', 'egt' => '>=', 'lt' => '<', 'elt' => '<=',
+        'notlike' => 'NOT LIKE', 'not like' => 'NOT LIKE', 'like' => 'LIKE', 'in' => 'IN', 'exp' => 'EXP',
+        'notin' => 'NOT IN', 'not in' => 'NOT IN', 'between' => 'BETWEEN', 'not between' => 'NOT BETWEEN',
+        'notbetween' => 'NOT BETWEEN', 'exists' => 'EXISTS', 'notexists' => 'NOT EXISTS', 'not exists' => 'NOT EXISTS',
+        'null' => 'NULL', 'notnull' => 'NOT NULL', 'not null' => 'NOT NULL', '> time' => '> TIME', '< time' => '< TIME',
+        '>= time' => '>= TIME', '<= time' => '<= TIME', 'between time' => 'BETWEEN TIME', 'not between time' => 'NOT BETWEEN TIME',
+        'notbetween time' => 'NOT BETWEEN TIME'];
 
     // SQL表达式
     protected $selectSql = 'SELECT%DISTINCT% %FIELD% FROM %TABLE%%FORCE%%JOIN%%WHERE%%GROUP%%HAVING%%ORDER%%LIMIT% %UNION%%LOCK%%COMMENT%';
@@ -551,18 +557,8 @@ abstract class Builder
         if (is_array($order)) {
             $array = [];
             foreach ($order as $key => $val) {
-                if (is_numeric($key)) {
-                    if ('[rand]' == $val) {
-                        $array[] = $this->parseRand();
-                    } elseif (false === strpos($val, '(')) {
-                        $array[] = $this->parseKey($val, $options);
-                    } else {
-                        $array[] = $val;
-                    }
-                } else {
-                    $sort = in_array(strtolower(trim($val)), ['asc', 'desc']) ? ' ' . $val : '';
-                    $array[] = $this->parseKey($key, $options) . ' ' . $sort;
-                }
+                $sort = in_array(strtolower(trim($val)), ['asc', 'desc']) ? ' ' . $val : '';
+                $array[] = $this->parseKey($key, $options) . ' ' . $sort;
             }
             $order = implode(',', $array);
         }
@@ -737,6 +733,7 @@ abstract class Builder
      */
     public function insertAll($dataSet, $options, $replace = false)
     {
+        $values = '';
         // 获取合法的字段
         if ('*' == $options['field']) {
             $fields = array_keys($this->query->getFieldsType($options['table']));
@@ -783,7 +780,7 @@ abstract class Builder
     /**
      * 生成slectinsert SQL
      * @access public
-     * @param array $fields 数据
+     * @param string $fields 数据
      * @param string $table 数据表
      * @param array $options 表达式
      * @return string
