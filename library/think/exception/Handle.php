@@ -22,9 +22,15 @@ use think\Response;
 class Handle
 {
 
+    protected $render;
+
     protected $ignoreReport = [
         '\\think\\exception\\HttpException',
     ];
+
+    public function setRender($render){
+        $this->render = $render ;
+    }
 
     /**
      * Report or log an exception.
