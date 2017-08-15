@@ -24,7 +24,7 @@ class RequestEnd extends Fork {
     function __construct()
     {
         $this->request = Request::instance();
-        $this->param = $this->request->param();
+        $this->param   = $this->request->param();
     }
 
     public function run(){
@@ -37,6 +37,4 @@ class RequestEnd extends Fork {
             exit();
         }
     }
-
-
 }
