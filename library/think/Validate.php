@@ -253,6 +253,7 @@ class Validate
     {
         $this->error = [];
         $array = [];
+        $change = [];
 
         if (empty($rules)) {
             // 读取验证规则
@@ -788,6 +789,7 @@ class Validate
      */
     protected function method($value, $rule)
     {
+        unset($value);
         $method = Request::instance()->method();
         return strtoupper($rule) == $method;
     }
@@ -816,6 +818,8 @@ class Validate
      */
     protected function unique($value, $rule, $data, $field)
     {
+        unset($value);
+        $map = '';
         if (is_string($rule)) {
             $rule = explode(',', $rule);
         }
@@ -866,6 +870,7 @@ class Validate
      */
     protected function behavior($value, $rule, $data)
     {
+        unset($value);
         return Hook::exec($rule, '', $data);
     }
 
@@ -1097,6 +1102,7 @@ class Validate
      */
     protected function expire($value, $rule)
     {
+        unset($value);
         if (is_string($rule)) {
             $rule = explode(',', $rule);
         }
@@ -1120,6 +1126,7 @@ class Validate
      */
     protected function allowIp($value, $rule)
     {
+        unset($value);
         return in_array($_SERVER['REMOTE_ADDR'], is_array($rule) ? $rule : explode(',', $rule));
     }
 
@@ -1132,6 +1139,7 @@ class Validate
      */
     protected function denyIp($value, $rule)
     {
+        unset($value);
         return !in_array($_SERVER['REMOTE_ADDR'], is_array($rule) ? $rule : explode(',', $rule));
     }
 
@@ -1164,6 +1172,7 @@ class Validate
      */
     protected function token($value, $rule, $data)
     {
+        unset($value);
         $rule = !empty($rule) ? $rule : '__token__';
         if (!isset($data[$rule]) || !Session::has($rule)) {
             // 令牌数据无效

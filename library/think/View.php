@@ -16,6 +16,9 @@ class View
     // 视图实例
     protected static $instance;
     // 模板引擎实例
+    /**
+     * @var \think\view\driver\Think
+     */
     public $engine;
     // 模板变量
     protected $data = [];

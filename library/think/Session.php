@@ -21,7 +21,7 @@ class Session
     /**
      * 设置或者获取session作用域（前缀）
      * @param string $prefix
-     * @return string|void
+     * @return string
      */
     public static function prefix($prefix = '')
     {
@@ -30,6 +30,7 @@ class Session
         } else {
             self::$prefix = $prefix;
         }
+        return null;
     }
 
     /**
@@ -211,7 +212,6 @@ class Session
      * session设置 下一次请求有效
      * @param string $name session名称
      * @param mixed $value session值
-     * @param string|null $prefix 作用域（前缀）
      * @return void
      */
     public static function flash($name, $value)

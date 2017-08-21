@@ -11,6 +11,7 @@
 
 namespace think;
 
+use think\db\Query;
 use think\exception\HttpException;
 
 class Route
@@ -780,6 +781,7 @@ class Route
                 if (isset($item['[bind]'])) {
                     // 解析子域名部署规则
                     list($rule, $option, $pattern) = $item['[bind]'];
+                    unset($pattern);
                     if (!empty($option['https']) && !$request->isSsl()) {
                         // https检测
                         throw new HttpException(404, 'must use https request:' . $host);
@@ -850,7 +852,7 @@ class Route
             self::checkDomain($request, $rules, $method);
         }
         // 检测URL绑定
-        $return = self::checkUrlBind($url, $rules, $depr);
+        $return = self::checkUrlBind($url, $depr);
         if (false !== $return) {
             return $return;
         }
@@ -1016,11 +1018,10 @@ class Route
      * 检测URL绑定
      * @access private
      * @param string    $url URL地址
-     * @param array     $rules 路由规则
      * @param string    $depr URL分隔符
      * @return mixed
      */
-    private static function checkUrlBind(&$url, &$rules, $depr = '/')
+    private static function checkUrlBind(&$url, $depr = '/')
     {
         if (!empty(self::$bind)) {
             $type = self::$bind['type'];
@@ -1212,6 +1213,7 @@ class Route
         }
         $url              = str_replace($depr, '|', $url);
         list($path, $var) = self::parseUrlPath($url);
+        unset($var);
         $route            = [null, null, null];
         if (isset($path)) {
             // 解析模块
@@ -1384,7 +1386,6 @@ class Route
             // 获取URL地址中的参数
             $paths = explode('|', $pathinfo);
             foreach ($rule as $item) {
-                $fun = '';
                 if (0 === strpos($item, '[:')) {
                     $item = substr($item, 1, -1);
                 }
@@ -1441,6 +1442,7 @@ class Route
                         }
                     }
                     if ($match) {
+                        /** @var Query $query*/
                         $query  = strpos($model, '\\') ? $model::where($where) : Loader::model($model)->where($where);
                         $result = $query->failException($exception)->find();
                     }
@@ -1546,7 +1548,7 @@ class Route
     /**
      * 解析URL地址中的参数Request对象
      * @access private
-     * @param string    $rule 路由规则
+     * @param string    $url
      * @param array     $var 变量
      * @return void
      */

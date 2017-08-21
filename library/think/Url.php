@@ -27,6 +27,7 @@ class Url
      */
     public static function build($url = '', $vars = '', $suffix = true, $domain = false)
     {
+        $info = [];
         if (false === $domain && Route::rules('domain')) {
             $domain = true;
         }

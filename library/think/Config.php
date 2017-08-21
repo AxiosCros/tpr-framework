@@ -42,7 +42,9 @@ class Config
             $type = pathinfo($config, PATHINFO_EXTENSION);
         }
         $class = false !== strpos($type, '\\') ? $type : '\\think\\config\\driver\\' . ucwords($type);
-        return self::set((new $class())->parse($config), $name, $range);
+        /** @var \think\config\driver\Ini $Class */
+        $Class = new $class();
+        return self::set($Class->parse($config), $name, $range);
     }
 
     /**
@@ -122,7 +124,7 @@ class Config
      * @param string|array $name 配置参数名（支持二级配置 .号分割）
      * @param mixed $value 配置值
      * @param string $range 作用域
-     * @return mixed
+     * @return mixed|\think\config\driver\Json
      */
     public static function set($name, $value = null, $range = '')
     {

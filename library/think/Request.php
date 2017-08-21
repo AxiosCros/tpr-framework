@@ -1054,6 +1054,7 @@ class Request
      */
     private function filterValue(&$value, $key, $filters)
     {
+        unset($key);
         $default = array_pop($filters);
         foreach ($filters as $filter) {
             if (is_callable($filter)) {

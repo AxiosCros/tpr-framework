@@ -193,6 +193,7 @@ class Debug
         $class = false !== strpos($type, '\\') ? $type : '\\think\\debug\\' . ucwords($type);
         unset($config['type']);
         if (class_exists($class)) {
+            /** @var \think\debug\Html $trace */
             $trace = new $class($config);
         } else {
             throw new ClassNotFoundException('class not exists:' . $class, $class);

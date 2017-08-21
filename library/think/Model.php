@@ -29,6 +29,8 @@ use think\model\relation\MorphTo;
  * Class Model
  * @package think
  * @mixin Query
+ *
+ * @method Query with($with) static
  */
 abstract class Model implements \JsonSerializable, \ArrayAccess
 {
@@ -175,6 +177,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         $con = Db::connect($connection);
         // 设置当前模型 确保查询返回模型对象
         $queryClass = $this->query ?: $con->getConfig('query');
+        /** @var Model $query **/
         $query      = new $queryClass($con, $this->class);
 
         // 设置当前数据表和模型名
@@ -500,6 +503,9 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
                 break;
             case 'array':
                 $value = (array) $value;
+                $option = !empty($param) ? (int) $param : JSON_UNESCAPED_UNICODE;
+                $value = json_encode($value, $option);
+                break;
             case 'json':
                 $option = !empty($param) ? (int) $param : JSON_UNESCAPED_UNICODE;
                 $value  = json_encode($value, $option);
@@ -986,7 +992,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
             // 获取有更新的数据
             $data = $this->getChangedData();
             // 检测字段
-            $this->checkAllowField($data, array_merge($this->auto, $this->update));
+            $this->checkAllowField($data);
 
             if (empty($data) || (count($data) == 1 && is_string($pk) && isset($data[$pk]))) {
                 // 关联更新
@@ -1032,7 +1038,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
 
         } else {
             // 检测字段
-            $this->checkAllowField($this->data, array_merge($this->auto, $this->insert));
+            $this->checkAllowField($this->data);
 
             // 自动写入
             $this->autoCompleteData($this->insert);
@@ -1617,6 +1623,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         $count     = 0;
         if ($resultSet) {
             foreach ($resultSet as $data) {
+                /** @var Model $data */
                 $result = $data->delete();
                 $count += $result;
             }
@@ -1657,7 +1664,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * 设置是否使用全局查询范围
      * @param bool $use 是否启用全局查询范围
      * @access public
-     * @return Model
+     * @return Query
      */
     public static function useGlobalScope($use)
     {
@@ -1676,6 +1683,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public static function has($relation, $operator = '>=', $count = 1, $id = '*')
     {
+        /** @var Relation\HasMany|Relation\HasOne $relation */
         $relation = (new static())->$relation();
         if (is_array($operator) || $operator instanceof \Closure) {
             return $relation->hasWhere($operator);
@@ -1749,7 +1757,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @access public
      * @param array  $resultSet 数据集
      * @param string $relation  关联名
-     * @return array
+     * @return void
      */
     public function eagerlyResultSet(&$resultSet, $relation)
     {
@@ -1777,7 +1785,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      * @access public
      * @param Model  $result   数据对象
      * @param string $relation 关联名
-     * @return Model
+     * @return void
      */
     public function eagerlyResult(&$result, $relation)
     {
@@ -1856,6 +1864,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public function hasOne($model, $foreignKey = '', $localKey = '', $alias = [], $joinType = 'INNER')
     {
+        unset($alias);
         // 记录当前关联信息
         $model      = $this->parseModel($model);
         $localKey   = $localKey ?: $this->getPk();
@@ -1875,10 +1884,13 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     public function belongsTo($model, $foreignKey = '', $localKey = '', $alias = [], $joinType = 'INNER')
     {
+        unset($alias);
         // 记录当前关联信息
         $model      = $this->parseModel($model);
+        /** @var Model $Model*/
+        $Model      = new $model;
         $foreignKey = $foreignKey ?: $this->getForeignKey($model);
-        $localKey   = $localKey ?: (new $model)->getPk();
+        $localKey   = $localKey ?: $Model->getPk();
         $trace      = debug_backtrace(false, 2);
         $relation   = Loader::parseName($trace[1]['function']);
         return new BelongsTo($this, $model, $foreignKey, $localKey, $joinType, $relation);

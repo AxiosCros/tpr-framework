@@ -422,6 +422,7 @@ class Loader
         } elseif ($empty && class_exists($emptyClass = self::parseClass($module, $layer, $empty, $appendSuffix))) {
             return new $emptyClass(Request::instance());
         }
+        return null;
     }
 
     /**

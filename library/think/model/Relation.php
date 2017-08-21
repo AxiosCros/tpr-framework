@@ -20,6 +20,7 @@ use think\Model;
  * @package think\model
  *
  * @mixin Query
+ * @method getRelation()
  */
 abstract class Relation
 {
@@ -74,7 +75,9 @@ abstract class Relation
      */
     protected function resultSetBuild($resultSet)
     {
-        return (new $this->model)->toCollection($resultSet);
+        /** @var Model $Model*/
+        $Model = new $this->model;
+        return $Model->toCollection($resultSet);
     }
 
     protected function getQueryFields($model)
