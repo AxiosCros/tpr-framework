@@ -2185,6 +2185,7 @@ class Query
         $options = $this->parseExpress();
         $data    = array_merge($options['data'], $data);
         $pk      = $this->getPk($options);
+        $where   = [];
         if (isset($options['cache']) && is_string($options['cache']['key'])) {
             $key = $options['cache']['key'];
         }

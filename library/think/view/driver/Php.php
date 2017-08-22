@@ -159,6 +159,7 @@ class Php
         } else {
             $this->config[$name] = $value;
         }
+        return null;
     }
 
 }
