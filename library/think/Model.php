@@ -1259,6 +1259,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     public function allowField($field)
     {
         if (is_string($field)) {
+            $field = str_replace(' ','',$field);
             $field = explode(',', $field);
         }
         $this->field = $field;
@@ -1274,6 +1275,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
     public function readonly($field)
     {
         if (is_string($field)) {
+            $field = str_replace(' ','',$field);
             $field = explode(',', $field);
         }
         $this->readonly = $field;
