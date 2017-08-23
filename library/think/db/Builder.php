@@ -557,11 +557,20 @@ abstract class Builder
         if (is_array($order)) {
             $array = [];
             foreach ($order as $key => $val) {
-                $sort = in_array(strtolower(trim($val)), ['asc', 'desc']) ? ' ' . $val : '';
-                $array[] = $this->parseKey($key, $options) . ' ' . $sort;
+                if (is_numeric($key)) {
+                    if (false === strpos($val, '(')) {
+                        $array[] = $this->parseKey($val, $options);
+                    } else {
+                        $array[] = $val;
+                    }
+                } else {
+                    $sort = in_array(strtolower(trim($val)), ['asc', 'desc']) ? ' ' . $val : '';
+                    $array[] = $this->parseKey($key, $options) . ' ' . $sort;
+                }
             }
             $order = implode(',', $array);
         }
+
         return !empty($order) ? ' ORDER BY ' . $order : '';
     }
 
