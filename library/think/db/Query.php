@@ -2220,6 +2220,14 @@ class Query
             $key = $this->getCacheKey($options['where']['AND'][$pk], $options, $this->bind);
         }
 
+        //检查无效字段
+        $field = $this->getTableFields();
+        foreach ($data as $k=>$v){
+            if(!in_array($k,$field)){
+                unset($data[$k]);
+            }
+        }
+
         // 生成UPDATE SQL语句
         $sql = $this->builder->update($data, $options);
         // 获取参数绑定
