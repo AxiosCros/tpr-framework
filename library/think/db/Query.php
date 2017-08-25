@@ -2063,6 +2063,20 @@ class Query
     }
 
     /**
+     * 过滤无效字段
+     * @param $data
+     */
+    public function filter(&$data){
+        //检查无效字段
+        $field = $this->getTableFields();
+        foreach ($data as $k=>$v){
+            if(!in_array($k,$field)){
+                unset($data[$k]);
+            }
+        }
+    }
+
+    /**
      * 插入记录
      * @access public
      * @param mixed   $data         数据
@@ -2076,6 +2090,9 @@ class Query
         // 分析查询表达式
         $options = $this->parseExpress();
         $data    = array_merge($options['data'], $data);
+        $this->filter($data);
+
+
         // 生成SQL语句
         $sql = $this->builder->insert($data, $options, $replace);
         // 获取参数绑定
@@ -2220,13 +2237,8 @@ class Query
             $key = $this->getCacheKey($options['where']['AND'][$pk], $options, $this->bind);
         }
 
-        //检查无效字段
-        $field = $this->getTableFields();
-        foreach ($data as $k=>$v){
-            if(!in_array($k,$field)){
-                unset($data[$k]);
-            }
-        }
+        //过滤无效字段
+        $this->filter($data);
 
         // 生成UPDATE SQL语句
         $sql = $this->builder->update($data, $options);
