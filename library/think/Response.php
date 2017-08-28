@@ -39,6 +39,11 @@ class Response
     protected $content = null;
 
     /**
+     * @var Response
+     */
+    protected static $instance = null;
+
+    /**
      * 构造函数
      * @access   public
      * @param mixed $data    输出数据
@@ -57,6 +62,10 @@ class Response
         $this->code   = $code;
     }
 
+    public static function instance(){
+        return self::$instance;
+    }
+
     /**
      * 创建Response对象
      * @access public
@@ -73,12 +82,12 @@ class Response
 
         $class = false !== strpos($type, '\\') ? $type : '\\think\\response\\' . ucfirst($type);
         if (class_exists($class)) {
-            $response = new $class($data, $code, $header, $options);
+            self::$instance = new $class($data, $code, $header, $options);
         } else {
-            $response = new static($data, $code, $header, $options);
+            self::$instance= new static($data, $code, $header, $options);
         }
 
-        return $response;
+        return self::$instance;
     }
 
     /**
