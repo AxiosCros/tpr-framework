@@ -11,23 +11,26 @@
 
 namespace think\behavior;
 
+use think\cache\CacheRequest;
 use think\Db;
 use think\Fork;
 use think\Request;
+use think\Response;
 
 class RequestEnd extends Fork {
 
-    public $param;
+    public $result;
 
     public $request;
 
     function __construct()
     {
         $this->request = Request::instance();
-        $this->param   = $this->request->param();
+        $this->result  = Response::instance()->getData();
     }
 
     public function run(){
+        $this->cache();
         Db::clear();
         $queue = Fork::$queue;
         Fork::fork(true);
@@ -36,5 +39,9 @@ class RequestEnd extends Fork {
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
+    }
+
+    private function cache(){
+        CacheRequest::set($this->result,$this->request);
     }
 }

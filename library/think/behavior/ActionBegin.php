@@ -77,7 +77,7 @@ class ActionBegin{
     private function cache(){
         $cache = CacheRequest::get($this->request);
         if(!empty($cache)){
-            $this->response($cache);
+            $this->ajaxReturn($cache);
         }
     }
 

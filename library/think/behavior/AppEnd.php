@@ -11,11 +11,6 @@
 
 namespace think\behavior;
 
-use think\cache\CacheRequest;
-use think\Debug;
-use think\Request;
-use think\Response;
-
 class AppEnd{
 
     public $request;
@@ -24,16 +19,10 @@ class AppEnd{
 
     function __construct()
     {
-        $this->request    = Request::instance();
-        $this->req        = $this->request->getContent();
+
     }
 
     public function run(){
-        $this->cache();
-    }
 
-    private function cache(){
-        Debug::save(ROOT_PATH . 'test.log' , ['req'=>$this->req , 'content'=>Response::create()->getData()]);
-        CacheRequest::set($this->req,$this->request);
     }
 }
