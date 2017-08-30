@@ -103,7 +103,7 @@ class Doc
         $temp = explode("\\", $temp);$temp=array_values(array_filter($temp));
         $m = [];
         $m['name'] = $method->name;
-        $m['path'] = strtolower($temp[1]) . "/" . strtolower($temp[2]) . "/" . $method->name;
+        $m['path'] = strtolower($temp[0]) . "/" . strtolower($temp[2]) . "/" . $method->name;
         $rule = Route::name($m['path']);
         $route = '';
         if (!empty($rule)) {
