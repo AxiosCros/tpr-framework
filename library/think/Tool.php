@@ -15,7 +15,7 @@ class Tool {
         return md5($salt.uniqid(md5(microtime(true)),true));
     }
 
-    public static function uuidAddFlavour($salt='',$cut=8,$flavour='-',$isUpper=false){
+    public static function uuidAddFlavour($salt='', $cut=8, $flavour='-', $isUpper=false){
         $str = self::uuid($salt);
         $len = strlen($str);$length = $len;$uuid='';
         if(is_array($cut)){
@@ -32,7 +32,7 @@ class Tool {
                 $step++;
             }
         }
-        return $isUpper?strtoupper($uuid):$uuid;
+        return $isUpper ? strtoupper($uuid) : self::randUpper($uuid);
     }
 
     /**
@@ -164,6 +164,19 @@ class Tool {
             $str.=$strPol[rand(0,$max)];//rand($min,$max)生成介于min和max两个数之间的一个随机整数
         }
 
+        return $str;
+    }
+
+    /**
+     * 字符串随机大小写
+     * @param $str
+     * @return mixed
+     */
+    public static function randUpper($str){
+        $len = strlen($str);
+        for ($i=0 ; $i<$len; $i++){
+            $str[$i] = mt_rand(0,1) ? strtoupper($str[$i]) : strtolower($str[$i]);
+        }
         return $str;
     }
 
