@@ -16,13 +16,15 @@ class CacheRequest
 {
     public static function set($req, Request $request)
     {
-        $path = $request->path();
-        $expire = c('cache.' . $path, null);
-        $except = c('cache.except_param', ["token", "sign", "timestamp"]);
-        if (is_int($expire)) {
-            $param = $request->except($except);
-            $identify = self::identify($path , $param);
-            Cache::set($identify, $req, $expire);
+        if(!empty($req)){
+            $path = $request->path();
+            $expire = c('cache.' . $path, null);
+            $except = c('cache.except_param', ["token", "sign", "timestamp"]);
+            if (is_int($expire)) {
+                $param = $request->except($except);
+                $identify = self::identify($path , $param);
+                Cache::set($identify, $req, $expire);
+            }
         }
     }
 
