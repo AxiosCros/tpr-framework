@@ -62,6 +62,9 @@ class Response
         $this->code   = $code;
     }
 
+    /**
+     * @return Response
+     */
     public static function instance(){
         return self::$instance;
     }

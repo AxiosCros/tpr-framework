@@ -19,14 +19,16 @@ use think\Response;
 
 class RequestEnd extends Fork {
 
-    public $result;
+    public $result = [];
 
     public $request;
 
     function __construct()
     {
         $this->request = Request::instance();
-        $this->result  = Response::instance()->getData();
+        if(!empty(Request::instance())){
+            $this->result  = Response::instance()->getData();
+        }
     }
 
     public function run(){
