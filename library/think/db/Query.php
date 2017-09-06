@@ -117,6 +117,7 @@ class Query
     {
         $this->connection = Db::connect($config);
         $this->setBuilder();
+        $this->prefix = $this->connection->getConfig('prefix');
         return $this;
     }
 
