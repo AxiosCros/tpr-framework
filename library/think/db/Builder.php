@@ -669,7 +669,12 @@ abstract class Builder
      */
     protected function parseLock($lock = false)
     {
-        return $lock ? ' FOR UPDATE ' : '';
+        if (is_bool($lock)) {
+            return $lock ? ' FOR UPDATE ' : '';
+        } elseif (is_string($lock)) {
+            return ' ' . trim($lock) . ' ';
+        }
+        return '';
     }
 
     /**
