@@ -25,6 +25,7 @@ class Session
      */
     public static function prefix($prefix = '')
     {
+        empty(self::$init) && self::boot();
         if (empty($prefix) && null !== $prefix) {
             return self::$prefix;
         } else {
