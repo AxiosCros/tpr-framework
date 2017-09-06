@@ -323,7 +323,7 @@ class Query
      * 获取数据库的配置参数
      * @access public
      * @param string $name 参数名称
-     * @return boolean
+     * @return string|array
      */
     public function getConfig($name = '')
     {
