@@ -2610,8 +2610,11 @@ class Query
             $table = '';
         }
         $column    = $column ?: $this->getPk($table);
+        if (isset($options['order'])) {
+            unset($options['order']);
+        }
         $bind      = $this->bind;
-        $resultSet = $this->limit($count)->order($column, 'asc')->select();
+        $resultSet = $this->options($options)->limit($count)->order($column, 'asc')->select();
         if (strpos($column, '.')) {
             list($alias, $key) = explode('.', $column);
             unset($alias);
