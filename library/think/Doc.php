@@ -82,7 +82,7 @@ class Doc
             $methods = [];
             $m = 0;
             foreach ($_getMethods as $key => $method) {
-                if ($method->class == $class) {
+                if ($method->class == $class && strpos($method->name,'__' ) === false) {
                     $methods[$m] = self::makeMethodDoc($class, $method->name);
                     $m++;
                 }
