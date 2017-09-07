@@ -13,6 +13,7 @@ namespace think\behavior;
 
 use think\cache\CacheRequest;
 use think\Db;
+use think\Exception;
 use think\Fork;
 use think\Request;
 use think\Response;
@@ -26,8 +27,10 @@ class RequestEnd extends Fork {
     function __construct()
     {
         $this->request = Request::instance();
-        if(!empty(Request::instance())){
-            $this->result  = Response::instance()->getData();
+        try{
+            $this->result = Response::instance()->getData();
+        }catch (Exception $e){
+            $this->result = null;
         }
     }
 
