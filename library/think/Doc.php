@@ -115,7 +115,7 @@ class Doc
     {
         $reflectionClass = new \ReflectionClass($class);
         $method = $reflectionClass->getMethod($method_name);
-        $temp = str_replace(APP_NAMESPACE, '', $class);
+        $temp = str_replace(self::$config['app_namespace'], '', $class);
         $temp = explode("\\", $temp);
         $temp = array_values(array_filter($temp));
         $m = [];
