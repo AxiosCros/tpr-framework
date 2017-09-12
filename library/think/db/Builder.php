@@ -747,7 +747,7 @@ abstract class Builder
      */
     public function insertAll($dataSet, $options, $replace = false)
     {
-        $values = '';
+        $values = [];
         // 获取合法的字段
         if ('*' == $options['field']) {
             $fields = array_keys($this->query->getFieldsType($options['table']));
