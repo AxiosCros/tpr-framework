@@ -120,7 +120,7 @@ trait Jump
     {
         $result = [
             'code' => $code,
-            'msg' => $msg,
+            'msg'  => $msg,
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
@@ -170,18 +170,14 @@ trait Jump
         $this->response([], $code, $message, $header);
     }
 
-    protected function response($data = [], $code = 200, $message = '', array $header = [])
+    protected function response($data = [], $code = 200, $message = 'success', array $header = [])
     {
-        if (empty($message)) {
+        if ($code != 200 && empty($message)) {
             $message = c('code.' . strval($code), '');
-        }
-        $message = lang($message);
-        if (is_array($message)) {
-            $message = $code == 200 ? lang('success') : '';
         }
         $result = [
             'code' => $code,
-            'msg' => $message,
+            'msg' => $this->msg($message),
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
@@ -195,5 +191,15 @@ trait Jump
         $type = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);
+    }
+
+    private function msg($message = '')
+    {
+        $message = lang($message);
+        if (is_array($message)) {
+            $message = '';
+        }
+
+        return $message;
     }
 }
