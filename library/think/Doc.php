@@ -74,7 +74,7 @@ class Doc
         $class_list = [];
         foreach ($doc_file_list as $f) {
             if (isset(self::$classMap[$f])) {
-                $class_list[] = self::$classMap[$f];
+                $class_list[$f] = self::$classMap[$f];
             }
         }
 
