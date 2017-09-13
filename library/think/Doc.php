@@ -14,10 +14,10 @@ class Doc
     protected static $instance;
 
     protected static $config = [
-        'doc_path'  => [],
-        'load_path' => [],
+        'doc_path'      => [],
+        'load_path'     => [],
         'app_namespace' => '',
-        'connector' => ';'
+        'connector'     => ';'
     ];
 
     protected static $typeList = [
@@ -51,12 +51,13 @@ class Doc
         return self::$instance;
     }
 
-    public static function getClassPathList($app_path = APP_PATH , $layer = 'controller'){
+    public static function getClassPathList($app_path = APP_PATH, $layer = 'controller')
+    {
         $class_path = [];
         $dirHandle = opendir($app_path);
         while (false !== ($fileName = readdir($dirHandle))) {
             $subFile = $app_path . $fileName;
-            if (is_dir($subFile) && str_replace('.', '', $fileName) != '' && !in_array($fileName , c('deny_module_list',['common']))) {
+            if (is_dir($subFile) && str_replace('.', '', $fileName) != '' && !in_array($fileName, c('deny_module_list', ['common']))) {
                 $class_path[] = $subFile . DS . $layer;
             }
         }
@@ -90,16 +91,15 @@ class Doc
     {
         $doc = [];
         if (class_exists($class)) {
-            $reflectionClass = new \ReflectionClass($class);
-            $doc['name'] = $reflectionClass->name;
-            $doc['file_name'] = $reflectionClass->getFileName();
+            $reflectionClass   = new \ReflectionClass($class);
+            $doc['name']       = $reflectionClass->name;
+            $doc['file_name']  = $reflectionClass->getFileName();
             $doc['short_name'] = $reflectionClass->getShortName();
-            $comment = $this->trans($reflectionClass->getDocComment());
-            $doc['comment'] = $comment;
+            $doc['comment']    = $this->trans($reflectionClass->getDocComment());
 
             $_getMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
-            $methods = [];
-            $m = 0;
+
+            $methods     = [];  $m = 0;
             foreach ($_getMethods as $key => $method) {
                 if ($method->class == $class && strpos($method->name, '__') === false) {
                     $methods[$m] = $this->makeMethodDoc($class, $method->name);
@@ -114,10 +114,12 @@ class Doc
     public function makeMethodDoc($class, $method_name)
     {
         $reflectionClass = new \ReflectionClass($class);
+
         $method = $reflectionClass->getMethod($method_name);
-        $temp = str_replace(self::$config['app_namespace'], '', $class);
-        $temp = explode("\\", $temp);
-        $temp = array_values(array_filter($temp));
+        $temp   = str_replace(self::$config['app_namespace'], '', $class);
+        $temp   = explode("\\", $temp);
+        $temp   = array_values(array_filter($temp));
+
         $m = [];
         $m['name'] = $method->name;
         $m['path'] = strtolower($temp[0]) . "/" . strtolower($temp[2]) . "/" . $method->name;
@@ -126,9 +128,8 @@ class Doc
         if (!empty($rule)) {
             $route = $rule[0][0];
         }
-        $m['route'] = $route;
-        $method_comment = $this->trans($method->getDocComment());
-        $m['comment'] = $method_comment;
+        $m['route']     = $route;
+        $m['comment']   = $this->trans($method->getDocComment());
         return $m;
     }
 
@@ -241,12 +242,12 @@ class Doc
     {
         $file_list = [];
         if (is_string($dir)) {
-             self::deepScanDir($dir,$file_list);
+            self::deepScanDir($dir, $file_list);
         } else if (is_array($dir)) {
             $file_list = [];
             foreach ($dir as $d) {
                 if (is_string($d)) {
-                    self::deepScanDir($d,$list);
+                    self::deepScanDir($d, $list);
                     foreach ($list as $l) {
                         array_push($file_list, $l);
                     }
@@ -260,7 +261,7 @@ class Doc
     {
         $files = self::scanDir($dir);
         foreach ($files as $k => $f) {
-            if(strpos($f,'.php') !==false){
+            if (strpos($f, '.php') !== false) {
                 require_once $f;
                 $content = file_get_contents($f);
                 $namespace_begin = strpos($content, 'namespace') + 10;
@@ -271,9 +272,9 @@ class Doc
         }
     }
 
-    private static function deepScanDir($dir , &$fileArr = [])
+    private static function deepScanDir($dir, &$fileArr = [])
     {
-        if(is_null($fileArr)){
+        if (is_null($fileArr)) {
             $fileArr = [];
         }
         $dir = rtrim($dir, '//');
@@ -283,9 +284,9 @@ class Doc
             while (false !== ($fileName = readdir($dirHandle))) {
                 $subFile = $dir . DIRECTORY_SEPARATOR . $fileName;
                 if (is_file($subFile)) {
-                    array_push($fileArr , $subFile);
-                }elseif (is_dir($subFile) && str_replace('.', '', $fileName) != '') {
-                   self::deepScanDir($subFile,$fileArr);
+                    array_push($fileArr, $subFile);
+                } elseif (is_dir($subFile) && str_replace('.', '', $fileName) != '') {
+                    self::deepScanDir($subFile, $fileArr);
                 }
             }
             closedir($dirHandle);
