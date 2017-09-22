@@ -56,6 +56,8 @@ class Db
     // 执行次数
     public static $executeTimes = 0;
 
+    public static $MODEL = [];
+
     /**
      * 数据库初始化 并取得数据库类实例
      * @static
@@ -95,6 +97,19 @@ class Db
 
     public static function clear(){
         self::$instance = null;
+    }
+
+    /**
+     * @param $name
+     * @param bool $force  是否强制实例化
+     * @return mixed|Query
+     */
+    public static function model($name , $force = false){
+        if(isset(self::$MODEL[$name]) && !is_null(self::$MODEL[$name]) && !$force){
+            return self::$MODEL[$name];
+        }
+        self::$MODEL[$name] = db($name);
+        return self::$MODEL[$name];
     }
 
     /**
