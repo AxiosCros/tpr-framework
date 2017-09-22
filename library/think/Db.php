@@ -101,16 +101,17 @@ class Db
     }
 
     /**
+     * 避免重复实例化和重复的数据库连接
      * @param $name
-     * @param array $config
+     * @param string $config 配置索引
      * @param bool $force  是否强制实例化
      * @return mixed
      */
-    public static function model($name , $config = [] , $force = false){
+    public static function model($name , $config = '' , $force = false){
         if(isset(self::$MODEL[$name]) && !is_null(self::$MODEL[$name]) && !$force){
             return self::$MODEL[$name];
         }
-        self::$MODEL[$name] = db($name , $config);
+        self::$MODEL[$name] = self::connect($name , $config);
         return self::$MODEL[$name];
     }
 
