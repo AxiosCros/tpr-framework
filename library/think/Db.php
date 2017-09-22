@@ -97,6 +97,7 @@ class Db
 
     public static function clear(){
         self::$instance = null;
+        self::$MODEL = [];
     }
 
     /**
