@@ -101,14 +101,15 @@ class Db
 
     /**
      * @param $name
+     * @param array $config
      * @param bool $force  是否强制实例化
-     * @return mixed|Query
+     * @return mixed
      */
-    public static function model($name , $force = false){
+    public static function model($name , $config = [] , $force = false){
         if(isset(self::$MODEL[$name]) && !is_null(self::$MODEL[$name]) && !$force){
             return self::$MODEL[$name];
         }
-        self::$MODEL[$name] = db($name);
+        self::$MODEL[$name] = db($name , $config);
         return self::$MODEL[$name];
     }
 
