@@ -53,10 +53,12 @@ class Doc
 
     public static function getClassPathList($app_path = APP_PATH, $layer = 'controller')
     {
+        $app_path = rtrim($app_path, '//');
+
         $class_path = [];
         $dirHandle = opendir($app_path);
         while (false !== ($fileName = readdir($dirHandle))) {
-            $subFile = $app_path . $fileName;
+            $subFile = $app_path . DIRECTORY_SEPARATOR . $fileName;
             if (is_dir($subFile) && str_replace('.', '', $fileName) != '' && !in_array($fileName, c('deny_module_list', ['common']))) {
                 $class_path[] = $subFile . DS . $layer;
             }
@@ -74,7 +76,7 @@ class Doc
         $class_list = [];
         foreach ($doc_file_list as $f) {
             if (isset(self::$classMap[$f])) {
-                $class_list[] = self::$classMap[$f];
+                $class_list[$f] = self::$classMap[$f];
             }
         }
 
