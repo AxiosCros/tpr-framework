@@ -195,8 +195,11 @@ trait Jump
 
     private function msg($message = '')
     {
-        $message = lang($message);
-        if (is_array($message)) {
+        if(!empty($message)){
+            $message = lang($message);
+        }
+
+        if(!is_string($message)){
             $message = '';
         }
 
