@@ -52,9 +52,9 @@ trait Jump
         }
         $result = [
             'code' => $code,
-            'msg' => $msg,
+            'msg'  => $this->msg($msg),
             'data' => $data,
-            'url' => $url,
+            'url'  => $url,
             'wait' => $wait,
         ];
 
@@ -91,9 +91,9 @@ trait Jump
         }
         $result = [
             'code' => $code,
-            'msg' => $msg,
+            'msg'  => $this->msg($msg),
             'data' => $data,
-            'url' => $url,
+            'url'  => $url,
             'wait' => $wait,
         ];
 
@@ -120,7 +120,7 @@ trait Jump
     {
         $result = [
             'code' => $code,
-            'msg'  => $msg,
+            'msg'  => $this->msg($msg),
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
