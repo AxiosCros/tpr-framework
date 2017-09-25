@@ -131,6 +131,7 @@ class App
 
         // 输出数据到客户端
         if ($data instanceof Response) {
+            Response::create();
             $response = $data;
         } elseif (!is_null($data)) {
             // 默认自动识别响应输出类型

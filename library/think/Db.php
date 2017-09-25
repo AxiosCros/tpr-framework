@@ -56,6 +56,8 @@ class Db
     // 执行次数
     public static $executeTimes = 0;
 
+    public static $MODEL = [];
+
     /**
      * 数据库初始化 并取得数据库类实例
      * @static
@@ -95,6 +97,22 @@ class Db
 
     public static function clear(){
         self::$instance = null;
+        self::$MODEL = [];
+    }
+
+    /**
+     * 避免重复实例化和重复的数据库连接
+     * @param $name
+     * @param string $config 配置索引
+     * @param bool $force  是否强制实例化
+     * @return mixed
+     */
+    public static function model($name , $config = '' , $force = false){
+        if(isset(self::$MODEL[$name]) && !is_null(self::$MODEL[$name]) && !$force){
+            return self::$MODEL[$name];
+        }
+        self::$MODEL[$name] = self::connect($name , $config);
+        return self::$MODEL[$name];
     }
 
     /**
