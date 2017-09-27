@@ -31,12 +31,14 @@ class Mysql extends Connection
      */
     protected function parseDsn($config)
     {
-        $dsn = 'mysql:dbname=' . $config['database'] . ';host=' . $config['hostname'];
-        if (!empty($config['hostport'])) {
-            $dsn .= ';port=' . $config['hostport'];
-        } elseif (!empty($config['socket'])) {
-            $dsn .= ';unix_socket=' . $config['socket'];
+        if (!empty($config['socket'])) {
+            $dsn = 'mysql:unix_socket=' . $config['socket'];
+        } elseif (!empty($config['hostport'])) {
+            $dsn = 'mysql:host=' . $config['hostname'] . ';port=' . $config['hostport'];
+        } else {
+            $dsn = 'mysql:host=' . $config['hostname'];
         }
+        $dsn .= ';dbname=' . $config['database'];
         if (!empty($config['charset'])) {
             $dsn .= ';charset=' . $config['charset'];
         }
@@ -58,17 +60,18 @@ class Mysql extends Connection
             }
             $tableName = '`' . $tableName . '`';
         }
-        $sql    = 'SHOW COLUMNS FROM ' . $tableName;
-        $pdo    = $this->query($sql, [], false, true);
+        $sql = 'SHOW COLUMNS FROM ' . $tableName;
+        /*** @var \PDOStatement $pdo ***/
+        $pdo = $this->query($sql, [], false, true);
         $result = $pdo->fetchAll(PDO::FETCH_ASSOC);
-        $info   = [];
+        $info = [];
         if ($result) {
             foreach ($result as $key => $val) {
-                $val                 = array_change_key_case($val);
+                $val = array_change_key_case($val);
                 $info[$val['field']] = [
-                    'name'    => $val['field'],
-                    'type'    => $val['type'],
-                    'notnull' => (bool) ('' === $val['null']), // not null is empty, null is yes
+                    'name' => $val['field'],
+                    'type' => $val['type'],
+                    'notnull' => (bool)('' === $val['null']), // not null is empty, null is yes
                     'default' => $val['default'],
                     'primary' => (strtolower($val['key']) == 'pri'),
                     'autoinc' => (strtolower($val['extra']) == 'auto_increment'),
@@ -86,10 +89,11 @@ class Mysql extends Connection
      */
     public function getTables($dbName = '')
     {
-        $sql    = !empty($dbName) ? 'SHOW TABLES FROM ' . $dbName : 'SHOW TABLES ';
-        $pdo    = $this->query($sql, [], false, true);
+        $sql = !empty($dbName) ? 'SHOW TABLES FROM ' . $dbName : 'SHOW TABLES ';
+        /*** @var \PDOStatement $pdo ***/
+        $pdo = $this->query($sql, [], false, true);
         $result = $pdo->fetchAll(PDO::FETCH_ASSOC);
-        $info   = [];
+        $info = [];
         foreach ($result as $key => $val) {
             $info[$key] = current($val);
         }
@@ -104,7 +108,7 @@ class Mysql extends Connection
      */
     protected function getExplain($sql)
     {
-        $pdo    = $this->linkID->query("EXPLAIN " . $sql);
+        $pdo = $this->linkID->query("EXPLAIN " . $sql);
         $result = $pdo->fetch(PDO::FETCH_ASSOC);
         $result = array_change_key_case($result);
         if (isset($result['extra'])) {
