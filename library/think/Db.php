@@ -105,7 +105,7 @@ class Db
      * @param $name
      * @param string $config 配置索引
      * @param bool $force  是否强制实例化
-     * @return mixed
+     * @return Query
      */
     public static function model($name , $config = '' , $force = false){
         if(isset(self::$MODEL[$name]) && !is_null(self::$MODEL[$name]) && !$force){
