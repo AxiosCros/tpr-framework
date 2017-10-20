@@ -102,7 +102,7 @@ class Db
 
     /**
      * 避免重复实例化和重复的数据库连接
-     * @param $name
+     * @param string $name 连接标识
      * @param string $config 配置索引
      * @param bool $force  是否强制实例化
      * @return Query
