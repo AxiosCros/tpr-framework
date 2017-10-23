@@ -102,17 +102,16 @@ class Db
 
     /**
      * 避免重复实例化和重复的数据库连接
-     * @param string $name 连接标识
      * @param string $config 配置索引
      * @param bool $force  是否强制实例化
      * @return Query
      */
-    public static function model($name , $config = '' , $force = false){
-        if(isset(self::$MODEL[$name]) && !is_null(self::$MODEL[$name]) && !$force){
-            return self::$MODEL[$name];
+    public static function model($config = 'default' , $force = false){
+        if(isset(self::$MODEL[$config]) && !is_null(self::$MODEL[$config]) && !$force){
+            return self::$MODEL[$config];
         }
-        self::$MODEL[$name] = self::connect($name , $config);
-        return self::$MODEL[$name];
+        self::$MODEL[$config] = self::connect($config , $config);
+        return self::$MODEL[$config];
     }
 
     /**
