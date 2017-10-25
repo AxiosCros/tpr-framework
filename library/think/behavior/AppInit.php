@@ -14,10 +14,12 @@ use think\Tool;
 class AppInit {
     public function run(){
         Tool::identity(1);
-        Hook::add('action_begin' ,'think\\behavior\\ActionBegin');
-        Hook::add('app_end' ,'think\\behavior\\AppEnd');
-        Hook::add('log_write_done', 'think\\behavior\\LogWriteDone');
-        Hook::add('request_end', 'think\\behavior\\RequestEnd');
-        Hook::add('response_end', 'think\\behavior\\ResponseEnd');
+        if(!IS_CLI){
+            Hook::add('action_begin' ,'think\\behavior\\ActionBegin');
+            Hook::add('app_end' ,'think\\behavior\\AppEnd');
+            Hook::add('log_write_done', 'think\\behavior\\LogWriteDone');
+            Hook::add('request_end', 'think\\behavior\\RequestEnd');
+            Hook::add('request_end', 'think\\behavior\\ResponseEnd');
+        }
     }
 }
