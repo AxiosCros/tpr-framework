@@ -1,7 +1,7 @@
 {
     "name": "axios/tpr-framework",
     "description": "base on thinkphp5",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "keywords": [
         "framework",
         "thinkphp",
