@@ -178,6 +178,14 @@ class Request
     }
 
     /**
+     * 清除Request实例
+     * @desc 用于长连接情况下重置每次请求
+     */
+    public static function clear(){
+        self::$instance = null;
+    }
+
+    /**
      * 创建一个URL请求
      * @access public
      * @param string    $uri URL地址
@@ -636,6 +644,18 @@ class Request
             return $this->input($data, '', $default, $filter);
         }
         return $this->input($this->param, $name, $default, $filter);
+    }
+
+    /**
+     * @param array|string $param 设置自定义参数
+     * @param string $value
+     */
+    public function setParam($param , $value = ""){
+        if(is_array($param)){
+            self::$instance->param = array_merge($this->param , $param);
+        }else if (is_string($param)){
+            self::$instance->param[$param] = $value;
+        }
     }
 
     /**

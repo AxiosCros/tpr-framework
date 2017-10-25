@@ -325,14 +325,15 @@ class App
      * @param array $result 模块/控制器/操作
      * @param array $config 配置参数
      * @param bool $convert 是否自动转换控制器和操作名
+     * @param Request $request 自定义请求(非必须)
      * @return mixed
      */
-    public static function module($result, $config, $convert = null)
+    public static function module($result, $config, $convert = null, Request $request = null)
     {
         if (is_string($result)) {
             $result = explode('/', $result);
         }
-        $request = Request::instance();
+        $request = is_null($request) ? Request::instance() : $request;
         if ($config['app_multi_module']) {
             // 多模块部署
             $module = strip_tags(strtolower($result[0] ?: $config['default_module']));
