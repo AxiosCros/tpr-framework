@@ -22,7 +22,7 @@ class Doc
 
     protected static $typeList = [
         'char', 'string', 'int', 'float', 'boolean', 'bool', 'date',
-        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed'
+        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed','file'
     ];
 
     private static $isConnect = false;
