@@ -67,7 +67,7 @@ class Doc
         return $class_path;
     }
 
-    public function doc()
+    public function doc($filter = 'public')
     {
         self::loadFiles(self::$config['load_path']);
 
@@ -81,16 +81,32 @@ class Doc
         }
 
         $doc = [];
+
         foreach ($class_list as $class) {
-            $class_doc = $this->makeClassDoc($class);
+            $class_doc = $this->makeClassDoc($class, $filter);
             array_push($doc, $class_doc);
         }
 
         return $doc;
     }
 
-    public function makeClassDoc($class = '')
+    private function filter($filter = null){
+        if(!is_null($filter)){
+            switch ($filter){
+                case 'public':    $filter = \ReflectionMethod::IS_PUBLIC;break;
+                case 'static':    $filter = \ReflectionMethod::IS_STATIC;break;
+                case 'protected': $filter = \ReflectionMethod::IS_PROTECTED;break;
+                case 'private':   $filter = \ReflectionMethod::IS_PRIVATE;break;
+                case 'abstract':  $filter = \ReflectionMethod::IS_ABSTRACT;break;
+                case 'final':     $filter = \ReflectionMethod::IS_FINAL;break;
+            }
+        }
+        return $filter;
+    }
+
+    public function makeClassDoc($class = '',$filter = 'public')
     {
+        $filter = $this->filter($filter);
         $doc = [];
         if (class_exists($class)) {
             $reflectionClass   = new \ReflectionClass($class);
@@ -98,8 +114,9 @@ class Doc
             $doc['file_name']  = $reflectionClass->getFileName();
             $doc['short_name'] = $reflectionClass->getShortName();
             $doc['comment']    = $this->trans($reflectionClass->getDocComment());
+            $doc['property']   = \Reflection::getModifierNames($reflectionClass->getModifiers());
 
-            $_getMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+            $_getMethods = $reflectionClass->getMethods($filter);
 
             $methods     = [];  $m = 0;
             foreach ($_getMethods as $key => $method) {
@@ -132,6 +149,8 @@ class Doc
         }
         $m['route']     = $route;
         $m['comment']   = $this->trans($method->getDocComment());
+
+        $m['property']  = \Reflection::getModifierNames($method->getModifiers());
         return $m;
     }
 
