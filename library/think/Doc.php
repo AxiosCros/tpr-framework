@@ -93,12 +93,12 @@ class Doc
     private function filter($filter = null){
         if(!is_null($filter)){
             switch ($filter){
-                case 'public':    $filter = \ReflectionMethod::IS_PUBLIC;break;
-                case 'static':    $filter = \ReflectionMethod::IS_STATIC;break;
-                case 'protected': $filter = \ReflectionMethod::IS_PROTECTED;break;
-                case 'private':   $filter = \ReflectionMethod::IS_PRIVATE;break;
-                case 'abstract':  $filter = \ReflectionMethod::IS_ABSTRACT;break;
-                case 'final':     $filter = \ReflectionMethod::IS_FINAL;break;
+                case 'public':    $filter = \ReflectionMethod::IS_PUBLIC;    break;
+                case 'static':    $filter = \ReflectionMethod::IS_STATIC;    break;
+                case 'protected': $filter = \ReflectionMethod::IS_PROTECTED; break;
+                case 'private':   $filter = \ReflectionMethod::IS_PRIVATE;   break;
+                case 'abstract':  $filter = \ReflectionMethod::IS_ABSTRACT;  break;
+                case 'final':     $filter = \ReflectionMethod::IS_FINAL;     break;
             }
         }
         return $filter;
