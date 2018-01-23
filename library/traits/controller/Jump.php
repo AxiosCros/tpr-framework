@@ -177,7 +177,7 @@ trait Jump
         }
         $result = [
             'code' => $code,
-            'msg' => $this->msg($message),
+            'msg'  => $this->msg($message),
             'time' => $_SERVER['REQUEST_TIME'],
             'data' => $data,
         ];
