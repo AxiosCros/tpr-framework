@@ -38,7 +38,7 @@ trait Jump
      * @param array $header 发送的Header信息
      * @return void
      */
-    protected function success($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
+    protected function success($msg = 'success', $url = null, $data = '', $wait = 3, array $header = [])
     {
         $code = 1;
         if (is_numeric($msg)) {
@@ -77,7 +77,7 @@ trait Jump
      * @param array $header 发送的Header信息
      * @return void
      */
-    protected function error($msg = '', $url = null, $data = '', $wait = 3, array $header = [])
+    protected function error($msg = 'error', $url = null, $data = '', $wait = 3, array $header = [])
     {
         $code = 0;
         if (is_numeric($msg)) {
