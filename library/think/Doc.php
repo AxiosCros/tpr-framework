@@ -236,7 +236,7 @@ class Doc
                 }
             }
 
-            $data['desc'] = $desc;
+            $data['desc'] = trim($desc);
             $content = $data;
         }
         return $content;
