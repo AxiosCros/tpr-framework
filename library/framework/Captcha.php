@@ -11,24 +11,8 @@ namespace tpr\framework;
 
 class Captcha
 {
-    protected $seKey;
-    protected $codeSet;
-    protected $expire;
-    protected $useZh;
-    protected $useImgBg;
-    protected $fontSize;
-    protected $useCurve;
-    protected $useNoise;
-    protected $imageW;
-    protected $imageH;
-    protected $length;
-    protected $fontttf;
-    protected $bg;
-    protected $reset;
-    protected $zhSet;
-
     protected $config = [
-        'seKey'    => 'TPR-CMS',
+        'seKey'    => 'ThinkPHP.CN',
         // 验证码加密密钥
         'codeSet'  => '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY',
         // 验证码字符集合

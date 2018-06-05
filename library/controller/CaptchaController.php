@@ -10,14 +10,12 @@ namespace tpr\controller;
 
 use tpr\framework\Captcha;
 use tpr\framework\Config;
-use tpr\framework\Request;
 
 class CaptchaController
 {
-    public function index()
+    public function index($id = "")
     {
         $captcha = new Captcha((array)Config::get('captcha'));
-        $id = Request::instance()->get('id');
         return $captcha->entry($id);
     }
 }
