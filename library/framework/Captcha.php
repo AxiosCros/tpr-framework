@@ -11,8 +11,24 @@ namespace tpr\framework;
 
 class Captcha
 {
+    protected $seKey;
+    protected $codeSet;
+    protected $expire;
+    protected $useZh;
+    protected $useImgBg;
+    protected $fontSize;
+    protected $useCurve;
+    protected $useNoise;
+    protected $imageW;
+    protected $imageH;
+    protected $length;
+    protected $fontttf;
+    protected $bg;
+    protected $reset;
+    protected $zhSet;
+
     protected $config = [
-        'seKey'    => 'ThinkPHP.CN',
+        'seKey'    => 'TPR-CMS',
         // 验证码加密密钥
         'codeSet'  => '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY',
         // 验证码字符集合
@@ -187,9 +203,7 @@ class Captcha
                 imagettftext($this->_image, $this->fontSize, mt_rand(-40, 40), $codeNX, $this->fontSize * 1.6, $this->_color, $this->fontttf, $code[$i]);
             }
         }
-        $test = strtoupper(implode('', $code));
-        dump($test);
-        Session::set('test_code',$test);
+
         // 保存验证码
         $key                   = $this->authcode($this->seKey);
         $code                  = $this->authcode(strtoupper(implode('', $code)));
