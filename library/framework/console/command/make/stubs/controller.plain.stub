@@ -1,0 +1,10 @@
+<?php
+
+namespace {%namespace%};
+
+use tpr\framework\Controller;
+
+class {%className%} extends Controller
+{
+    //
+}

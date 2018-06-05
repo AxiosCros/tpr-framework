@@ -9,22 +9,21 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-namespace traits\think;
+namespace tpr\traits\think;
 
-use think\Exception;
+use tpr\framework\Exception;
 
 trait Instance
 {
     protected static $instance = null;
 
     /**
-     * @param array $options
      * @return static
      */
-    public static function instance($options = [])
+    public static function instance()
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self($options);
+            self::$instance = new self();
         }
         return self::$instance;
     }

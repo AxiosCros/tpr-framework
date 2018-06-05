@@ -1,0 +1,10 @@
+<?php
+
+namespace {%namespace%};
+
+use tpr\framework\Model;
+
+class {%className%} extends Model
+{
+    //
+}

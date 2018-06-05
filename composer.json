@@ -1,10 +1,9 @@
 {
     "name": "axios/tpr-framework",
-    "description": "base on thinkphp5",
-    "version": "1.1.8",
+    "description": "base on thinkphp5.0.9,design for API Development",
+    "version": "2.0",
     "keywords": [
         "framework",
-        "thinkphp",
         "ORM",
         "Api"
     ],
@@ -20,9 +19,11 @@
         "issues": "https://github.com/AxiosCros/tpr-framework/issues"
     },
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "axios/tpr-db": "^0.1.0"
     },
     "require-dev": {
+
         "mikey179/vfsStream": "~1.6",
         "phploc/phploc": "2.*",
         "sebastian/phpcpd": "2.*",
@@ -31,7 +32,7 @@
     },
     "autoload": {
         "psr-4": {
-            "think\\": "library/think"
+            "tpr\\": "library/"
         }
     }
 }

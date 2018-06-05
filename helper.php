@@ -13,21 +13,20 @@
 // ThinkPHP 助手函数
 //-------------------------
 
-use think\Cache;
-use think\Config;
-use think\Cookie;
-use think\Db;
-use think\Debug;
-use think\exception\HttpException;
-use think\exception\HttpResponseException;
-use think\Lang;
-use think\Loader;
-use think\Log;
-use think\Model;
-use think\Request;
-use think\Response;
-use think\Session;
-use think\Url;
+use tpr\framework\Cache;
+use tpr\framework\Config;
+use tpr\framework\Cookie;
+use tpr\db\Db;
+use tpr\framework\Debug;
+use tpr\framework\exception\HttpException;
+use tpr\framework\exception\HttpResponseException;
+use tpr\framework\Lang;
+use tpr\framework\Loader;
+use tpr\framework\Log;
+use tpr\framework\Request;
+use tpr\framework\Response;
+use tpr\framework\Session;
+use tpr\framework\Url;
 
 if (!function_exists('D')) {
     function D($table_name, $config = null)
@@ -54,7 +53,7 @@ if (!function_exists('c')) {
 if (!function_exists('env')) {
     function env($index, $default = '')
     {
-        return \think\Env::get($index, $default);
+        return \tpr\framework\Env::get($index, $default);
     }
 }
 
@@ -146,6 +145,7 @@ if (!function_exists('input')) {
      * @param mixed $default 默认值
      * @param string $filter 过滤方法
      * @return mixed
+     * @throws \tpr\framework\Exception
      */
     function input($key = '', $default = null, $filter = '')
     {
@@ -177,7 +177,9 @@ if (!function_exists('widget')) {
      * 渲染输出Widget
      * @param string $name Widget名称
      * @param array $data 传入的参数
-     * @return mixed
+     * @return bool|mixed
+     * @throws ReflectionException
+     * @throws \tpr\framework\Exception
      */
     function widget($name, $data = [])
     {
@@ -213,19 +215,6 @@ if (!function_exists('validate')) {
     }
 }
 
-if (!function_exists('db')) {
-    /**
-     * 实例化数据库类
-     * @param string $name 操作的数据表名称（不含前缀）
-     * @param array|string $config 数据库配置参数
-     * @param bool $force 是否强制重新连接
-     * @return \think\db\Query
-     */
-    function db($name = '', $config = [], $force = false)
-    {
-        return Db::connect($config, $force)->name($name);
-    }
-}
 
 if (!function_exists('controller')) {
     /**
@@ -233,7 +222,9 @@ if (!function_exists('controller')) {
      * @param string $name 资源地址
      * @param string $layer 控制层名称
      * @param bool $appendSuffix 是否添加类名后缀
-     * @return Object|false
+     * @return mixed|null
+     * @throws ReflectionException
+     * @throws \tpr\framework\Exception
      */
     function controller($name, $layer = 'controller', $appendSuffix = false)
     {
@@ -248,7 +239,9 @@ if (!function_exists('action')) {
      * @param string|array $vars 调用参数 支持字符串和数组
      * @param string $layer 要调用的控制层名称
      * @param bool $appendSuffix 是否添加类名后缀
-     * @return mixed
+     * @return bool|mixed
+     * @throws ReflectionException
+     * @throws \tpr\framework\Exception
      */
     function action($url, $vars = [], $layer = 'controller', $appendSuffix = false)
     {
@@ -471,7 +464,7 @@ if (!function_exists('view')) {
      * @param array $vars 模板变量
      * @param array $replace 模板替换
      * @param integer $code 状态码
-     * @return \think\response\View
+     * @return \tpr\framework\response\View
      */
     function view($template = '', $vars = [], $replace = [], $code = 200)
     {
@@ -486,7 +479,7 @@ if (!function_exists('json')) {
      * @param integer $code 状态码
      * @param array $header 头部
      * @param array $options 参数
-     * @return \think\response\Json
+     * @return \tpr\framework\response\Json
      */
     function json($data = [], $code = 200, $header = [], $options = [])
     {
@@ -501,7 +494,7 @@ if (!function_exists('jsonp')) {
      * @param integer $code 状态码
      * @param array $header 头部
      * @param array $options 参数
-     * @return \think\response\Jsonp
+     * @return \tpr\framework\response\Jsonp
      */
     function jsonp($data = [], $code = 200, $header = [], $options = [])
     {
@@ -516,7 +509,7 @@ if (!function_exists('xml')) {
      * @param integer $code 状态码
      * @param array $header 头部
      * @param array $options 参数
-     * @return \think\response\Xml
+     * @return \tpr\framework\response\Xml
      */
     function xml($data = [], $code = 200, $header = [], $options = [])
     {
@@ -531,7 +524,7 @@ if (!function_exists('redirect')) {
      * @param array|integer $params 额外参数
      * @param integer $code 状态码
      * @param array $with 隐式传参
-     * @return \think\response\Redirect
+     * @return \tpr\framework\response\Redirect
      */
     function redirect($url = [], $params = [], $code = 302, $with = [])
     {
@@ -578,44 +571,11 @@ if (!function_exists('token')) {
      * @param string $name 令牌名称
      * @param mixed $type 令牌生成方法
      * @return string
+     * @throws \tpr\framework\Exception
      */
     function token($name = '__token__', $type = 'md5')
     {
         $token = Request::instance()->token($name, $type);
         return '<input type="hidden" name="' . $name . '" value="' . $token . '" />';
-    }
-}
-
-if (!function_exists('load_relation')) {
-    /**
-     * 延迟预载入关联查询
-     * @param mixed $resultSet 数据集
-     * @param mixed $relation 关联
-     * @return array
-     */
-    function load_relation($resultSet, $relation)
-    {
-        $item = current($resultSet);
-        if ($item instanceof Model) {
-            $item->eagerlyResultSet($resultSet, $relation);
-        }
-        return $resultSet;
-    }
-}
-
-if (!function_exists('collection')) {
-    /**
-     * 数组转换为数据集对象
-     * @param array $resultSet 数据集数组
-     * @return \think\model\Collection|\think\Collection
-     */
-    function collection($resultSet)
-    {
-        $item = current($resultSet);
-        if ($item instanceof Model) {
-            return \think\model\Collection::make($resultSet);
-        } else {
-            return \think\Collection::make($resultSet);
-        }
     }
 }

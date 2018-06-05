@@ -13,16 +13,16 @@
  * }
  */
 
-namespace traits\controller;
+namespace tpr\traits\controller;
 
-use think\Config;
-use think\exception\HttpResponseException;
-use think\Request;
-use think\Response;
-use think\response\Redirect;
-use think\Tool;
-use think\Url;
-use think\View as ViewTemplate;
+use tpr\framework\Config;
+use tpr\framework\exception\HttpResponseException;
+use tpr\framework\Request;
+use tpr\framework\Response;
+use tpr\framework\response\Redirect;
+use tpr\framework\Tool;
+use tpr\framework\Url;
+use tpr\framework\View as ViewTemplate;
 
 trait Jump
 {
@@ -76,6 +76,7 @@ trait Jump
      * @param integer $wait 跳转等待时间
      * @param array $header 发送的Header信息
      * @return void
+     * @throws \tpr\framework\Exception
      */
     protected function error($msg = 'error', $url = null, $data = '', $wait = 3, array $header = [])
     {
@@ -153,6 +154,7 @@ trait Jump
      * 获取当前的response 输出类型
      * @access protected
      * @return string
+     * @throws \tpr\framework\Exception
      */
     protected function getResponseType()
     {
