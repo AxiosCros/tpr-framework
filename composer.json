@@ -1,10 +1,9 @@
 {
     "name": "axios/tpr-framework",
-    "description": "base on thinkphp5",
-    "version": "1.1.8",
+    "description": "base on thinkphp5.0.9,design for API Development",
+    "version": "2.0",
     "keywords": [
         "framework",
-        "thinkphp",
         "ORM",
         "Api"
     ],
