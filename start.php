@@ -9,7 +9,7 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-namespace think;
+namespace tpr\framework;
 
 // ThinkPHP 引导文件
 // 加载基础文件

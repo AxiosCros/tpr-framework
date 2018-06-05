@@ -79,7 +79,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title><?php echo \think\Lang::get('System Error'); ?></title>
+    <title><?php echo \tpr\framework\Lang::get('System Error'); ?></title>
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style>
@@ -313,7 +313,7 @@
     <div class="echo">
         <?php echo $echo;?>
     </div>
-    <?php if(\think\App::$debug) { ?>
+    <?php if(\tpr\framework\App::$debug) { ?>
     <div class="exception">
     <div class="message">
         
@@ -444,7 +444,7 @@
         <span>V<?php echo THINK_VERSION; ?></span> 
         <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
     </div>
-    <?php if(\think\App::$debug) { ?>
+    <?php if(\tpr\framework\App::$debug) { ?>
     <script>
         var LINE = <?php echo $line; ?>;
 

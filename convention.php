@@ -151,7 +151,7 @@ return [
     'error_message'          => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'         => false,
-    // 异常处理handle类 留空使用 \think\exception\Handle
+    // 异常处理handle类 留空使用 \tpr\framework\exception\Handle
     'exception_handle'       => '',
 
     // +----------------------------------------------------------------------
@@ -199,7 +199,7 @@ return [
         // SESSION_ID的提交变量,解决flash上传跨域
         'var_session_id' => '',
         // SESSION 前缀
-        'prefix'         => 'think',
+        'prefix'         => 'tpr',
         // 驱动方式 支持redis memcache memcached
         'type'           => '',
         // 是否自动开启 SESSION

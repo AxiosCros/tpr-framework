@@ -16,7 +16,7 @@ define('EXT', '.php');
 defined('DS') or define('DS',DIRECTORY_SEPARATOR);
 defined('THINK_PATH') or define('THINK_PATH', __DIR__ . DS);
 define('LIB_PATH', THINK_PATH . 'library' . DS);
-define('CORE_PATH', LIB_PATH . 'think' . DS);
+define('CORE_PATH', LIB_PATH . 'framework' . DS);
 define('TRAIT_PATH', LIB_PATH . 'traits' . DS);
 defined('ROOT_PATH') or define('ROOT_PATH', dirname(dirname($_SERVER['SCRIPT_FILENAME'])) . DS);
 defined('APP_PATH') or define('APP_PATH', ROOT_PATH . DS . 'application' . DS);
@@ -56,10 +56,10 @@ if (is_file(ROOT_PATH . '.env')) {
 }
 
 // 注册自动加载
-\think\Loader::register();
+\tpr\framework\Loader::register();
 
 // 注册错误和异常处理机制
-\think\Error::register();
+\tpr\framework\Error::register();
 
 // 加载惯例配置文件
-\think\Config::set(include THINK_PATH . 'convention' . EXT);
+\tpr\framework\Config::set(include THINK_PATH . 'convention' . EXT);
