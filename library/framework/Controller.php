@@ -112,6 +112,14 @@ class Controller
      */
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
+        if(empty($template)){
+            $template = $this->request->action();
+        }
+
+        if (strpos($template, ':') === false) {
+            $template = strtolower($this->request->module()) . ":" . strtolower($this->request->controller()) . ":" . $template;
+        }
+
         return $this->view->fetch($template, $vars, $replace, $config);
     }
 
