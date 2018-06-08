@@ -98,6 +98,7 @@ class Response
      * @access public
      * @return void
      * @throws \InvalidArgumentException
+     * @throws Exception
      */
     public function send()
     {
@@ -159,6 +160,7 @@ class Response
      */
     protected function output($data)
     {
+        $data = Tool::checkData2String($data);
         return $data;
     }
 
