@@ -11,31 +11,12 @@
 
 namespace tpr\framework\behavior;
 
-use tpr\framework\cache\CacheRequest;
 use tpr\db\Db;
-use tpr\framework\Exception;
 use tpr\framework\Fork;
-use tpr\framework\Request;
-use tpr\framework\Response;
 
 class RequestEnd extends Fork {
 
-    public $result = [];
-
-    public $request;
-
-    function __construct()
-    {
-        $this->request = Request::instance();
-        try{
-            $this->result = Response::instance()->getData();
-        }catch (Exception $e){
-            $this->result = null;
-        }
-    }
-
     public function run(){
-        $this->cache();
         Db::clear();
         $queue = Fork::$queue;
         Fork::fork(true);
@@ -44,9 +25,5 @@ class RequestEnd extends Fork {
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
-    }
-
-    private function cache(){
-        CacheRequest::set($this->result,$this->request);
     }
 }
