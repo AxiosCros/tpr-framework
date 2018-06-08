@@ -36,7 +36,7 @@ trait Jump
      * @param mixed $data 返回的数据
      * @param integer $wait 跳转等待时间
      * @param array $header 发送的Header信息
-     * @return void
+     * @throws \tpr\framework\Exception
      */
     protected function success($msg = 'success', $url = null, $data = '', $wait = 3, array $header = [])
     {
@@ -115,7 +115,7 @@ trait Jump
      * @param mixed $msg 提示信息
      * @param string $type 返回数据格式
      * @param array $header 发送的Header信息
-     * @return void
+     * @throws \tpr\framework\Exception
      */
     protected function result($data, $code = 0, $msg = '', $type = '', array $header = [])
     {

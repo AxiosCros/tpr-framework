@@ -160,7 +160,6 @@ class Response
      */
     protected function output($data)
     {
-        $data = Tool::checkData2String($data);
         return $data;
     }
 
