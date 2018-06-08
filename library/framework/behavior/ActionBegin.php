@@ -11,7 +11,6 @@
 
 namespace tpr\framework\behavior;
 
-use tpr\framework\cache\CacheRequest;
 use tpr\framework\exception\ClassNotFoundException;
 use tpr\framework\Request;
 use tpr\framework\Loader;
@@ -20,13 +19,16 @@ use tpr\traits\controller\Jump;
 Loader::import('controller/Jump', TRAIT_PATH, EXT);
 
 class ActionBegin{
+
     use Jump;
+
     public $param;
     public $request;
     public $module;
     public $controller;
     public $action;
     public $mca ;
+
     function __construct()
     {
         $this->request    = Request::instance();
@@ -40,7 +42,6 @@ class ActionBegin{
     public function run(){
         $this->filter();
         $this->middleware();
-        $this->cache();
     }
 
     private function filter(){
@@ -71,13 +72,6 @@ class ActionBegin{
                     $this->wrong(400,lang($Validate->getError()));
                 }
             }
-        }
-    }
-
-    private function cache(){
-        $cache = CacheRequest::get($this->request);
-        if(!empty($cache)){
-            $this->ajaxReturn($cache);
         }
     }
 
