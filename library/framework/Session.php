@@ -12,6 +12,7 @@
 namespace tpr\framework;
 
 use tpr\framework\exception\ClassNotFoundException;
+use tpr\framework\exception\PermissionDenied;
 
 class Session
 {
@@ -74,6 +75,9 @@ class Session
         if (isset($config['path'])) {
             if (!file_exists($config['path'])) {
                 mkdir($config['path'], 0700, true);
+            }
+            if(!is_writable($config['path'])){
+                throw new PermissionDenied($config['path'] . ' permission denied!');
             }
             session_save_path($config['path']);
         }
