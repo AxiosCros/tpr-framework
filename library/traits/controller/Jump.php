@@ -163,7 +163,18 @@ trait Jump
     }
 
     /**
-     * 获取当前的response 输出类型
+     * 设置当前 response 输出类型
+     * @param $return_type
+     * @return $this
+     */
+    protected function setResponseType($return_type)
+    {
+        $this->return_data = $return_type;
+        return $this;
+    }
+
+    /**
+     * 获取当前的 response 输出类型
      * @access protected
      * @return string
      * @throws \tpr\framework\Exception
