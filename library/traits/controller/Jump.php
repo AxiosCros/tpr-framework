@@ -28,6 +28,8 @@ trait Jump
 {
     protected $return_type;
 
+    protected $return_data = [];
+
     /**
      * 操作成功跳转的快捷方法
      * @access protected
@@ -50,21 +52,15 @@ trait Jump
         } elseif ('' !== $url) {
             $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : Url::build($url);
         }
-        $result = [
-            'code' => $code,
-            'msg'  => $this->msg($msg),
-            'data' => $data,
-            'url'  => $url,
-            'wait' => $wait,
-        ];
 
-        $type = $this->getResponseType();
-        if ('html' == strtolower($type)) {
-            $result = ViewTemplate::instance(Config::get('template'), Config::get('view_replace_str'))
-                ->fetch(Config::get('dispatch_success_tmpl'), $result);
-        }
-        $response = Response::create($result, $type)->header($header);
-        throw new HttpResponseException($response);
+        $this->setResult('code', $code)
+            ->setResult('msg', $this->msg($msg))
+            ->setResult('data', $data)
+            ->setResult('url', $url)
+            ->setResult('wait', $wait);
+
+        $result = $this->viewResult('dispatch_success_tmpl');
+        $this->result($result, $header);
     }
 
     /**
@@ -90,44 +86,60 @@ trait Jump
         } elseif ('' !== $url) {
             $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : Url::build($url);
         }
-        $result = [
-            'code' => $code,
-            'msg'  => $this->msg($msg),
-            'data' => $data,
-            'url'  => $url,
-            'wait' => $wait,
-        ];
 
+        $this->setResult('code', $code)
+            ->setResult('msg', $this->msg($msg))
+            ->setResult('data', $data)
+            ->setResult('url', $url)
+            ->setResult('wait', $wait);
+
+        $result = $this->viewResult('dispatch_error_tmpl');
+        $this->result($result, $header);
+    }
+
+    /**
+     * @param $default_tpl
+     * @return array
+     * @throws \tpr\framework\Exception
+     */
+    private function viewResult($default_tpl)
+    {
         $type = $this->getResponseType();
         if ('html' == strtolower($type)) {
             $result = ViewTemplate::instance(Config::get('template'), Config::get('view_replace_str'))
-                ->fetch(Config::get('dispatch_error_tmpl'), $result);
+                ->fetch(Config::get($default_tpl), $this->return_data);
+        } else {
+            $result = $this->return_data;
         }
-        $response = Response::create($result, $type)->header($header);
-        throw new HttpResponseException($response);
+
+        return $result;
+
     }
 
     /**
      * 返回封装后的API数据到客户端
      * @access protected
-     * @param mixed $data 要返回的数据
-     * @param integer $code 返回的code
-     * @param mixed $msg 提示信息
-     * @param string $type 返回数据格式
+     * @param mixed $result 要返回的数据
      * @param array $header 发送的Header信息
      * @throws \tpr\framework\Exception
      */
-    protected function result($data, $code = 0, $msg = '', $type = '', array $header = [])
+    protected function result($result, array $header = [])
     {
-        $result = [
-            'code' => $code,
-            'msg'  => $this->msg($msg),
-            'time' => $_SERVER['REQUEST_TIME'],
-            'data' => $data,
-        ];
-        $type = $type ?: $this->getResponseType();
+        $type = $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);
+    }
+
+    /**
+     * 设置回调数据
+     * @param $key
+     * @param string $value
+     * @return $this
+     */
+    protected function setResult($key, $value = '')
+    {
+        $this->return_data[$key] = $value;
+        return $this;
     }
 
     /**
@@ -158,50 +170,61 @@ trait Jump
      */
     protected function getResponseType()
     {
+        if (!empty($this->return_type)) {
+            return $this->return_type;
+        }
         $isAjax = Request::instance()->isAjax();
         return $isAjax ? c('default_ajax_return', 'json') : c('default_return_type');
     }
 
     /**
+     * 异常情况下的回调
      * @param int $code
      * @param string $message
      * @param array $header
+     * @throws \tpr\framework\Exception
      */
     protected function wrong($code = 500, $message = '', $header = [])
     {
         $this->response([], $code, $message, $header);
     }
 
+    /**
+     * 正常情况下的数据回调
+     * @param array $data
+     * @param int $code
+     * @param string $message
+     * @param array $header
+     * @throws \tpr\framework\Exception
+     */
     protected function response($data = [], $code = 200, $message = 'success', array $header = [])
     {
         if ($code != 200 && empty($message)) {
             $message = c('code.' . strval($code), '');
         }
-        $result = [
-            'code' => $code,
-            'msg'  => $this->msg($message),
-            'time' => $_SERVER['REQUEST_TIME'],
-            'data' => $data,
-        ];
+
+        $this->setResult('code', $code)
+            ->setResult('msg', $this->msg($message))
+            ->setResult('time', $_SERVER['REQUEST_TIME'])
+            ->setResult('data', $data);
+
+        $result = $this->return_data;
         $result = Tool::checkData2String($result);
-        $this->ajaxReturn($result, $header);
+        $this->result($result, $header);
     }
 
-    protected function ajaxReturn($result = [], array $header = [])
-    {
-        $type = !empty($this->return_type) ? $this->return_type : c('default_ajax_return', 'json');
-        $type = $type ?: $this->getResponseType();
-        $response = Response::create($result, $type)->header($header);
-        throw new HttpResponseException($response);
-    }
-
+    /**
+     * 设置回调信息,多语言翻译
+     * @param string $message
+     * @return mixed|string
+     */
     private function msg($message = '')
     {
-        if(!empty($message)){
+        if (!empty($message)) {
             $message = lang($message);
         }
 
-        if(!is_string($message)){
+        if (!is_string($message)) {
             $message = '';
         }
 
