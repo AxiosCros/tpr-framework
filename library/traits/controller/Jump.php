@@ -28,7 +28,7 @@ trait Jump
 {
     protected $return_type;
 
-    protected $return_data = [];
+    private $return_data = [];
 
     /**
      * 操作成功跳转的快捷方法
