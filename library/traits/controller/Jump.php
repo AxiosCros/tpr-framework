@@ -166,7 +166,7 @@ trait Jump
     protected function setOptions($key = '', $value = '')
     {
         if (is_array($key)) {
-            $this->options = array_merge($this->headers, $key);
+            $this->options = array_merge($this->options, $key);
         } else {
             $this->options[$key] = $value;
         }
