@@ -30,6 +30,10 @@ trait Jump
 
     private $return_data = [];
 
+    private $headers = [];
+
+    private $options = [];
+
     /**
      * 操作成功跳转的快捷方法
      * @access protected
@@ -37,15 +41,14 @@ trait Jump
      * @param string $url 跳转的URL地址
      * @param mixed $data 返回的数据
      * @param integer $wait 跳转等待时间
-     * @param array $header 发送的Header信息
      * @throws \tpr\framework\Exception
      */
-    protected function success($msg = 'success', $url = null, $data = '', $wait = 3, array $header = [])
+    protected function success($msg = 'success', $url = null, $data = '', $wait = 3)
     {
         $code = 1;
         if (is_numeric($msg)) {
             $code = $msg;
-            $msg = '';
+            $msg  = '';
         }
         if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
             $url = $_SERVER["HTTP_REFERER"];
@@ -60,7 +63,7 @@ trait Jump
             ->setResult('wait', $wait);
 
         $result = $this->viewResult('dispatch_success_tmpl');
-        $this->result($result, $header);
+        $this->result($result);
     }
 
     /**
@@ -70,16 +73,15 @@ trait Jump
      * @param string $url 跳转的URL地址
      * @param mixed $data 返回的数据
      * @param integer $wait 跳转等待时间
-     * @param array $header 发送的Header信息
      * @return void
      * @throws \tpr\framework\Exception
      */
-    protected function error($msg = 'error', $url = null, $data = '', $wait = 3, array $header = [])
+    protected function error($msg = 'error', $url = null, $data = '', $wait = 3)
     {
         $code = 0;
         if (is_numeric($msg)) {
             $code = $msg;
-            $msg = '';
+            $msg  = '';
         }
         if (is_null($url)) {
             $url = Request::instance()->isAjax() ? '' : 'javascript:history.back(-1);';
@@ -94,7 +96,7 @@ trait Jump
             ->setResult('wait', $wait);
 
         $result = $this->viewResult('dispatch_error_tmpl');
-        $this->result($result, $header);
+        $this->result($result);
     }
 
     /**
@@ -117,20 +119,6 @@ trait Jump
     }
 
     /**
-     * 返回封装后的API数据到客户端
-     * @access protected
-     * @param mixed $result 要返回的数据
-     * @param array $header 发送的Header信息
-     */
-    protected function result($result, array $header = [])
-    {
-        $type = empty($this->return_type) ? c('default_ajax_return', 'json') : $this->return_type;
-
-        $response = Response::create($result, $type)->header($header);
-        throw new HttpResponseException($response);
-    }
-
-    /**
      * 设置回调数据
      * @param $key
      * @param string $value
@@ -139,6 +127,49 @@ trait Jump
     protected function setResult($key, $value = '')
     {
         $this->return_data[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * 设置请求头
+     * @param string $key
+     * @param string $value
+     * @return $this
+     */
+    protected function setHeader($key = '', $value = '')
+    {
+        if (is_array($key)) {
+            $this->headers = array_merge($this->headers, $key);
+        } else {
+            $this->headers[$key] = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * 设置当前 response 输出类型
+     * @param $return_type
+     * @return $this
+     */
+    protected function setResponseType($return_type)
+    {
+        $this->return_type = $return_type;
+        return $this;
+    }
+
+    /**
+     * 设置配置参数
+     * @param string $key
+     * @param string $value
+     * @return $this
+     */
+    protected function setOptions($key = '', $value = '')
+    {
+        if (is_array($key)) {
+            $this->options = array_merge($this->headers, $key);
+        } else {
+            $this->options[$key] = $value;
+        }
         return $this;
     }
 
@@ -155,22 +186,11 @@ trait Jump
     {
         $response = new Redirect($url);
         if (is_integer($params)) {
-            $code = $params;
+            $code   = $params;
             $params = [];
         }
         $response->code($code)->params($params)->with($with);
         throw new HttpResponseException($response);
-    }
-
-    /**
-     * 设置当前 response 输出类型
-     * @param $return_type
-     * @return $this
-     */
-    protected function setResponseType($return_type)
-    {
-        $this->return_type = $return_type;
-        return $this;
     }
 
     /**
@@ -192,12 +212,10 @@ trait Jump
      * 异常情况下的回调
      * @param int $code
      * @param string $message
-     * @param array $header
-     * @throws \tpr\framework\Exception
      */
-    protected function wrong($code = 500, $message = '', $header = [])
+    protected function wrong($code = 500, $message = '')
     {
-        $this->response([], $code, $message, $header);
+        $this->response([], $code, $message);
     }
 
     /**
@@ -205,10 +223,8 @@ trait Jump
      * @param array $data
      * @param int $code
      * @param string $message
-     * @param array $header
-     * @throws \tpr\framework\Exception
      */
-    protected function response($data = [], $code = 200, $message = 'success', array $header = [])
+    protected function response($data = [], $code = 200, $message = 'success')
     {
         if ($code != 200 && empty($message)) {
             $message = c('code.' . strval($code), '');
@@ -221,7 +237,21 @@ trait Jump
 
         $result = $this->return_data;
         $result = Tool::checkData2String($result);
-        $this->result($result, $header);
+        $this->result($result);
+    }
+
+    /**
+     * 返回封装后的API数据到客户端
+     * @access protected
+     * @param mixed $result 要返回的数据
+     * @param array $header
+     */
+    protected function result($result, $header = [])
+    {
+        $type = empty($this->return_type) ? c('default_ajax_return', 'json') : $this->return_type;
+
+        $response = Response::create($result, $type, $this->headers, $this->options)->header($header);
+        throw new HttpResponseException($response);
     }
 
     /**
