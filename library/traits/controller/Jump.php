@@ -250,7 +250,7 @@ trait Jump
     {
         $type = empty($this->return_type) ? c('default_ajax_return', 'json') : $this->return_type;
 
-        $response = Response::create($result, $type, $this->headers, $this->options)->header($header);
+        $response = Response::create($result, $type)->options($this->options)->header($header);
         throw new HttpResponseException($response);
     }
 

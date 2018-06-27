@@ -585,7 +585,8 @@ class App
      * @access public
      * @param  \tpr\framework\Request $request
      * @param  array $config
-     * @return array
+     * @return array|bool|false
+     * @throws Exception
      */
     public static function routeCheck($request, array $config)
     {
