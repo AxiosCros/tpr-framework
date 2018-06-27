@@ -26,7 +26,7 @@ use tpr\framework\View as ViewTemplate;
 
 trait Jump
 {
-    protected $return_type;
+    private $return_type;
 
     private $return_data = [];
 
@@ -121,11 +121,11 @@ trait Jump
      * @access protected
      * @param mixed $result 要返回的数据
      * @param array $header 发送的Header信息
-     * @throws \tpr\framework\Exception
      */
     protected function result($result, array $header = [])
     {
-        $type = $this->getResponseType();
+        $type = empty($this->return_type) ? c('default_ajax_return', 'json') : $this->return_type;
+
         $response = Response::create($result, $type)->header($header);
         throw new HttpResponseException($response);
     }
@@ -169,7 +169,7 @@ trait Jump
      */
     protected function setResponseType($return_type)
     {
-        $this->return_data = $return_type;
+        $this->return_type = $return_type;
         return $this;
     }
 
@@ -185,7 +185,7 @@ trait Jump
             return $this->return_type;
         }
         $isAjax = Request::instance()->isAjax();
-        return $isAjax ? c('default_ajax_return', 'json') : c('default_return_type');
+        return $isAjax ? c('default_ajax_return', 'json') : c('default_return_type', 'html');
     }
 
     /**
