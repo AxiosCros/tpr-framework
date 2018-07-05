@@ -106,8 +106,8 @@ trait Jump
      */
     private function viewResult($default_tpl)
     {
-        $type = $this->getResponseType();
-        if ('html' == strtolower($type)) {
+        $this->return_type = $this->getResponseType();
+        if ('html' == strtolower($this->return_type)) {
             $result = ViewTemplate::instance(Config::get('template'), Config::get('view_replace_str'))
                 ->fetch(Config::get($default_tpl), $this->return_data);
         } else {
