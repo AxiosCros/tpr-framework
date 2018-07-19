@@ -1,17 +1,13 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://zjzit.cn>
-// +----------------------------------------------------------------------
+/**
+ * @author  : axios
+ * @email   : axiosleo@foxmail.com
+ * @blog    : http://hanxv.cn
+ * @datetime: 2018/7/13 17:32
+ */
 
 namespace tpr\framework;
 
-use tpr\framework\console\Output as ConsoleOutput;
 use tpr\framework\exception\ErrorException;
 use tpr\framework\exception\Handle;
 use tpr\framework\exception\ThrowableError;
@@ -19,7 +15,14 @@ use tpr\framework\exception\ThrowableError;
 class Error
 {
     /**
+     * 配置参数
+     * @var array
+     */
+    protected static $exceptionHandler;
+
+    /**
      * 注册异常处理
+     * @access public
      * @return void
      */
     public static function register()
@@ -32,6 +35,7 @@ class Error
 
     /**
      * Exception Handler
+     * @access public
      * @param  \Exception|\Throwable $e
      */
     public static function appException($e)
@@ -41,35 +45,33 @@ class Error
         }
 
         self::getExceptionHandler()->report($e);
-        if (IS_CLI) {
-            self::getExceptionHandler()->renderForConsole(new ConsoleOutput, $e);
-        } else {
-            self::getExceptionHandler()->render($e)->send();
-        }
+
+        self::getExceptionHandler()->render($e)->send();
     }
 
     /**
      * Error Handler
-     * @param  integer $errno 错误编号
-     * @param  integer $errstr 详细错误信息
-     * @param  string $errfile 出错的文件
+     * @access public
+     * @param  integer $errno   错误编号
+     * @param  integer $errstr  详细错误信息
+     * @param  string  $errfile 出错的文件
      * @param  integer $errline 出错行号
-     * @param array $errcontext
      * @throws ErrorException
      */
-    public static function appError($errno, $errstr, $errfile = '', $errline = 0, $errcontext = [])
+    public static function appError($errno, $errstr, $errfile = '', $errline = 0)
     {
-        $exception = new ErrorException($errno, $errstr, $errfile, $errline, $errcontext);
+        $exception = new ErrorException($errno, $errstr, $errfile, $errline);
         if (error_reporting() & $errno) {
             // 将错误信息托管至 think\exception\ErrorException
             throw $exception;
-        } else {
-            self::getExceptionHandler()->report($exception);
         }
+
+        self::getExceptionHandler()->report($exception);
     }
 
     /**
      * Shutdown Handler
+     * @access public
      */
     public static function appShutdown()
     {
@@ -81,12 +83,13 @@ class Error
         }
 
         // 写入日志
-        Log::save();
+        Container::get('log')->save();
     }
 
     /**
      * 确定错误类型是否致命
      *
+     * @access protected
      * @param  int $type
      * @return bool
      */
@@ -96,25 +99,41 @@ class Error
     }
 
     /**
+     * 设置异常处理类
+     *
+     * @access public
+     * @param  mixed $handle
+     * @return void
+     */
+    public static function setExceptionHandler($handle)
+    {
+        self::$exceptionHandler = $handle;
+    }
+
+    /**
      * Get an instance of the exception handler.
      *
+     * @access public
      * @return Handle
      */
     public static function getExceptionHandler()
     {
         static $handle;
+
         if (!$handle) {
             // 异常处理handle
-            $class = Config::get('exception_handle');
-            if ($class && class_exists($class) && is_subclass_of($class, "\\tpr\\framework\\exception\\Handle")) {
+            $class = self::$exceptionHandler;
+
+            if ($class && is_string($class) && class_exists($class) && is_subclass_of($class, TPR_FRAMEWORK_NAMESPACE . "exception\\Handle")) {
                 $handle = new $class;
             } else {
-                $handle = new Handle;
+                $handle = new Handle();
                 if ($class instanceof \Closure) {
                     $handle->setRender($class);
                 }
             }
         }
+
         return $handle;
     }
 }
