@@ -12,18 +12,10 @@
 namespace tpr\framework\behavior;
 
 use tpr\db\Db;
-use tpr\framework\Fork;
 
-class RequestEnd extends Fork {
+class RequestEnd {
 
     public function run(){
         Db::clear();
-        $queue = Fork::$queue;
-        Fork::fork(true);
-        Fork::doFork($queue);
-        if(function_exists('posix_kill') && function_exists('posix_getpid')){
-            posix_kill(posix_getpid(), SIGINT);
-            exit();
-        }
     }
 }
