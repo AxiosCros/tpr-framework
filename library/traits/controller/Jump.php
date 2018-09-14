@@ -205,7 +205,8 @@ trait Jump
             return $this->return_type;
         }
         $isAjax = Request::instance()->isAjax();
-        return $isAjax ? c('default_ajax_return', 'json') : c('default_return_type', 'html');
+        $this->return_type = $isAjax ? c('default_ajax_return', 'json') : c('default_return_type', 'html');
+        return $this->return_type;
     }
 
     /**
