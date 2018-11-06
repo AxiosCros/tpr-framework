@@ -204,7 +204,7 @@ trait Jump
         if (!empty($this->return_type)) {
             return $this->return_type;
         }
-        $isAjax = Request::instance()->isAjax();
+        $isAjax            = Request::instance()->isAjax();
         $this->return_type = $isAjax ? c('default_ajax_return', 'json') : c('default_return_type', 'html');
         return $this->return_type;
     }
@@ -252,6 +252,17 @@ trait Jump
         $type = empty($this->return_type) ? c('default_ajax_return', 'json') : $this->return_type;
 
         $response = Response::create($result, $type)->options($this->options)->header($header);
+        throw new HttpResponseException($response);
+    }
+
+    /**
+     * 无处理回调
+     * @param $output
+     * @param array $header
+     */
+    protected function output($output, $header = [])
+    {
+        $response = Response::create($output, "text")->options($this->options)->header($header);
         throw new HttpResponseException($response);
     }
 
