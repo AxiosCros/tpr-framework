@@ -131,7 +131,7 @@ trait Jump
     }
 
     /**
-     * 设置请求头
+     * 设置响应头
      * @param string $key
      * @param string $value
      * @return $this
@@ -144,6 +144,19 @@ trait Jump
             $this->headers[$key] = $value;
         }
         return $this;
+    }
+
+    /**
+     * 获取已设置的响应头
+     * @param string $key
+     * @return array|null
+     */
+    protected function getHeaders($key = '')
+    {
+        if (!empty($key)) {
+            return isset($this->headers[$key]) ? $this->headers[$key] : null;
+        }
+        return $this->headers;
     }
 
     /**
@@ -250,8 +263,8 @@ trait Jump
     protected function result($result, $header = [])
     {
         $type = empty($this->return_type) ? c('default_ajax_return', 'json') : $this->return_type;
-
-        $response = Response::create($result, $type)->options($this->options)->header($header);
+        $this->setHeader($header);
+        $response = Response::create($result, $type)->options($this->options)->header($this->getHeaders());
         throw new HttpResponseException($response);
     }
 
@@ -260,9 +273,10 @@ trait Jump
      * @param $output
      * @param array $header
      */
-    protected function output($output, $header = [])
+    protected function output($output = null, $header = [])
     {
-        $response = Response::create($output, "text")->options($this->options)->header($header);
+        $this->setHeader($header);
+        $response = Response::create($output, "text")->options($this->options)->header($this->getHeaders());
         throw new HttpResponseException($response);
     }
 
