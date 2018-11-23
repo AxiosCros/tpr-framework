@@ -46,6 +46,7 @@ class Response
     /**
      * 构造函数
      * @access   public
+     *
      * @param mixed $data    输出数据
      * @param int   $code
      * @param array $header
@@ -65,18 +66,21 @@ class Response
     /**
      * @return Response
      */
-    public static function instance(){
+    public static function instance()
+    {
         return self::$instance;
     }
 
     /**
      * 创建Response对象
      * @access public
+     *
      * @param mixed  $data    输出数据
      * @param string $type    输出类型
      * @param int    $code
      * @param array  $header
      * @param array  $options 输出参数
+     *
      * @return Response|JsonResponse|ViewResponse|XmlResponse|RedirectResponse|JsonpResponse
      */
     public static function create($data = '', $type = '', $code = 200, array $header = [], $options = [])
@@ -87,7 +91,7 @@ class Response
         if (class_exists($class)) {
             self::$instance = new $class($data, $code, $header, $options);
         } else {
-            self::$instance= new static($data, $code, $header, $options);
+            self::$instance = new static($data, $code, $header, $options);
         }
 
         return self::$instance;
@@ -155,7 +159,9 @@ class Response
     /**
      * 处理数据
      * @access protected
+     *
      * @param mixed $data 要处理的数据
+     *
      * @return mixed
      */
     protected function output($data)
@@ -166,7 +172,9 @@ class Response
     /**
      * 输出的参数
      * @access public
+     *
      * @param mixed $options 输出参数
+     *
      * @return $this
      */
     public function options($options = [])
@@ -178,7 +186,9 @@ class Response
     /**
      * 输出数据设置
      * @access public
+     *
      * @param mixed $data 输出数据
+     *
      * @return $this
      */
     public function data($data)
@@ -190,8 +200,10 @@ class Response
     /**
      * 设置响应头
      * @access public
+     *
      * @param string|array $name  参数名
      * @param string       $value 参数值
+     *
      * @return $this
      */
     public function header($name, $value = null)
@@ -206,27 +218,31 @@ class Response
 
     /**
      * 设置页面输出内容
+     *
      * @param $content
+     *
      * @return $this
      */
     public function content($content)
     {
         if (null !== $content && !is_string($content) && !is_numeric($content) && !is_callable([
-            $content,
-            '__toString',
-        ])
+                $content,
+                '__toString',
+            ])
         ) {
             throw new \InvalidArgumentException(sprintf('variable type error： %s', gettype($content)));
         }
 
-        $this->content = (string) $content;
+        $this->content = (string)$content;
 
         return $this;
     }
 
     /**
      * 发送HTTP状态
+     *
      * @param integer $code 状态码
+     *
      * @return $this
      */
     public function code($code)
@@ -237,7 +253,9 @@ class Response
 
     /**
      * LastModified
+     *
      * @param string $time
+     *
      * @return $this
      */
     public function lastModified($time)
@@ -248,7 +266,9 @@ class Response
 
     /**
      * Expires
+     *
      * @param string $time
+     *
      * @return $this
      */
     public function expires($time)
@@ -259,7 +279,9 @@ class Response
 
     /**
      * ETag
+     *
      * @param string $eTag
+     *
      * @return $this
      */
     public function eTag($eTag)
@@ -270,7 +292,9 @@ class Response
 
     /**
      * 页面缓存控制
+     *
      * @param string $cache 状态码
+     *
      * @return $this
      */
     public function cacheControl($cache)
@@ -281,8 +305,10 @@ class Response
 
     /**
      * 页面输出类型
+     *
      * @param string $contentType 输出类型
      * @param string $charset     输出编码
+     *
      * @return $this
      */
     public function contentType($contentType, $charset = 'utf-8')
@@ -293,7 +319,9 @@ class Response
 
     /**
      * 获取头部信息
+     *
      * @param string $name 头部名称
+     *
      * @return mixed
      */
     public function getHeader($name = '')
@@ -324,14 +352,14 @@ class Response
             $content = $this->output($this->data);
 
             if (null !== $content && !is_string($content) && !is_numeric($content) && !is_callable([
-                $content,
-                '__toString',
-            ])
+                    $content,
+                    '__toString',
+                ])
             ) {
                 throw new \InvalidArgumentException(sprintf('variable type error： %s', gettype($content)));
             }
 
-            $this->content = (string) $content;
+            $this->content = (string)$content;
         }
         return $this->content;
     }

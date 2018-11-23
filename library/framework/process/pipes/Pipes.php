@@ -41,8 +41,10 @@ abstract class Pipes
 
     /**
      * 文件句柄和管道中读取数据。
+     *
      * @param bool $blocking 是否使用阻塞调用
      * @param bool $close    是否要关闭管道，如果他们已经到达 EOF。
+     *
      * @return string[]
      */
     abstract public function readAndWrite($blocking, $close = false);

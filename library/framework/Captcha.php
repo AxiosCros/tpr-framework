@@ -1,9 +1,8 @@
 <?php
 /**
- * @author: axios
- *
- * @email: axiosleo@foxmail.com
- * @blog:  http://hanxv.cn
+ * @author  : axios
+ * @email   : axiosleo@foxmail.com
+ * @blog    :  http://hanxv.cn
  * @datetime: 2018/6/5 13:45
  */
 
@@ -46,10 +45,26 @@ class Captcha
 
     private $_image = null; // 验证码图片实例
     private $_color = null; // 验证码字体颜色
+    private $bg     = [];
+    private $imageW;
+    private $imageH;
+    private $length;
+    private $fontSize;
+    private $useZh;
+    private $fontttf;
+    private $seKey;
+    private $expire;
+    private $reset;
+    private $useImgBg;
+    private $useNoise;
+    private $useCurve;
+    private $zhSet;
+    private $codeSet;
 
     /**
      * 架构方法 设置参数
      * @access public
+     *
      * @param  array $config 配置参数
      */
     public function __construct($config = [])
@@ -60,7 +75,9 @@ class Captcha
     /**
      * 使用 $this->name 获取配置
      * @access public
+     *
      * @param  string $name 配置名称
+     *
      * @return mixed    配置值
      */
     public function __get($name)
@@ -71,8 +88,10 @@ class Captcha
     /**
      * 设置验证码配置
      * @access public
+     *
      * @param  string $name  配置名称
      * @param  string $value 配置值
+     *
      * @return void
      */
     public function __set($name, $value)
@@ -85,7 +104,9 @@ class Captcha
     /**
      * 检查配置
      * @access public
+     *
      * @param  string $name 配置名称
+     *
      * @return bool
      */
     public function __isset($name)
@@ -96,9 +117,12 @@ class Captcha
     /**
      * 验证验证码是否正确
      * @access public
+     *
      * @param string $code 用户验证码
      * @param string $id   验证码标识
+     *
      * @return bool 用户验证码是否正确
+     * @throws exception\PermissionDenied
      */
     public function check($code, $id = '')
     {
@@ -126,8 +150,11 @@ class Captcha
      * 输出验证码并把验证码的值保存的session中
      * 验证码保存到session的格式为： array('verify_code' => '验证码值', 'verify_time' => '验证码创建时间');
      * @access public
+     *
      * @param string $id 要生成验证码的标识
-     * @return \tpr\framework\Response
+     *
+     * @return Response
+     * @throws exception\PermissionDenied
      */
     public function entry($id = '')
     {
@@ -183,7 +210,7 @@ class Captcha
         } else {
             for ($i = 0; $i < $this->length; $i++) {
                 $code[$i] = $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
-                $codeNX += mt_rand($this->fontSize * 1.2, $this->fontSize * 1.6);
+                $codeNX   += mt_rand($this->fontSize * 1.2, $this->fontSize * 1.6);
                 imagettftext($this->_image, $this->fontSize, mt_rand(-40, 40), $codeNX, $this->fontSize * 1.6, $this->_color, $this->fontttf, $code[$i]);
             }
         }
@@ -207,7 +234,6 @@ class Captcha
 
     /**
      * 画一条由两条连在一起构成的随机正弦函数曲线作干扰线(你可以改成更帅的曲线函数)
-     *
      *      高中的数学公式咋都忘了涅，写出来
      *        正弦型函数解析式：y=Asin(ωx+φ)+b
      *      各常数值对函数图像的影响：
@@ -215,7 +241,6 @@ class Captcha
      *        b：表示波形在Y轴的位置关系或纵向移动距离（上加下减）
      *        φ：决定波形与X轴位置关系或横向移动距离（左加右减）
      *        ω：决定周期（最小正周期T=2π/∣ω∣）
-     *
      */
     private function _writeCurve()
     {

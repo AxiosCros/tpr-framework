@@ -15,9 +15,11 @@ class Build
 {
     /**
      * 根据传入的build资料创建目录和文件
-     * @param array $build build列表
+     *
+     * @param array  $build     build列表
      * @param string $namespace 应用类库命名空间
-     * @param bool $suffix 类库后缀
+     * @param bool   $suffix    类库后缀
+     *
      * @throws Exception
      */
     public static function run(array $build = [], $namespace = 'app', $suffix = false)
@@ -48,7 +50,9 @@ class Build
     /**
      * 创建目录
      * @access protected
+     *
      * @param  array $list 目录列表
+     *
      * @return void
      */
     protected static function buildDir($list)
@@ -64,7 +68,9 @@ class Build
     /**
      * 创建文件
      * @access protected
+     *
      * @param  array $list 文件列表
+     *
      * @return void
      */
     protected static function buildFile($list)
@@ -83,10 +89,12 @@ class Build
     /**
      * 创建模块
      * @access public
-     * @param  string $module 模块名
-     * @param  array $list build列表
+     *
+     * @param  string $module    模块名
+     * @param  array  $list      build列表
      * @param  string $namespace 应用类库命名空间
-     * @param  bool $suffix 类库后缀
+     * @param  bool   $suffix    类库后缀
+     *
      * @return void
      */
     public static function module($module = '', $list = [], $namespace = 'app', $suffix = false)
@@ -106,7 +114,7 @@ class Build
             // 创建默认的模块目录和文件
             $list = [
                 '__file__' => ['config.php', 'common.php'],
-                '__dir__' => ['controller', 'model', 'view'],
+                '__dir__'  => ['controller', 'model', 'view'],
             ];
         }
         // 创建子目录和文件
@@ -130,10 +138,10 @@ class Build
             } else {
                 // 生成相关MVC文件
                 foreach ($file as $val) {
-                    $val = trim($val);
+                    $val      = trim($val);
                     $filename = $modulePath . $path . DS . $val . ($suffix ? ucfirst($path) : '') . EXT;
-                    $space = $namespace . '\\' . ($module ? $module . '\\' : '') . $path;
-                    $class = $val . ($suffix ? ucfirst($path) : '');
+                    $space    = $namespace . '\\' . ($module ? $module . '\\' : '') . $path;
+                    $class    = $val . ($suffix ? ucfirst($path) : '');
                     switch ($path) {
                         case 'controller': // 控制器
                             $content = "<?php\nnamespace {$space};\n\nclass {$class}\n{\n\n}";
@@ -165,9 +173,11 @@ class Build
     /**
      * 创建模块的欢迎页面
      * @access public
-     * @param  string $module 模块名
+     *
+     * @param  string $module    模块名
      * @param  string $namespace 应用类库命名空间
-     * @param  bool $suffix 类库后缀
+     * @param  bool   $suffix    类库后缀
+     *
      * @return void
      */
     protected static function buildHello($module, $namespace, $suffix = false)
@@ -186,7 +196,9 @@ class Build
     /**
      * 创建模块的公共文件
      * @access public
+     *
      * @param  string $module 模块名
+     *
      * @return void
      */
     protected static function buildCommon($module)

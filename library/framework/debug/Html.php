@@ -38,8 +38,10 @@ class Html
     /**
      * 调试输出接口
      * @access public
-     * @param Response  $response Response对象
-     * @param array     $log 日志信息
+     *
+     * @param Response $response Response对象
+     * @param array    $log      日志信息
+     *
      * @return bool
      * @throws \tpr\framework\Exception
      */

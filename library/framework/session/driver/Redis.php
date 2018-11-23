@@ -37,8 +37,10 @@ class Redis extends SessionHandler
     /**
      * 打开Session
      * @access public
+     *
      * @param string $savePath
      * @param mixed  $sessName
+     *
      * @return bool
      * @throws Exception
      */
@@ -80,19 +82,23 @@ class Redis extends SessionHandler
     /**
      * 读取Session
      * @access public
+     *
      * @param string $sessID
+     *
      * @return string
      */
     public function read($sessID)
     {
-        return (string) $this->handler->get($this->config['session_name'] . $sessID);
+        return (string)$this->handler->get($this->config['session_name'] . $sessID);
     }
 
     /**
      * 写入Session
      * @access public
+     *
      * @param string $sessID
      * @param String $sessData
+     *
      * @return bool
      */
     public function write($sessID, $sessData)
@@ -107,7 +113,9 @@ class Redis extends SessionHandler
     /**
      * 删除Session
      * @access public
+     *
      * @param string $sessID
+     *
      * @return bool
      */
     public function destroy($sessID)
@@ -118,7 +126,9 @@ class Redis extends SessionHandler
     /**
      * Session 垃圾回收
      * @access public
+     *
      * @param string $sessMaxLifeTime
+     *
      * @return bool
      */
     public function gc($sessMaxLifeTime)

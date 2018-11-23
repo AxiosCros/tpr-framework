@@ -16,7 +16,7 @@ class AppInit {
         Tool::identity(1);
         if(!IS_CLI){
             Hook::add('action_begin' ,'tpr\\framework\\behavior\\ActionBegin');
-            Hook::add('app_end' ,'tpr\\framework\\behavior\\AppEnd');
+            Hook::add('app_end', 'tpr\\framework\\behavior\\AppEnd');
             Hook::add('log_write_done', 'tpr\\framework\\behavior\\LogWriteDone');
             Hook::add('request_end', 'tpr\\framework\\behavior\\RequestEnd');
             Hook::add('response_end', 'tpr\\framework\\behavior\\ResponseEnd');

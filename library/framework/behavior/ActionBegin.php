@@ -18,7 +18,8 @@ use tpr\traits\controller\Jump;
 
 Loader::import('controller/Jump', TRAIT_PATH, EXT);
 
-class ActionBegin{
+class ActionBegin
+{
 
     use Jump;
 
@@ -27,7 +28,7 @@ class ActionBegin{
     public $module;
     public $controller;
     public $action;
-    public $mca ;
+    public $mca;
 
     function __construct()
     {
@@ -36,58 +37,61 @@ class ActionBegin{
         $this->module     = strtolower($this->request->module());
         $this->controller = strtolower($this->request->controller());
         $this->action     = $this->request->action();
-        $this->mca        = $this->module.'/'.$this->controller.'/'.$this->action;
+        $this->mca        = $this->module . '/' . $this->controller . '/' . $this->action;
     }
 
-    public function run(){
+    public function run()
+    {
         $this->filter();
         $this->middleware();
     }
 
-    private function filter(){
-        $validate_config = c('validate.'.$this->mca);
+    private function filter()
+    {
+        $validate_config = c('validate.' . $this->mca);
 
-        if(!empty($validate_config)){
-            try{
+        if (!empty($validate_config)) {
+            try {
                 $Validate = validate($validate_config[0]);
-            }catch (ClassNotFoundException $e){
-                throw new ClassNotFoundException('class not exists:' . $validate_config[0],__CLASS__);
+            } catch (ClassNotFoundException $e) {
+                throw new ClassNotFoundException('class not exists:' . $validate_config[0], __CLASS__);
             }
 
-            if(isset($validate_config[1])){
-                $check = $Validate->hasScene($validate_config[1]) ? $Validate->scene($validate_config[1])->check($this->param):true;
-            }else{
+            if (isset($validate_config[1])) {
+                $check = $Validate->hasScene($validate_config[1]) ? $Validate->scene($validate_config[1])->check($this->param) : true;
+            } else {
                 $check = $Validate->check($this->param);
             }
 
-            if(!$check){
-                $this->wrong(400,lang($Validate->getError()));
+            if (!$check) {
+                $this->wrong(400, lang($Validate->getError()));
             }
-        }else{
-            $class = Loader::parseClass($this->module, 'validate',$this->controller,false);
-            if(class_exists($class)){
-                $Validate = Loader::validate($this->controller, 'validate', false,$this->module);
-                $check = $Validate->hasScene($this->action) ? $Validate->scene($this->action)->check($this->param):true;
-                if(!$check){
-                    $this->wrong(400,lang($Validate->getError()));
+        } else {
+            $class = Loader::parseClass($this->module, 'validate', $this->controller, false);
+            if (class_exists($class)) {
+                $Validate = Loader::validate($this->controller, 'validate', false, $this->module);
+                $check    = $Validate->hasScene($this->action) ? $Validate->scene($this->action)->check($this->param) : true;
+                if (!$check) {
+                    $this->wrong(400, lang($Validate->getError()));
                 }
             }
         }
     }
 
-    private function middleware(){
-        $middleware_config =  c('middleware.before',[]);
-        if(!empty($middleware_config)){
-            if(isset($middleware_config[$this->mca])){
+    private function middleware()
+    {
+        $middleware_config = c('middleware.before', []);
+        if (!empty($middleware_config)) {
+            if (isset($middleware_config[$this->mca])) {
                 $middleware_config = $middleware_config[$this->mca];
-                try{
+                try {
                     $Middleware = validate($middleware_config[0]);
-                }catch (ClassNotFoundException $e){
-                    throw new ClassNotFoundException('class not exists:' . $middleware_config[0],__CLASS__);
+                } catch (ClassNotFoundException $e) {
+                    throw new ClassNotFoundException('class not exists:' . $middleware_config[0], __CLASS__);
                 }
 
-                if(isset($middleware_config[1]) && method_exists($Middleware,$middleware_config[1])){
-                    call_user_func_array([$Middleware,$middleware_config[1]],[$this->request]);
+                if (isset($middleware_config[1]) && method_exists($Middleware, $middleware_config[1])) {
+                    call_user_func_array([$Middleware, $middleware_config[1]], [$this->request]);
                 }
             }
         }

@@ -15,10 +15,10 @@ use tpr\framework\Exception;
 
 /**
  * ThinkPHP标签库TagLib解析基类
- * @category   Think
- * @package  Think
+ * @category    Think
+ * @package     Think
  * @subpackage  Template
- * @author    liu21st <liu21st@gmail.com>
+ * @author      liu21st <liu21st@gmail.com>
  */
 class TagLib
 {
@@ -70,6 +70,7 @@ class TagLib
     /**
      * 构造函数
      * @access public
+     *
      * @param \stdClass $template 模板引擎对象
      */
     public function __construct($template)
@@ -80,8 +81,10 @@ class TagLib
     /**
      * 按签标库替换页面中的标签
      * @access public
+     *
      * @param  string $content 模板内容
-     * @param  string $lib 标签库名
+     * @param  string $lib     标签库名
+     *
      * @throws Exception
      */
     public function parseTag(&$content, $lib = '')
@@ -93,7 +96,7 @@ class TagLib
             $tags[$close][$lib . $name] = $name;
             if (isset($val['alias'])) {
                 // 别名设置
-                $array = (array) $val['alias'];
+                $array = (array)$val['alias'];
                 foreach (explode(',', $array[0]) as $v) {
                     $tags[$close][$lib . $v] = $name;
                 }
@@ -186,8 +189,10 @@ class TagLib
     /**
      * 按标签生成正则
      * @access private
-     * @param  array|string     $tags 标签名
-     * @param  boolean          $close 是否为闭合标签
+     *
+     * @param  array|string $tags  标签名
+     * @param  boolean      $close 是否为闭合标签
+     *
      * @return string
      */
     public function getRegex($tags, $close)
@@ -217,9 +222,11 @@ class TagLib
     /**
      * 分析标签属性 正则方式
      * @access public
-     * @param string $str 标签属性字符串
-     * @param string $name 标签名
+     *
+     * @param string $str   标签属性字符串
+     * @param string $name  标签名
      * @param string $alias 别名
+     *
      * @return array
      * @throws Exception
      */
@@ -235,7 +242,7 @@ class TagLib
                 // 检测是否存在别名定义
                 foreach ($this->tags as $key => $val) {
                     if (isset($val['alias'])) {
-                        $array = (array) $val['alias'];
+                        $array = (array)$val['alias'];
                         if (in_array($name, explode(',', $array[0]))) {
                             $tag           = $val;
                             $type          = !empty($array[1]) ? $array[1] : 'type';
@@ -282,7 +289,9 @@ class TagLib
     /**
      * 解析条件表达式
      * @access public
+     *
      * @param  string $condition 表达式标签内容
+     *
      * @return string
      */
     public function parseCondition($condition)
@@ -299,7 +308,9 @@ class TagLib
     /**
      * 自动识别构建变量
      * @access public
+     *
      * @param string $name 变量描述
+     *
      * @return string
      */
     public function autoBuildVar(&$name)

@@ -38,8 +38,10 @@ class Memcached extends SessionHandler
     /**
      * 打开Session
      * @access public
+     *
      * @param string $savePath
      * @param string $sessionName
+     *
      * @return bool
      * @throws Exception
      */
@@ -62,7 +64,7 @@ class Memcached extends SessionHandler
         }
         // 建立连接
         $servers = [];
-        foreach ((array) $hosts as $i => $host) {
+        foreach ((array)$hosts as $i => $host) {
             $servers[] = [$host, (isset($ports[$i]) ? $ports[$i] : $ports[0]), 1];
         }
         $this->handler->addServers($servers);
@@ -88,19 +90,23 @@ class Memcached extends SessionHandler
     /**
      * 读取Session
      * @access public
+     *
      * @param string $sessionID
+     *
      * @return string
      */
     public function read($sessionID)
     {
-        return (string) $this->handler->get($this->config['session_name'] . $sessionID);
+        return (string)$this->handler->get($this->config['session_name'] . $sessionID);
     }
 
     /**
      * 写入Session
      * @access public
+     *
      * @param string $sessionID
      * @param String $sessionData
+     *
      * @return bool
      */
     public function write($sessionID, $sessionData)
@@ -111,7 +117,9 @@ class Memcached extends SessionHandler
     /**
      * 删除Session
      * @access public
+     *
      * @param string $sessionID
+     *
      * @return bool
      */
     public function destroy($sessionID)
@@ -122,7 +130,9 @@ class Memcached extends SessionHandler
     /**
      * Session 垃圾回收
      * @access public
+     *
      * @param string $sessionMaxLifeTime
+     *
      * @return true
      */
     public function gc($sessionMaxLifeTime)

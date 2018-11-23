@@ -38,8 +38,10 @@ class Console
     /**
      * 调试输出接口
      * @access public
-     * @param Response  $response Response对象
-     * @param array $log
+     *
+     * @param Response $response Response对象
+     * @param array    $log
+     *
      * @return bool|string
      * @throws \tpr\framework\Exception
      */
@@ -124,10 +126,10 @@ JS;
         $type       = strtolower($type);
         $trace_tabs = array_values($this->config['trace_tabs']);
         $line[]     = ($type == $trace_tabs[0] || '调试' == $type || '错误' == $type)
-        ? "console.group('{$type}');"
-        : "console.groupCollapsed('{$type}');";
+            ? "console.group('{$type}');"
+            : "console.groupCollapsed('{$type}');";
 
-        foreach ((array) $msg as $key => $m) {
+        foreach ((array)$msg as $key => $m) {
             switch ($type) {
                 case '调试':
                     $var_type = gettype($m);

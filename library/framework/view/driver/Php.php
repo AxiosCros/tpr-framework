@@ -39,7 +39,9 @@ class Php
     /**
      * 检测是否存在模板文件
      * @access public
+     *
      * @param string $template 模板文件或者模板规则
+     *
      * @return bool
      */
     public function exists($template)
@@ -54,8 +56,10 @@ class Php
     /**
      * 渲染模板文件
      * @access public
-     * @param string    $template 模板文件
-     * @param array     $data 模板变量
+     *
+     * @param string $template 模板文件
+     * @param array  $data     模板变量
+     *
      * @return void
      */
     public function fetch($template, $data = [])
@@ -83,8 +87,10 @@ class Php
     /**
      * 渲染模板内容
      * @access public
-     * @param string    $content 模板内容
-     * @param array     $data 模板变量
+     *
+     * @param string $content 模板内容
+     * @param array  $data    模板变量
+     *
      * @return void
      */
     public function display($content, $data = [])
@@ -102,7 +108,9 @@ class Php
     /**
      * 自动定位模板文件
      * @access private
+     *
      * @param string $template 模板文件规则
+     *
      * @return string
      */
     private function parseTemplate($template)
@@ -146,8 +154,10 @@ class Php
     /**
      * 配置模板引擎
      * @access private
-     * @param string|array  $name 参数名
-     * @param mixed         $value 参数值
+     *
+     * @param string|array $name  参数名
+     * @param mixed        $value 参数值
+     *
      * @return null
      */
     public function config($name, $value = null)

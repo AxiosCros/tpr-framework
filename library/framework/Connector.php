@@ -1,9 +1,8 @@
 <?php
 /**
- * @author: axios
- *
- * @email: axiosleo@foxmail.com
- * @blog:  http://hanxv.cn
+ * @author  : axios
+ * @email   : axiosleo@foxmail.com
+ * @blog    :  http://hanxv.cn
  * @datetime: 2018/6/7 11:30
  */
 
@@ -55,7 +54,7 @@ class Connector
         if (is_null(self::$instance) || !isset(self::$instance[self::$connect])) {
             self::$instance[self::$connect] = Db::model(self::$connect);
             if (is_null(self::$instance[self::$connect])) {
-                $config = Config::get(self::$connect);
+                $config                         = Config::get(self::$connect);
                 self::$instance[self::$connect] = Db::connect($config, self::$connect);
             }
         }

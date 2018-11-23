@@ -16,7 +16,6 @@ use tpr\framework\exception\ClassNotFoundException;
 /**
  * Class Log
  * @package think
- *
  * @method void log($msg) static
  * @method void error($msg) static
  * @method void info($msg) static
@@ -40,8 +39,9 @@ class Log
     protected static $config = [];
     // 日志类型
     protected static $type = ['log', 'error', 'info', 'sql', 'notice', 'alert', 'debug'];
-    // 日志写入驱动
+
     /**
+     * 日志写入驱动
      * @var \tpr\framework\Log\driver\File|\tpr\framework\Log\driver\Mongo
      */
     protected static $driver;
@@ -51,6 +51,7 @@ class Log
 
     /**
      * 日志初始化
+     *
      * @param array $config
      */
     public static function init($config = [])
@@ -70,7 +71,9 @@ class Log
 
     /**
      * 获取日志信息
+     *
      * @param string $type 信息类型
+     *
      * @return array
      */
     public static function getLog($type = '')
@@ -80,8 +83,10 @@ class Log
 
     /**
      * 记录调试信息
+     *
      * @param mixed  $msg  调试信息
      * @param string $type 信息类型
+     *
      * @return void
      */
     public static function record($msg, $type = 'log')
@@ -104,7 +109,9 @@ class Log
 
     /**
      * 当前日志记录的授权key
+     *
      * @param string $key 授权key
+     *
      * @return void
      */
     public static function key($key)
@@ -114,7 +121,9 @@ class Log
 
     /**
      * 检查日志写入权限
+     *
      * @param array $config 当前日志配置参数
+     *
      * @return bool
      */
     public static function check($config)
@@ -169,9 +178,11 @@ class Log
 
     /**
      * 实时写入日志信息 并支持行为
+     *
      * @param mixed  $msg   调试信息
      * @param string $type  信息类型
      * @param bool   $force 是否强制写入
+     *
      * @return bool
      */
     public static function write($msg, $type = 'log', $force = false)
@@ -201,8 +212,10 @@ class Log
 
     /**
      * 静态调用
+     *
      * @param $method
      * @param $args
+     *
      * @return mixed
      */
     public static function __callStatic($method, $args)

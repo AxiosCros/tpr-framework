@@ -37,8 +37,10 @@ class Memcache extends SessionHandler
     /**
      * 打开Session
      * @access public
+     *
      * @param string $savePath
      * @param string $sessionName
+     *
      * @return bool
      * @throws Exception
      */
@@ -56,11 +58,11 @@ class Memcache extends SessionHandler
             $ports[0] = 11211;
         }
         // 建立连接
-        foreach ((array) $hosts as $i => $host) {
+        foreach ((array)$hosts as $i => $host) {
             $port = isset($ports[$i]) ? $ports[$i] : $ports[0];
             $this->config['timeout'] > 0 ?
-            $this->handler->addServer($host, $port, $this->config['persistent'], 1, $this->config['timeout']) :
-            $this->handler->addServer($host, $port, $this->config['persistent'], 1);
+                $this->handler->addServer($host, $port, $this->config['persistent'], 1, $this->config['timeout']) :
+                $this->handler->addServer($host, $port, $this->config['persistent'], 1);
         }
         return true;
     }
@@ -80,19 +82,23 @@ class Memcache extends SessionHandler
     /**
      * 读取Session
      * @access public
+     *
      * @param string $sessID
+     *
      * @return string
      */
     public function read($sessID)
     {
-        return (string) $this->handler->get($this->config['session_name'] . $sessID);
+        return (string)$this->handler->get($this->config['session_name'] . $sessID);
     }
 
     /**
      * 写入Session
      * @access public
-     * @param string    $sessionID
-     * @param String    $sessionData
+     *
+     * @param string $sessionID
+     * @param String $sessionData
+     *
      * @return bool
      */
     public function write($sessionID, $sessionData)
@@ -103,7 +109,9 @@ class Memcache extends SessionHandler
     /**
      * 删除Session
      * @access public
+     *
      * @param string $sessID
+     *
      * @return bool
      */
     public function destroy($sessID)
@@ -114,7 +122,9 @@ class Memcache extends SessionHandler
     /**
      * Session 垃圾回收
      * @access public
+     *
      * @param string $sessMaxLifeTime
+     *
      * @return true
      */
     public function gc($sessMaxLifeTime)

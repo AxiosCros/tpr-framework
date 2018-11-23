@@ -43,9 +43,11 @@ class Lang
 
     /**
      * 设置语言定义(不区分大小写)
-     * @param string|array  $name 语言变量
-     * @param string        $value 语言值
-     * @param string        $range 语言作用域
+     *
+     * @param string|array $name  语言变量
+     * @param string       $value 语言值
+     * @param string       $range 语言作用域
+     *
      * @return mixed
      */
     public static function set($name, $value = null, $range = '')
@@ -64,8 +66,10 @@ class Lang
 
     /**
      * 加载语言定义(不区分大小写)
-     * @param string|array $file 语言文件
-     * @param string $range 语言作用域
+     *
+     * @param string|array $file  语言文件
+     * @param string       $range 语言作用域
+     *
      * @return mixed
      */
     public static function load($file, $range = '')
@@ -97,8 +101,10 @@ class Lang
 
     /**
      * 获取语言定义(不区分大小写)
-     * @param string|null   $name 语言变量
-     * @param string        $range 语言作用域
+     *
+     * @param string|null $name  语言变量
+     * @param string      $range 语言作用域
+     *
      * @return mixed
      */
     public static function has($name, $range = '')
@@ -109,9 +115,11 @@ class Lang
 
     /**
      * 获取语言定义(不区分大小写)
-     * @param string|null   $name 语言变量
-     * @param array         $vars 变量替换
-     * @param string        $range 语言作用域
+     *
+     * @param string|null $name  语言变量
+     * @param array       $vars  变量替换
+     * @param string      $range 语言作用域
+     *
      * @return mixed
      */
     public static function get($name = null, $vars = [], $range = '')
@@ -180,7 +188,9 @@ class Lang
 
     /**
      * 设置语言自动侦测的变量
+     *
      * @param string $var 变量名称
+     *
      * @return void
      */
     public static function setLangDetectVar($var)
@@ -190,7 +200,9 @@ class Lang
 
     /**
      * 设置语言的cookie保存变量
+     *
      * @param string $var 变量名称
+     *
      * @return void
      */
     public static function setLangCookieVar($var)
@@ -200,7 +212,9 @@ class Lang
 
     /**
      * 设置语言的cookie的过期时间
+     *
      * @param string $expire 过期时间
+     *
      * @return void
      */
     public static function setLangCookieExpire($expire)
@@ -210,7 +224,9 @@ class Lang
 
     /**
      * 设置允许的语言列表
+     *
      * @param array $list 语言列表
+     *
      * @return void
      */
     public static function setAllowLangList($list)

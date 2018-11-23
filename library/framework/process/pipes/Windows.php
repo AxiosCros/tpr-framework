@@ -30,7 +30,7 @@ class Windows extends Pipes
 
     public function __construct($disableOutput, $input)
     {
-        $this->disableOutput = (bool) $disableOutput;
+        $this->disableOutput = (bool)$disableOutput;
 
         if (!$this->disableOutput) {
 
@@ -111,7 +111,7 @@ class Windows extends Pipes
             }
             if (0 < $length = strlen($data)) {
                 $this->readBytes[$type] += $length;
-                $read[$type] = $data;
+                $read[$type]            = $data;
             }
 
             if (false === $dataread || (true === $close && feof($fileHandle) && '' === $data)) {
@@ -128,7 +128,7 @@ class Windows extends Pipes
      */
     public function areOpen()
     {
-        return (bool) $this->pipes && (bool) $this->fileHandles;
+        return (bool)$this->pipes && (bool)$this->fileHandles;
     }
 
     /**
@@ -145,8 +145,10 @@ class Windows extends Pipes
 
     /**
      * 创建一个新的 WindowsPipes 实例。
+     *
      * @param Process $process
      * @param         $input
+     *
      * @return self
      */
     public static function create(Process $process, $input)
@@ -169,6 +171,7 @@ class Windows extends Pipes
 
     /**
      * 写入到 stdin 输入
+     *
      * @param bool $blocking
      * @param bool $close
      */
@@ -213,7 +216,7 @@ class Windows extends Pipes
             while (strlen($this->inputBuffer)) {
                 $written = fwrite($w[0], $this->inputBuffer, 2 << 18);
                 if ($written > 0) {
-                    $this->inputBuffer = (string) substr($this->inputBuffer, $written);
+                    $this->inputBuffer = (string)substr($this->inputBuffer, $written);
                 } else {
                     break;
                 }

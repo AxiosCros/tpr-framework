@@ -17,12 +17,15 @@ use tpr\framework\exception\PermissionDenied;
 class Session
 {
     protected static $prefix = '';
-    protected static $init = null;
+    protected static $init   = null;
 
     /**
      * 设置或者获取session作用域（前缀）
+     *
      * @param string $prefix
-     * @return string
+     *
+     * @return string|null
+     * @throws PermissionDenied
      */
     public static function prefix($prefix = '')
     {
@@ -37,8 +40,10 @@ class Session
 
     /**
      * session初始化
+     *
      * @param array $config
-     * @return void
+     *
+     * @throws PermissionDenied
      */
     public static function init(array $config = [])
     {
@@ -76,7 +81,7 @@ class Session
             if (!file_exists($config['path'])) {
                 mkdir($config['path'], 0700, true);
             }
-            if(!is_writable($config['path'])){
+            if (!is_writable($config['path'])) {
                 throw new PermissionDenied($config['path'] . ' permission denied!');
             }
             session_save_path($config['path']);
@@ -122,7 +127,7 @@ class Session
 
     /**
      * session自动启动或者初始化
-     * @return void
+     * @throws PermissionDenied
      */
     public static function boot()
     {
@@ -138,10 +143,12 @@ class Session
 
     /**
      * session设置
-     * @param string $name session名称
-     * @param mixed $value session值
+     *
+     * @param string      $name   session名称
+     * @param mixed       $value  session值
      * @param string|null $prefix 作用域（前缀）
-     * @return void
+     *
+     * @throws PermissionDenied
      */
     public static function set($name, $value = '', $prefix = null)
     {
@@ -165,9 +172,12 @@ class Session
 
     /**
      * session获取
-     * @param string $name session名称
+     *
+     * @param string      $name   session名称
      * @param string|null $prefix 作用域（前缀）
-     * @return mixed
+     *
+     * @return array|null
+     * @throws PermissionDenied
      */
     public static function get($name = '', $prefix = null)
     {
@@ -197,9 +207,12 @@ class Session
 
     /**
      * session获取并删除
-     * @param string $name session名称
+     *
+     * @param string      $name   session名称
      * @param string|null $prefix 作用域（前缀）
-     * @return mixed
+     *
+     * @return array|null
+     * @throws PermissionDenied
      */
     public static function pull($name, $prefix = null)
     {
@@ -214,9 +227,11 @@ class Session
 
     /**
      * session设置 下一次请求有效
-     * @param string $name session名称
-     * @param mixed $value session值
-     * @return void
+     *
+     * @param string $name  session名称
+     * @param mixed  $value session值
+     *
+     * @throws PermissionDenied
      */
     public static function flash($name, $value)
     {
@@ -229,7 +244,7 @@ class Session
 
     /**
      * 清空当前请求的session数据
-     * @return void
+     * @throws PermissionDenied
      */
     public static function flush()
     {
@@ -249,9 +264,11 @@ class Session
 
     /**
      * 删除session数据
-     * @param string|array $name session名称
-     * @param string|null $prefix 作用域（前缀）
-     * @return void
+     *
+     * @param string|array $name   session名称
+     * @param string|null  $prefix 作用域（前缀）
+     *
+     * @throws PermissionDenied
      */
     public static function delete($name, $prefix = null)
     {
@@ -279,8 +296,10 @@ class Session
 
     /**
      * 清空session数据
+     *
      * @param string|null $prefix 作用域（前缀）
-     * @return void
+     *
+     * @throws PermissionDenied
      */
     public static function clear($prefix = null)
     {
@@ -295,9 +314,12 @@ class Session
 
     /**
      * 判断session数据
-     * @param string $name session名称
+     *
+     * @param string      $name session名称
      * @param string|null $prefix
+     *
      * @return bool
+     * @throws PermissionDenied
      */
     public static function has($name, $prefix = null)
     {
@@ -314,9 +336,11 @@ class Session
 
     /**
      * 添加数据到一个session数组
+     *
      * @param  string $key
-     * @param  mixed $value
-     * @return void
+     * @param  mixed  $value
+     *
+     * @throws PermissionDenied
      */
     public static function push($key, $value)
     {
@@ -354,7 +378,9 @@ class Session
 
     /**
      * 重新生成session_id
+     *
      * @param bool $delete 是否删除关联会话文件
+     *
      * @return void
      */
     public static function regenerate($delete = false)

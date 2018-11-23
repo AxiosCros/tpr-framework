@@ -25,14 +25,14 @@ class Unix extends Pipes
 
     public function __construct($ttyMode, $ptyMode, $input, $disableOutput)
     {
-        $this->ttyMode       = (bool) $ttyMode;
-        $this->ptyMode       = (bool) $ptyMode;
-        $this->disableOutput = (bool) $disableOutput;
+        $this->ttyMode       = (bool)$ttyMode;
+        $this->ptyMode       = (bool)$ptyMode;
+        $this->disableOutput = (bool)$disableOutput;
 
         if (is_resource($input)) {
             $this->input = $input;
         } else {
-            $this->inputBuffer = (string) $input;
+            $this->inputBuffer = (string)$input;
         }
     }
 
@@ -134,7 +134,7 @@ class Unix extends Pipes
 
             $type = (false !== $found = array_search($pipe, $this->pipes)) ? $found : 'input';
             $data = '';
-            while ('' !== $dataread = (string) fread($pipe, self::CHUNK_SIZE)) {
+            while ('' !== $dataread = (string)fread($pipe, self::CHUNK_SIZE)) {
                 $data .= $dataread;
             }
 
@@ -160,7 +160,7 @@ class Unix extends Pipes
             while (strlen($this->inputBuffer)) {
                 $written = fwrite($w[0], $this->inputBuffer, 2 << 18); // write 512k
                 if ($written > 0) {
-                    $this->inputBuffer = (string) substr($this->inputBuffer, $written);
+                    $this->inputBuffer = (string)substr($this->inputBuffer, $written);
                 } else {
                     break;
                 }
@@ -180,13 +180,15 @@ class Unix extends Pipes
      */
     public function areOpen()
     {
-        return (bool) $this->pipes;
+        return (bool)$this->pipes;
     }
 
     /**
      * 创建一个新的 UnixPipes 实例
+     *
      * @param Process         $process
      * @param string|resource $input
+     *
      * @return self
      */
     public static function create(Process $process, $input)

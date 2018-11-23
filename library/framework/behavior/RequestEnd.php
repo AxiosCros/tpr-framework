@@ -13,9 +13,10 @@ namespace tpr\framework\behavior;
 
 use tpr\db\Db;
 
-class RequestEnd {
-
-    public function run(){
+class RequestEnd
+{
+    public function run()
+    {
         Db::clear();
     }
 }

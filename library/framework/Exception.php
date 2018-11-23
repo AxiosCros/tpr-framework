@@ -23,7 +23,6 @@ class Exception extends \Exception
     /**
      * 设置异常额外的Debug数据
      * 数据将会显示为下面的格式
-     *
      * Exception Data
      * --------------------------------------------------
      * Label 1
@@ -50,5 +49,5 @@ class Exception extends \Exception
     {
         return $this->data;
     }
-    
+
 }

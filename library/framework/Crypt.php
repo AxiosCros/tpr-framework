@@ -1,9 +1,8 @@
 <?php
 /**
- * @author: Axios
- *
- * @email: axioscros@aliyun.com
- * @blog:  http://hanxv.cn
+ * @author  : Axios
+ * @email   : axioscros@aliyun.com
+ * @blog    :  http://hanxv.cn
  * @datetime: 2017/7/4 9:12
  */
 
@@ -52,14 +51,14 @@ class Crypt
         file_put_contents(self::$key_path . 'pri.pem', $pri_key);
         self::$pri_key = $pri_key;
 
-        $res = openssl_pkey_get_details($res);
+        $res           = openssl_pkey_get_details($res);
         self::$pub_key = $res['key'];
         file_put_contents(self::$key_path . "pub.pem", self::$pub_key);
     }
 
     public function encrypt($data, $encrypt = 'pri')
     {
-        $str = '';
+        $str   = '';
         $count = 0;
         for ($i = 0; $i < strlen($data); $i += 117) {
             $src = substr($data, $i, 117);
@@ -99,7 +98,7 @@ class Crypt
 
     private static function doEncrypt($src, $type = 1)
     {
-        $rs = '';
+        $rs     = '';
         $result = $type ? @openssl_private_encrypt($src, $rs, self::$pri_key) : @openssl_public_encrypt($src, $rs, self::$pub_key);
         if ($result === FALSE) {
             return NULL;
@@ -109,7 +108,7 @@ class Crypt
 
     private static function doDecrypt($src, $type = 1)
     {
-        $rs = '';
+        $rs     = '';
         $result = $type ? @openssl_private_decrypt($src, $rs, self::$pri_key) : @openssl_public_decrypt($src, $rs, self::$pub_key);
         if ($result === FALSE) {
             return NULL;

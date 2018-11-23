@@ -1,9 +1,8 @@
 <?php
 /**
- * @author: axios
- *
- * @email: axiosleo@foxmail.com
- * @blog:  http://hanxv.cn
+ * @author  : axios
+ * @email   : axiosleo@foxmail.com
+ * @blog    :  http://hanxv.cn
  * @datetime: 2018/6/6 10:54
  */
 
@@ -23,9 +22,9 @@ abstract class RestController
     protected $restTypeList      = 'html|xml|json|rss';
     protected $restDefaultType   = 'html';
     protected $restOutputType    = [ // REST允许输出的资源类型列表
-        'xml'  => 'application/xml',
-        'json' => 'application/json',
-        'html' => 'text/html',
+                                     'xml'  => 'application/xml',
+                                     'json' => 'application/json',
+                                     'html' => 'text/html',
     ];
 
     /**
@@ -58,7 +57,9 @@ abstract class RestController
     /**
      * REST 调用
      * @access public
+     *
      * @param string $method 方法名
+     *
      * @return mixed
      * @throws \Exception
      */
@@ -83,9 +84,11 @@ abstract class RestController
     /**
      * 输出返回数据
      * @access protected
-     * @param mixed     $data 要返回的数据
-     * @param String    $type 返回类型 JSON XML
-     * @param integer   $code HTTP状态码
+     *
+     * @param mixed   $data 要返回的数据
+     * @param String  $type 返回类型 JSON XML
+     * @param integer $code HTTP状态码
+     *
      * @return Response
      */
     protected function response($data, $type = 'json', $code = 200)

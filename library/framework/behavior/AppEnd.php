@@ -11,7 +11,8 @@
 
 namespace tpr\framework\behavior;
 
-class AppEnd{
+class AppEnd
+{
 
     public $request;
 
@@ -22,7 +23,8 @@ class AppEnd{
 
     }
 
-    public function run(){
+    public function run()
+    {
 
     }
 }

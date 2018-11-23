@@ -1,9 +1,8 @@
 <?php
 /**
- * @author: Axios
- *
- * @email: axioscros@aliyun.com
- * @blog:  http://hanxv.cn
+ * @author  : Axios
+ * @email   : axioscros@aliyun.com
+ * @blog    :  http://hanxv.cn
  * @datetime: 2017/6/30 16:40
  */
 
@@ -25,13 +24,13 @@ class ResponseEnd
 
     function __construct()
     {
-        $this->request = Request::instance();
-        $this->param = $this->request->param();
-        $this->module = strtolower($this->request->module());
+        $this->request    = Request::instance();
+        $this->param      = $this->request->param();
+        $this->module     = strtolower($this->request->module());
         $this->controller = strtolower($this->request->controller());
-        $this->action = $this->request->action();
-        $this->req = $this->request->getContent();
-        $this->mca = $this->module . '/' . $this->controller . '/' . $this->action;
+        $this->action     = $this->request->action();
+        $this->req        = $this->request->getContent();
+        $this->mca        = $this->module . '/' . $this->controller . '/' . $this->action;
     }
 
     public function run()

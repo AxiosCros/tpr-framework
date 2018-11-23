@@ -17,7 +17,7 @@ class Builder
 {
     private $arguments;
     private $cwd;
-    private $env = null;
+    private $env            = null;
     private $input;
     private $timeout        = 60;
     private $options        = [];
@@ -27,6 +27,7 @@ class Builder
 
     /**
      * 构造方法
+     *
      * @param string[] $arguments 参数
      */
     public function __construct(array $arguments = [])
@@ -36,7 +37,9 @@ class Builder
 
     /**
      * 创建一个实例
+     *
      * @param string[] $arguments 参数
+     *
      * @return self
      */
     public static function create(array $arguments = [])
@@ -46,7 +49,9 @@ class Builder
 
     /**
      * 添加一个参数
+     *
      * @param string $argument 参数
+     *
      * @return self
      */
     public function add($argument)
@@ -58,7 +63,9 @@ class Builder
 
     /**
      * 添加一个前缀
+     *
      * @param string|array $prefix
+     *
      * @return self
      */
     public function setPrefix($prefix)
@@ -70,7 +77,9 @@ class Builder
 
     /**
      * 设置参数
+     *
      * @param string[] $arguments
+     *
      * @return  self
      */
     public function setArguments(array $arguments)
@@ -82,7 +91,9 @@ class Builder
 
     /**
      * 设置工作目录
+     *
      * @param null|string $cwd
+     *
      * @return  self
      */
     public function setWorkingDirectory($cwd)
@@ -94,7 +105,9 @@ class Builder
 
     /**
      * 是否初始化环境变量
+     *
      * @param bool $inheritEnv
+     *
      * @return self
      */
     public function inheritEnvironmentVariables($inheritEnv = true)
@@ -106,8 +119,10 @@ class Builder
 
     /**
      * 设置环境变量
+     *
      * @param string      $name
      * @param null|string $value
+     *
      * @return self
      */
     public function setEnv($name, $value)
@@ -119,7 +134,9 @@ class Builder
 
     /**
      *  添加环境变量
+     *
      * @param array $variables
+     *
      * @return self
      */
     public function addEnvironmentVariables(array $variables)
@@ -131,7 +148,9 @@ class Builder
 
     /**
      * 设置输入
+     *
      * @param mixed $input
+     *
      * @return self
      */
     public function setInput($input)
@@ -143,7 +162,9 @@ class Builder
 
     /**
      * 设置超时时间
+     *
      * @param float|null $timeout
+     *
      * @return self
      */
     public function setTimeout($timeout)
@@ -154,7 +175,7 @@ class Builder
             return $this;
         }
 
-        $timeout = (float) $timeout;
+        $timeout = (float)$timeout;
 
         if ($timeout < 0) {
             throw new \InvalidArgumentException('The timeout value must be a valid positive integer or float number.');
@@ -167,8 +188,10 @@ class Builder
 
     /**
      * 设置proc_open选项
+     *
      * @param string $name
      * @param string $value
+     *
      * @return self
      */
     public function setOption($name, $value)

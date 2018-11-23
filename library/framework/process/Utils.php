@@ -14,7 +14,9 @@ class Utils
 
     /**
      * 转义字符串
+     *
      * @param string $argument
+     *
      * @return string
      */
     public static function escapeArgument($argument)
@@ -36,7 +38,7 @@ class Utils
                 if ('\\' === substr($part, -1)) {
                     $part .= '\\';
                 }
-                $quote = true;
+                $quote           = true;
                 $escapedArgument .= $part;
             }
         }
@@ -48,8 +50,10 @@ class Utils
 
     /**
      * 验证并进行规范化Process输入。
+     *
      * @param string $caller
      * @param mixed  $input
+     *
      * @return string
      * @throws \InvalidArgumentException
      */
@@ -60,7 +64,7 @@ class Utils
                 return $input;
             }
             if (is_scalar($input)) {
-                return (string) $input;
+                return (string)$input;
             }
             throw new \InvalidArgumentException(sprintf('%s only accepts strings or stream resources.', $caller));
         }

@@ -18,9 +18,11 @@ class Hook
 
     /**
      * 动态添加行为扩展到某个标签
-     * @param string    $tag 标签名称
-     * @param mixed     $behavior 行为名称
-     * @param bool      $first 是否放到开头执行
+     *
+     * @param string $tag      标签名称
+     * @param mixed  $behavior 行为名称
+     * @param bool   $first    是否放到开头执行
+     *
      * @return void
      */
     public static function add($tag, $behavior, $first = false)
@@ -43,8 +45,9 @@ class Hook
 
     /**
      * 批量导入插件
-     * @param array        $tags 插件信息
-     * @param boolean     $recursive 是否递归合并
+     *
+     * @param array   $tags      插件信息
+     * @param boolean $recursive 是否递归合并
      */
     public static function import(array $tags, $recursive = true)
     {
@@ -59,7 +62,9 @@ class Hook
 
     /**
      * 获取插件信息
+     *
      * @param string $tag 插件位置 留空获取全部
+     *
      * @return array
      */
     public static function get($tag = '')
@@ -74,10 +79,12 @@ class Hook
 
     /**
      * 监听标签的行为
+     *
      * @param string $tag    标签名称
      * @param mixed  $params 传入参数
      * @param mixed  $extra  额外参数
      * @param bool   $once   只获取一个有效返回值
+     *
      * @return mixed
      */
     public static function listen($tag, &$params = null, $extra = null, $once = false)
@@ -98,10 +105,12 @@ class Hook
 
     /**
      * 执行某个行为
-     * @param mixed     $class 要执行的行为
-     * @param string    $tag 方法名（标签名）
-     * @param Mixed     $params 传人的参数
-     * @param mixed     $extra 额外参数
+     *
+     * @param mixed  $class  要执行的行为
+     * @param string $tag    方法名（标签名）
+     * @param Mixed  $params 传人的参数
+     * @param mixed  $extra  额外参数
+     *
      * @return mixed
      */
     public static function exec($class, $tag = '', &$params = null, $extra = null)
@@ -109,7 +118,7 @@ class Hook
         App::$debug && Debug::remark('behavior_start', 'time');
         $method = Loader::parseName($tag, 1, false);
         if ($class instanceof \Closure) {
-            $result = call_user_func_array($class, [ & $params, $extra]);
+            $result = call_user_func_array($class, [& $params, $extra]);
             $class  = 'Closure';
         } elseif (is_array($class)) {
             list($class, $method) = $class;
@@ -120,7 +129,7 @@ class Hook
             $result = $class->$method($params, $extra);
             $class  = get_class($class);
         } elseif (strpos($class, '::')) {
-            $result = call_user_func_array($class, [ & $params, $extra]);
+            $result = call_user_func_array($class, [& $params, $extra]);
         } else {
             $obj    = new $class();
             $method = ($tag && is_callable([$obj, $method])) ? $method : 'run';

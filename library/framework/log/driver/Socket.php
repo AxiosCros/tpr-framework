@@ -44,7 +44,9 @@ class Socket
 
     /**
      * 构造函数
+     *
      * @param array $config 缓存参数
+     *
      * @access public
      */
     public function __construct(array $config = [])
@@ -57,7 +59,9 @@ class Socket
     /**
      * 调试输出接口
      * @access public
-     * @param array     $log 日志信息
+     *
+     * @param array $log 日志信息
+     *
      * @return bool
      */
     public function save(array $log = [])
@@ -154,6 +158,7 @@ class Socket
     /**
      * 发送给指定客户端
      * @author Zjmainstay
+     *
      * @param $tabid
      * @param $client_id
      * @param $logs
@@ -161,7 +166,7 @@ class Socket
      */
     protected function sendToClient($tabid, $client_id, $logs, $force_client_id)
     {
-        $logs = [
+        $logs    = [
             'tabid'           => $tabid,
             'client_id'       => $client_id,
             'logs'            => $logs,
@@ -225,9 +230,10 @@ class Socket
     }
 
     /**
-     * @param string $host - $host of socket server
+     * @param string $host    - $host of socket server
      * @param string $message - 发送的消息
      * @param string $address - 地址
+     *
      * @return bool
      */
     protected function send($host, $message = '', $address = '/')

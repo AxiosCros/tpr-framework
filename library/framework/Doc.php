@@ -1,9 +1,8 @@
 <?php
 /**
- * @author: Axios
- *
- * @email: axioscros@aliyun.com
- * @blog:  http://hanxv.cn
+ * @author  : Axios
+ * @email   : axioscros@aliyun.com
+ * @blog    :  http://hanxv.cn
  * @datetime: 2017/6/28 14:51
  */
 
@@ -22,7 +21,7 @@ class Doc
 
     protected static $typeList = [
         'char', 'string', 'int', 'float', 'boolean', 'bool', 'date',
-        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed','file'
+        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed', 'file'
     ];
 
     private static $isConnect = false;
@@ -56,7 +55,7 @@ class Doc
         $app_path = rtrim($app_path, '//');
 
         $class_path = [];
-        $dirHandle = opendir($app_path);
+        $dirHandle  = opendir($app_path);
         while (false !== ($fileName = readdir($dirHandle))) {
             $subFile = $app_path . DIRECTORY_SEPARATOR . $fileName;
             if (is_dir($subFile) && str_replace('.', '', $fileName) != '' && !in_array($fileName, c('deny_module_list', ['common']))) {
@@ -90,24 +89,37 @@ class Doc
         return $doc;
     }
 
-    private function filter($filter = null){
-        if(!is_null($filter)){
-            switch ($filter){
-                case 'public':    $filter = \ReflectionMethod::IS_PUBLIC;    break;
-                case 'static':    $filter = \ReflectionMethod::IS_STATIC;    break;
-                case 'protected': $filter = \ReflectionMethod::IS_PROTECTED; break;
-                case 'private':   $filter = \ReflectionMethod::IS_PRIVATE;   break;
-                case 'abstract':  $filter = \ReflectionMethod::IS_ABSTRACT;  break;
-                case 'final':     $filter = \ReflectionMethod::IS_FINAL;     break;
+    private function filter($filter = null)
+    {
+        if (!is_null($filter)) {
+            switch ($filter) {
+                case 'public':
+                    $filter = \ReflectionMethod::IS_PUBLIC;
+                    break;
+                case 'static':
+                    $filter = \ReflectionMethod::IS_STATIC;
+                    break;
+                case 'protected':
+                    $filter = \ReflectionMethod::IS_PROTECTED;
+                    break;
+                case 'private':
+                    $filter = \ReflectionMethod::IS_PRIVATE;
+                    break;
+                case 'abstract':
+                    $filter = \ReflectionMethod::IS_ABSTRACT;
+                    break;
+                case 'final':
+                    $filter = \ReflectionMethod::IS_FINAL;
+                    break;
             }
         }
         return $filter;
     }
 
-    public function makeClassDoc($class = '',$filter = 'public')
+    public function makeClassDoc($class = '', $filter = 'public')
     {
         $filter = $this->filter($filter);
-        $doc = [];
+        $doc    = [];
         if (class_exists($class)) {
             $reflectionClass   = new \ReflectionClass($class);
             $doc['name']       = $reflectionClass->name;
@@ -118,7 +130,8 @@ class Doc
 
             $_getMethods = $reflectionClass->getMethods($filter);
 
-            $methods     = [];  $m = 0;
+            $methods = [];
+            $m       = 0;
             foreach ($_getMethods as $key => $method) {
                 if ($method->class == $class && strpos($method->name, '__') === false) {
                     $methods[$m] = $this->makeMethodDoc($class, $method->name);
@@ -139,25 +152,25 @@ class Doc
         $temp   = explode("\\", $temp);
         $temp   = array_values(array_filter($temp));
 
-        $m = [];
+        $m         = [];
         $m['name'] = $method->name;
         $m['path'] = strtolower($temp[0]) . "/" . strtolower($temp[2]) . "/" . $method->name;
-        $rule = Route::name($m['path']);
-        $route = '';
+        $rule      = Route::name($m['path']);
+        $route     = '';
         if (!empty($rule)) {
             $route = $rule[0][0];
         }
-        $m['route']     = $route;
-        $m['comment']   = $this->trans($method->getDocComment());
+        $m['route']   = $route;
+        $m['comment'] = $this->trans($method->getDocComment());
 
-        $m['property']  = \Reflection::getModifierNames($method->getModifiers());
+        $m['property'] = \Reflection::getModifierNames($method->getModifiers());
         return $m;
     }
 
     private function trans($comment)
     {
         $docComment = $comment;
-        $data = [];
+        $data       = [];
         if ($docComment !== false) {
             $docCommentArr = explode("\n", $docComment);
             foreach ($docCommentArr as $key => $comment) {
@@ -165,18 +178,18 @@ class Doc
                 $posA = strpos($comment, '@');
                 if ($posA === false) {
                     if ($key == 1 && strpos($comment, '@') === false) {
-                        $content = trim(str_replace('*', ' ', $comment));
+                        $content       = trim(str_replace('*', ' ', $comment));
                         $data['title'] = $content;
                     }
                     continue;
                 }
-                $content = trim(substr($comment, $posA));
+                $content       = trim(substr($comment, $posA));
                 $needle_length = strpos($content, ' ');
                 if ($needle_length === false) {
-                    $needle = str_replace('@', '', trim($content));
+                    $needle  = str_replace('@', '', trim($content));
                     $content = '';
                 } else {
-                    $needle = trim(substr($content, 1, $needle_length));
+                    $needle  = trim(substr($content, 1, $needle_length));
                     $content = trim(substr($content, $needle_length));
                     $content = $this->transContent($content);
                 }
@@ -187,8 +200,8 @@ class Doc
                     if (is_array($data[$needle])) {
                         array_push($data[$needle], $content);
                     } else {
-                        $tmp = $data[$needle];
-                        $data[$needle] = [];
+                        $tmp              = $data[$needle];
+                        $data[$needle]    = [];
                         $data[$needle][0] = $tmp;
                         $data[$needle][1] = $content;
                     }
@@ -207,17 +220,17 @@ class Doc
 
     private function transContent($content)
     {
-        $connector = self::$config['connector'];
+        $connector       = self::$config['connector'];
         self::$isConnect = strpos($content, $connector) === false ? false : true;
-        self::$content = self::$content . $content;
+        self::$content   = self::$content . $content;
         if (self::$isConnect) {
             self::$content = str_replace($connector, '', self::$content);
             return true;
         }
-        $content = self::$content;
+        $content       = self::$content;
         self::$content = '';
         if (strpos($content, ' ') !== false) {
-            $content = preg_replace("/[\s]+/is", " ", $content);
+            $content      = preg_replace("/[\s]+/is", " ", $content);
             $contentArray = explode(' ', $content);
             if (isset($contentArray[0]) && !$this->isType($contentArray[0])) {
                 return $content;
@@ -237,7 +250,7 @@ class Doc
             }
 
             $data['desc'] = trim($desc);
-            $content = $data;
+            $content      = $data;
         }
         return $content;
     }
@@ -284,10 +297,10 @@ class Doc
         foreach ($files as $k => $f) {
             if (strpos($f, '.php') !== false) {
                 require_once $f;
-                $content = file_get_contents($f);
-                $namespace_begin = strpos($content, 'namespace') + 10;
-                $namespace_end = strpos($content, ';');
-                $class = substr($content, $namespace_begin, $namespace_end - $namespace_begin) . '\\' . basename($f, '.php');
+                $content            = file_get_contents($f);
+                $namespace_begin    = strpos($content, 'namespace') + 10;
+                $namespace_end      = strpos($content, ';');
+                $class              = substr($content, $namespace_begin, $namespace_end - $namespace_begin) . '\\' . basename($f, '.php');
                 self::$classMap[$f] = $class;
             }
         }

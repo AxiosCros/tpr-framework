@@ -64,6 +64,7 @@ class Template
      * 构造函数
      * Template constructor.
      * @access public
+     *
      * @param array $config
      */
     public function __construct(array $config = [])
@@ -84,7 +85,9 @@ class Template
     /**
      * 字符串替换 避免正则混淆
      * @access private
+     *
      * @param string $str
+     *
      * @return string
      */
     private function stripPreg($str)
@@ -98,8 +101,10 @@ class Template
     /**
      * 模板变量赋值
      * @access public
+     *
      * @param mixed $name
      * @param mixed $value
+     *
      * @return void
      */
     public function assign($name, $value = '')
@@ -114,6 +119,7 @@ class Template
     /**
      * 模板引擎参数赋值
      * @access public
+     *
      * @param mixed $name
      * @param mixed $value
      */
@@ -125,7 +131,9 @@ class Template
     /**
      * 模板引擎配置项
      * @access public
+     *
      * @param array|string $config
+     *
      * @return null|array
      */
     public function config($config)
@@ -142,7 +150,9 @@ class Template
     /**
      * 模板变量获取
      * @access public
+     *
      * @param  string $name 变量名
+     *
      * @return mixed
      */
     public function get($name = '')
@@ -166,9 +176,11 @@ class Template
     /**
      * 渲染模板文件
      * @access public
-     * @param string    $template 模板文件
-     * @param array     $vars 模板变量
-     * @param array     $config 模板参数
+     *
+     * @param string $template 模板文件
+     * @param array  $vars     模板变量
+     * @param array  $config   模板参数
+     *
      * @return void
      * @throws Exception
      */
@@ -214,9 +226,11 @@ class Template
     /**
      * 渲染模板内容
      * @access public
-     * @param string    $content 模板内容
-     * @param array     $vars 模板变量
-     * @param array     $config 模板参数
+     *
+     * @param string $content 模板内容
+     * @param array  $vars    模板变量
+     * @param array  $config  模板参数
+     *
      * @return void
      * @throws Exception
      */
@@ -240,8 +254,10 @@ class Template
     /**
      * 设置布局
      * @access public
-     * @param mixed     $name 布局模板名称 false 则关闭布局
-     * @param string    $replace 布局模板内容替换标识
+     *
+     * @param mixed  $name    布局模板名称 false 则关闭布局
+     * @param string $replace 布局模板内容替换标识
+     *
      * @return object
      */
     public function layout($name, $replace = '')
@@ -267,7 +283,9 @@ class Template
      * 检查编译缓存是否有效
      * 如果无效则需要重新编译
      * @access private
+     *
      * @param string $cacheFile 缓存文件名
+     *
      * @return boolean
      */
     private function checkCache($cacheFile)
@@ -307,7 +325,9 @@ class Template
     /**
      * 检查编译缓存是否存在
      * @access public
+     *
      * @param string $cacheId 缓存的id
+     *
      * @return boolean
      */
     public function isCache($cacheId)
@@ -322,8 +342,10 @@ class Template
     /**
      * 编译模板文件内容
      * @access private
-     * @param string    $content 模板内容
-     * @param string    $cacheFile 缓存文件名
+     *
+     * @param string $content   模板内容
+     * @param string $cacheFile 缓存文件名
+     *
      * @return void
      * @throws Exception
      */
@@ -371,7 +393,9 @@ class Template
      * 模板解析入口
      * 支持普通标签和TagLib解析 支持自定义标签库
      * @access public
+     *
      * @param string $content 要解析的模板内容
+     *
      * @return void
      * @throws Exception
      */
@@ -431,7 +455,9 @@ class Template
     /**
      * 检查PHP语法
      * @access private
+     *
      * @param string $content 要解析的模板内容
+     *
      * @return void
      * @throws Exception
      */
@@ -449,7 +475,9 @@ class Template
     /**
      * 解析模板中的布局标签
      * @access private
+     *
      * @param string $content 要解析的模板内容
+     *
      * @return void
      */
     private function parseLayout(&$content)
@@ -478,7 +506,9 @@ class Template
     /**
      * 解析模板中的include标签
      * @access private
+     *
      * @param  string $content 要解析的模板内容
+     *
      * @return void
      */
     private function parseInclude(&$content)
@@ -514,13 +544,15 @@ class Template
     /**
      * 解析模板中的extend标签
      * @access private
+     *
      * @param  string $content 要解析的模板内容
+     *
      * @return void
      */
     private function parseExtend(&$content)
     {
         $regex  = $this->getRegex('extend');
-        $array  = $blocks  = $baseBlocks  = [];
+        $array  = $blocks = $baseBlocks = [];
         $extend = '';
         $func   = function ($template) use (&$func, &$regex, &$array, &$extend, &$blocks, &$baseBlocks) {
             if (preg_match($regex, $template, $matches)) {
@@ -589,8 +621,10 @@ class Template
     /**
      * 替换页面中的literal标签
      * @access private
-     * @param  string   $content 模板内容
-     * @param  boolean  $restore 是否为还原
+     *
+     * @param  string  $content 模板内容
+     * @param  boolean $restore 是否为还原
+     *
      * @return void
      */
     private function parseLiteral(&$content, $restore = false)
@@ -621,8 +655,10 @@ class Template
     /**
      * 获取模板中的block标签
      * @access private
-     * @param  string   $content 模板内容
-     * @param  boolean  $sort 是否排序
+     *
+     * @param  string  $content 模板内容
+     * @param  boolean $sort    是否排序
+     *
      * @return array
      */
     private function parseBlock(&$content, $sort = false)
@@ -643,7 +679,7 @@ class Template
                             'end'     => $match[0][0],
                             'parent'  => count($right) ? end($right)['name'] : '',
                         ];
-                        $keys[$tag['name']] = $match[0][1];
+                        $keys[$tag['name']]   = $match[0][1];
                     }
                 } else {
                     // 标签头压入栈
@@ -667,7 +703,9 @@ class Template
      * 搜索模板页面中包含的TagLib库
      * 并返回列表
      * @access private
+     *
      * @param  string $content 模板内容
+     *
      * @return array|null
      */
     private function getIncludeTagLib(&$content)
@@ -689,10 +727,13 @@ class Template
     /**
      * TagLib库解析
      * @access public
-     * @param  string   $tagLib 要解析的标签库
-     * @param  string   $content 要解析的模板内容
-     * @param  boolean  $hide 是否隐藏标签库前缀
+     *
+     * @param  string  $tagLib  要解析的标签库
+     * @param  string  $content 要解析的模板内容
+     * @param  boolean $hide    是否隐藏标签库前缀
+     *
      * @return null
+     * @throws Exception
      */
     public function parseTagLib($tagLib, &$content, $hide = false)
     {
@@ -711,8 +752,10 @@ class Template
     /**
      * 分析标签属性
      * @access public
-     * @param  string   $str 属性字符串
-     * @param  string   $name 不为空时返回指定的属性名
+     *
+     * @param  string $str  属性字符串
+     * @param  string $name 不为空时返回指定的属性名
+     *
      * @return array
      */
     public function parseAttr($str, $name = null)
@@ -736,7 +779,9 @@ class Template
      * 模板标签解析
      * 格式： {TagName:args [|content] }
      * @access private
+     *
      * @param  string $content 要解析的模板内容
+     *
      * @return void
      */
     private function parseTag(&$content)
@@ -797,7 +842,7 @@ class Template
                                         $str = '<?php echo !empty(' . $name . ')' . $_name . '?' . $name . $str . '; ?>';
                                         break;
                                     default:
-                                        if (isset($array[1]))  {
+                                        if (isset($array[1])) {
                                             $this->parseVar($array[2]);
                                             $name = $name . $array[1] . $array[2];
                                         }
@@ -851,7 +896,9 @@ class Template
      * 模板变量解析,支持使用函数
      * 格式： {$varname|function1|function2=arg1,arg2}
      * @access public
+     *
      * @param  string $varStr 变量数据
+     *
      * @return void
      */
     public function parseVar(&$varStr)
@@ -911,7 +958,9 @@ class Template
      * 对模板中使用了函数的变量进行解析
      * 格式 {$varname|function1|function2=arg1,arg2}
      * @access public
+     *
      * @param  string $varStr 变量字符串
+     *
      * @return void
      */
     public function parseVarFunction(&$varStr)
@@ -920,7 +969,7 @@ class Template
             return;
         }
         static $_varFunctionList = [];
-        $_key                    = md5($varStr);
+        $_key = md5($varStr);
         //如果已经解析过该变量字串，则直接返回变量值
         if (isset($_varFunctionList[$_key])) {
             $varStr = $_varFunctionList[$_key];
@@ -971,7 +1020,9 @@ class Template
      * 特殊模板变量解析
      * 格式 以 $Think. 打头的变量属于特殊模板变量
      * @access public
+     *
      * @param  array $vars 变量数组
+     *
      * @return string
      */
     public function parseThinkVar($vars)
@@ -1042,7 +1093,9 @@ class Template
     /**
      * 分析加载的模板文件并读取内容 支持多个模板文件读取
      * @access private
+     *
      * @param  string $templateName 模板文件名
+     *
      * @return string
      */
     private function parseTemplateName($templateName)
@@ -1069,7 +1122,9 @@ class Template
     /**
      * 解析模板文件名
      * @access private
+     *
      * @param  string $template 文件名
+     *
      * @return string|false
      */
     private function parseTemplateFile($template)
@@ -1104,7 +1159,9 @@ class Template
     /**
      * 按标签生成正则
      * @access private
+     *
      * @param  string $tagName 标签名
+     *
      * @return string
      */
     private function getRegex($tagName)
@@ -1145,7 +1202,8 @@ class Template
                     $regex = '<!--###literal(\d+)###-->';
                     break;
                 case 'include':
-                    $name = 'file';break;
+                    $name = 'file';
+                    break;
                 case 'taglib':
                 case 'layout':
                 case 'extend':
