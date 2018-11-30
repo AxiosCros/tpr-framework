@@ -37,10 +37,12 @@ trait Jump
     /**
      * 操作成功跳转的快捷方法
      * @access protected
-     * @param mixed $msg 提示信息
-     * @param string $url 跳转的URL地址
-     * @param mixed $data 返回的数据
+     *
+     * @param mixed   $msg  提示信息
+     * @param string  $url  跳转的URL地址
+     * @param mixed   $data 返回的数据
      * @param integer $wait 跳转等待时间
+     *
      * @throws \tpr\framework\Exception
      */
     protected function success($msg = 'success', $url = null, $data = '', $wait = 3)
@@ -69,10 +71,12 @@ trait Jump
     /**
      * 操作错误跳转的快捷方法
      * @access protected
-     * @param mixed $msg 提示信息
-     * @param string $url 跳转的URL地址
-     * @param mixed $data 返回的数据
+     *
+     * @param mixed   $msg  提示信息
+     * @param string  $url  跳转的URL地址
+     * @param mixed   $data 返回的数据
      * @param integer $wait 跳转等待时间
+     *
      * @return void
      * @throws \tpr\framework\Exception
      */
@@ -101,6 +105,7 @@ trait Jump
 
     /**
      * @param $default_tpl
+     *
      * @return array
      * @throws \tpr\framework\Exception
      */
@@ -120,8 +125,10 @@ trait Jump
 
     /**
      * 设置回调数据
-     * @param $key
+     *
+     * @param        $key
      * @param string $value
+     *
      * @return $this
      */
     protected function setResult($key, $value = '')
@@ -132,8 +139,10 @@ trait Jump
 
     /**
      * 设置响应头
+     *
      * @param string $key
      * @param string $value
+     *
      * @return $this
      */
     protected function setHeader($key = '', $value = '')
@@ -148,7 +157,9 @@ trait Jump
 
     /**
      * 获取已设置的响应头
+     *
      * @param string $key
+     *
      * @return array|null
      */
     protected function getHeaders($key = '')
@@ -161,7 +172,9 @@ trait Jump
 
     /**
      * 设置当前 response 输出类型
+     *
      * @param $return_type
+     *
      * @return $this
      */
     protected function setResponseType($return_type)
@@ -172,8 +185,10 @@ trait Jump
 
     /**
      * 设置配置参数
+     *
      * @param string $key
      * @param string $value
+     *
      * @return $this
      */
     protected function setOptions($key = '', $value = '')
@@ -189,11 +204,13 @@ trait Jump
     /**
      * URL重定向
      * @access protected
-     * @param string $url 跳转的URL表达式
+     *
+     * @param string        $url    跳转的URL表达式
      * @param array|integer $params 其它URL参数
-     * @param integer $code http code
-     * @param array $with 隐式传参
-     * @return void
+     * @param integer       $code   http code
+     * @param array         $with   隐式传参
+     *
+     * @throws \tpr\framework\exception\PermissionDenied
      */
     protected function redirect($url, $params = [], $code = 302, $with = [])
     {
@@ -224,7 +241,8 @@ trait Jump
 
     /**
      * 异常情况下的回调
-     * @param int $code
+     *
+     * @param int    $code
      * @param string $message
      */
     protected function wrong($code = 500, $message = '')
@@ -234,8 +252,9 @@ trait Jump
 
     /**
      * 正常情况下的数据回调
-     * @param array $data
-     * @param int $code
+     *
+     * @param array  $data
+     * @param int    $code
      * @param string $message
      */
     protected function response($data = [], $code = 200, $message = 'success')
@@ -257,6 +276,7 @@ trait Jump
     /**
      * 返回封装后的API数据到客户端
      * @access protected
+     *
      * @param mixed $result 要返回的数据
      * @param array $header
      */
@@ -270,7 +290,8 @@ trait Jump
 
     /**
      * 无处理回调
-     * @param $output
+     *
+     * @param       $output
      * @param array $header
      */
     protected function output($output = null, $header = [])
@@ -280,9 +301,15 @@ trait Jump
         throw new HttpResponseException($response);
     }
 
+    protected function getReturnData(){
+        return $this->return_data;
+    }
+
     /**
      * 设置回调信息,多语言翻译
+     *
      * @param string $message
+     *
      * @return mixed|string
      */
     private function msg($message = '')
