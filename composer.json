@@ -19,8 +19,8 @@
     "issues": "https://github.com/AxiosCros/tpr-framework/issues"
   },
   "require": {
-    "php": ">=5.4.0",
-    "axios/tpr-db": "^0.1.0",
+    "php": ">=5.4",
+    "axios/tpr-db": "^0.1",
     "axios/api-tool": "^1.1",
     "ext-curl": "*",
     "ext-json": "*",
