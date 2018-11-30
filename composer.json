@@ -20,8 +20,7 @@
   },
   "require": {
     "php": ">=5.4",
-    "axios/tpr-db": "^0.1",
-    "axios/api-tool": "^1.1",
+    "axios/tpr-db": "*",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-fileinfo": "*",
