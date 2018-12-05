@@ -87,12 +87,22 @@ class Console
         }
     }
 
+    public static function addCommand($commands = [])
+    {
+        if (is_string($commands) && !in_array($commands, self::$defaultCommands)) {
+            array_push(self::$defaultCommands, $commands);
+        } else {
+            self::$defaultCommands = array_merge(self::$defaultCommands, $commands);
+        }
+    }
+
     /**
      * @param        $command
      * @param array  $parameters
      * @param string $driver
      *
      * @return Output|Buffer
+     * @throws \Exception
      */
     public static function call($command, array $parameters = [], $driver = 'buffer')
     {
@@ -160,6 +170,7 @@ class Console
      * @param Output $output
      *
      * @return int
+     * @throws \Exception
      */
     public function doRun(Input $input, Output $output)
     {
