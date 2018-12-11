@@ -8,6 +8,24 @@
 
 namespace tpr\framework;
 
+/**
+ * Class Captcha
+ * @package tpr\framework
+ * @property $imageW private
+ * @property $imageH private
+ * @property $length private
+ * @property $fontSize private
+ * @property $useZh private
+ * @property $fontttf private
+ * @property $seKey private
+ * @property $expire private
+ * @property $reset private
+ * @property $useImgBg private
+ * @property $useNoise private
+ * @property $useCurve private
+ * @property $zhSet private
+ * @property $codeSet private
+ */
 class Captcha
 {
     protected $config = [
@@ -45,21 +63,6 @@ class Captcha
 
     private $_image = null; // 验证码图片实例
     private $_color = null; // 验证码字体颜色
-    private $bg     = [];
-    private $imageW;
-    private $imageH;
-    private $length;
-    private $fontSize;
-    private $useZh;
-    private $fontttf;
-    private $seKey;
-    private $expire;
-    private $reset;
-    private $useImgBg;
-    private $useNoise;
-    private $useCurve;
-    private $zhSet;
-    private $codeSet;
 
     /**
      * 架构方法 设置参数
