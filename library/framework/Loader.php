@@ -414,17 +414,12 @@ class Loader
      */
     public static function controller($name, $layer = 'controller', $appendSuffix = false, $empty = '')
     {
-        if (false !== strpos($name, '\\')) {
-            $class  = $name;
-            $module = Request::instance()->module();
+        if (strpos($name, '/')) {
+            list($module, $name) = explode('/', $name);
         } else {
-            if (strpos($name, '/')) {
-                list($module, $name) = explode('/', $name);
-            } else {
-                $module = Request::instance()->module();
-            }
-            $class = self::parseClass($module, $layer, $name, $appendSuffix);
+            $module = Request::instance()->module();
         }
+        $class = self::parseClass($module, $layer, $name, $appendSuffix);
         if (class_exists($class)) {
             return App::invokeClass($class);
         } elseif ($empty && class_exists($emptyClass = self::parseClass($module, $layer, $empty, $appendSuffix))) {
