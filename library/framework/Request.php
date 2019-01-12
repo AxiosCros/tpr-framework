@@ -527,7 +527,6 @@ class Request
      * @param bool $method true 获取原始请求类型
      *
      * @return string
-     * @throws Exception
      */
     public function method($method = false)
     {
@@ -536,8 +535,14 @@ class Request
             return IS_CLI ? 'GET' : (isset($this->server['REQUEST_METHOD']) ? $this->server['REQUEST_METHOD'] : $_SERVER['REQUEST_METHOD']);
         } elseif (!$this->method) {
             if (isset($_POST[Config::get('var_method')])) {
-                $this->method = strtoupper($_POST[Config::get('var_method')]);
-                $this->{$this->method}($_POST);
+                $method = strtoupper($_POST[Config::get('var_method')]);
+                if (in_array($method, ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'])) {
+                    $this->method = $method;
+                    $this->{$this->method}($_POST);
+                } else {
+                    $this->method = 'POST';
+                }
+                unset($_POST[Config::get('var_method')]);
             } elseif (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
                 $this->method = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
             } else {
@@ -551,7 +556,6 @@ class Request
      * 是否为GET请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isGet()
     {
@@ -562,7 +566,6 @@ class Request
      * 是否为POST请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isPost()
     {
@@ -573,7 +576,6 @@ class Request
      * 是否为PUT请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isPut()
     {
@@ -584,7 +586,6 @@ class Request
      * 是否为DELTE请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isDelete()
     {
@@ -595,7 +596,6 @@ class Request
      * 是否为HEAD请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isHead()
     {
@@ -606,7 +606,6 @@ class Request
      * 是否为PATCH请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isPatch()
     {
@@ -617,7 +616,6 @@ class Request
      * 是否为OPTIONS请求
      * @access public
      * @return bool
-     * @throws Exception
      */
     public function isOptions()
     {
@@ -653,7 +651,6 @@ class Request
      * @param string|array $filter  过滤方法
      *
      * @return mixed
-     * @throws Exception
      */
     public function param($name = '', $default = null, $filter = '')
     {
@@ -853,6 +850,7 @@ class Request
      * @param string|array $filter  过滤方法
      *
      * @return mixed
+     * @throws exception\PermissionDenied
      */
     public function session($name = '', $default = null, $filter = '')
     {
@@ -1237,7 +1235,6 @@ class Request
      * @param bool   $checkEmpty 是否检测空值
      *
      * @return mixed
-     * @throws Exception
      */
     public function has($name, $type = 'param', $checkEmpty = false)
     {
@@ -1265,7 +1262,6 @@ class Request
      * @param string       $type 变量类型
      *
      * @return mixed|array
-     * @throws Exception
      */
     public function only($name, $type = 'param')
     {
@@ -1290,7 +1286,6 @@ class Request
      * @param string       $type 变量类型
      *
      * @return mixed
-     * @throws Exception
      */
     public function except($name, $type = 'param')
     {
@@ -1333,7 +1328,6 @@ class Request
      * @param bool $ajax true 获取原始ajax请求
      *
      * @return bool
-     * @throws Exception
      */
     public function isAjax($ajax = false)
     {
@@ -1353,7 +1347,6 @@ class Request
      * @param bool $pjax true 获取原始pjax请求
      *
      * @return bool
-     * @throws Exception
      */
     public function isPjax($pjax = false)
     {
@@ -1661,7 +1654,6 @@ class Request
      * @param array  $except 缓存排除
      *
      * @return void
-     * @throws Exception
      */
     public function cache($key, $expire = null, $except = [])
     {
