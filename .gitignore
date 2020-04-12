@@ -1,5 +1,6 @@
-/composer.lock
-/vendor
-.idea
+vendor/
+.idea/
+
 .DS_Store
-/test
+composer.lock
+.php_cs.cache
