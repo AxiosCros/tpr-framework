@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TPR [ Design For Api Develop ]
 // +----------------------------------------------------------------------
@@ -13,18 +14,15 @@ namespace tpr\framework\behavior;
 
 class AppEnd
 {
-
     public $request;
 
     public $req;
 
-    function __construct()
+    public function __construct()
     {
-
     }
 
     public function run()
     {
-
     }
 }

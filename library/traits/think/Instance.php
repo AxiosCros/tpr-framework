@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -17,28 +18,29 @@ trait Instance
 {
     protected static $instance = null;
 
+    // 静态调用
+    public static function __callStatic($method, $params)
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+        $call = substr($method, 1);
+        if (0 === strpos($method, '_') && \is_callable([self::$instance, $call])) {
+            return \call_user_func_array([self::$instance, $call], $params);
+        }
+
+        throw new Exception('method not exists:' . $method);
+    }
+
     /**
      * @return static
      */
     public static function instance()
     {
-        if (is_null(self::$instance)) {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
-        return self::$instance;
-    }
 
-    // 静态调用
-    public static function __callStatic($method, $params)
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new self();
-        }
-        $call = substr($method, 1);
-        if (0 === strpos($method, '_') && is_callable([self::$instance, $call])) {
-            return call_user_func_array([self::$instance, $call], $params);
-        } else {
-            throw new Exception("method not exists:" . $method);
-        }
+        return self::$instance;
     }
 }

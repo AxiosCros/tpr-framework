@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -14,7 +15,8 @@ namespace tpr\framework\log\driver;
 use tpr\framework\App;
 
 /**
- * github: https://github.com/luofei614/SocketLog
+ * github: https://github.com/luofei614/SocketLog.
+ *
  * @author luofei614<weibo.com/luofei614>
  */
 class Socket
@@ -43,11 +45,9 @@ class Socket
     protected $allowForceClientIds = []; //配置强制推送且被授权的client_id
 
     /**
-     * 构造函数
+     * 构造函数.
      *
      * @param array $config 缓存参数
-     *
-     * @access public
      */
     public function __construct(array $config = [])
     {
@@ -57,8 +57,7 @@ class Socket
     }
 
     /**
-     * 调试输出接口
-     * @access public
+     * 调试输出接口.
      *
      * @param array $log 日志信息
      *
@@ -76,7 +75,7 @@ class Socket
             $time_str   = ' [运行时间：' . number_format($runtime, 6) . 's][吞吐率：' . $reqs . 'req/s]';
             $memory_use = number_format((memory_get_usage() - THINK_START_MEM) / 1024, 2);
             $memory_str = ' [内存消耗：' . $memory_use . 'kb]';
-            $file_load  = ' [文件加载：' . count(get_included_files()) . ']';
+            $file_load  = ' [文件加载：' . \count(get_included_files()) . ']';
 
             if (isset($_SERVER['HTTP_HOST'])) {
                 $current_uri = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -98,7 +97,7 @@ class Socket
                 'css'  => isset($this->css[$type]) ? $this->css[$type] : '',
             ];
             foreach ($val as $msg) {
-                if (!is_string($msg)) {
+                if (!\is_string($msg)) {
                     $msg = var_export($msg, true);
                 }
                 $trace[] = [
@@ -152,11 +151,13 @@ class Socket
         } else {
             $this->sendToClient($tabid, $client_id, $trace, '');
         }
+
         return true;
     }
 
     /**
-     * 发送给指定客户端
+     * 发送给指定客户端.
+     *
      * @author Zjmainstay
      *
      * @param $tabid
@@ -189,17 +190,18 @@ class Socket
         if (!empty($allow_client_ids)) {
             //通过数组交集得出授权强制推送的client_id
             $this->allowForceClientIds = array_intersect($allow_client_ids, $this->config['force_client_ids']);
-            if (!$tabid && count($this->allowForceClientIds)) {
+            if (!$tabid && \count($this->allowForceClientIds)) {
                 return true;
             }
 
             $client_id = $this->getClientArg('client_id');
-            if (!in_array($client_id, $allow_client_ids)) {
+            if (!\in_array($client_id, $allow_client_ids)) {
                 return false;
             }
         } else {
             $this->allowForceClientIds = $this->config['force_client_ids'];
         }
+
         return true;
     }
 
@@ -219,6 +221,7 @@ class Socket
         if (empty($args)) {
             if (!preg_match('/SocketLog\((.*?)\)/', $_SERVER[$key], $match)) {
                 $args = ['tabid' => null];
+
                 return null;
             }
             parse_str($match[1], $args);
@@ -226,6 +229,7 @@ class Socket
         if (isset($args[$name])) {
             return $args[$name];
         }
+
         return null;
     }
 
@@ -247,10 +251,9 @@ class Socket
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $headers = [
-            "Content-Type: application/json;charset=UTF-8",
+            'Content-Type: application/json;charset=UTF-8',
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); //设置header
         return curl_exec($ch);
     }
-
 }

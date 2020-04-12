@@ -10,20 +10,15 @@ namespace tpr\framework;
 
 class Fork
 {
-    public static    $size     = 0;
-    public static    $queue    = [];
+    public static $size        = 0;
+    public static $queue       = [];
     protected static $pid_list = [];
     protected static $max      = 100;
-
-    protected static function check()
-    {
-        return function_exists('pcntl_fork') && function_exists('posix_kill') && function_exists('ftok') && function_exists('shmop_open');
-    }
 
     public static function doFork($queue = [])
     {
         self::$queue = [];
-        $max         = intval(config('app.max_process', 100));
+        $max         = (int) (config('app.max_process', 100));
         $max         = $max < 50 ? 50 : $max;
         $max         = $max > 1000 ? 1000 : $max;
         self::$max   = $max;
@@ -32,22 +27,13 @@ class Fork
         }
     }
 
-    protected static function max()
-    {
-        $pid_size = shell_exec('ps -fe |grep "php-fpm"|grep "pool"|wc -l');
-        if ($pid_size >= self::$max) {
-            return true;
-        }
-        return false;
-    }
-
     public static function doWork($class, $func, $args = [])
     {
         if (self::max()) {
             sleep(3);
             self::doWork($class, $func, $args);
         }
-        if (is_string($class) && class_exists($class)) {
+        if (\is_string($class) && class_exists($class)) {
             $class = new $class();
         }
         if (self::check()) {
@@ -55,10 +41,11 @@ class Fork
             if ($fork) {
                 return $fork;
             }
-            call_user_func_array([$class, $func], $args);
+            \call_user_func_array([$class, $func], $args);
             posix_kill(posix_getpid(), SIGINT);
             exit();
         }
+
         return false;
     }
 
@@ -71,21 +58,26 @@ class Fork
                 if ($killFather) {
                     exit();
                 }
+
                 return $pid;
-            } else if ($pid == 0) {
+            }
+            if (0 == $pid) {
                 $ppid = pcntl_fork();
                 if ($ppid > 0) {
                     posix_kill(posix_getpid(), SIGINT);
                     exit();
-                } else if ($ppid == -1) {
+                }
+                if (-1 == $ppid) {
                     exit();
                 }
                 Tool::identity(2);
-                return false;
-            } else {
+
                 return false;
             }
+
+            return false;
         }
+
         return false;
     }
 
@@ -94,9 +86,25 @@ class Fork
         $queue = [
             'class' => $class,
             'func'  => $func,
-            'args'  => $args
+            'args'  => $args,
         ];
         array_push(self::$queue, $queue);
+
         return true;
+    }
+
+    protected static function check()
+    {
+        return \function_exists('pcntl_fork') && \function_exists('posix_kill') && \function_exists('ftok') && \function_exists('shmop_open');
+    }
+
+    protected static function max()
+    {
+        $pid_size = shell_exec('ps -fe |grep "php-fpm"|grep "pool"|wc -l');
+        if ($pid_size >= self::$max) {
+            return true;
+        }
+
+        return false;
     }
 }

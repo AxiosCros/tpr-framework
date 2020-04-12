@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -17,7 +18,7 @@ class Builder
 {
     private $arguments;
     private $cwd;
-    private $env            = null;
+    private $env;
     private $input;
     private $timeout        = 60;
     private $options        = [];
@@ -26,7 +27,7 @@ class Builder
     private $outputDisabled = false;
 
     /**
-     * 构造方法
+     * 构造方法.
      *
      * @param string[] $arguments 参数
      */
@@ -36,7 +37,7 @@ class Builder
     }
 
     /**
-     * 创建一个实例
+     * 创建一个实例.
      *
      * @param string[] $arguments 参数
      *
@@ -48,7 +49,7 @@ class Builder
     }
 
     /**
-     * 添加一个参数
+     * 添加一个参数.
      *
      * @param string $argument 参数
      *
@@ -64,23 +65,23 @@ class Builder
     /**
      * 添加一个前缀
      *
-     * @param string|array $prefix
+     * @param array|string $prefix
      *
      * @return self
      */
     public function setPrefix($prefix)
     {
-        $this->prefix = is_array($prefix) ? $prefix : [$prefix];
+        $this->prefix = \is_array($prefix) ? $prefix : [$prefix];
 
         return $this;
     }
 
     /**
-     * 设置参数
+     * 设置参数.
      *
      * @param string[] $arguments
      *
-     * @return  self
+     * @return self
      */
     public function setArguments(array $arguments)
     {
@@ -90,11 +91,11 @@ class Builder
     }
 
     /**
-     * 设置工作目录
+     * 设置工作目录.
      *
      * @param null|string $cwd
      *
-     * @return  self
+     * @return self
      */
     public function setWorkingDirectory($cwd)
     {
@@ -104,7 +105,7 @@ class Builder
     }
 
     /**
-     * 是否初始化环境变量
+     * 是否初始化环境变量.
      *
      * @param bool $inheritEnv
      *
@@ -118,7 +119,7 @@ class Builder
     }
 
     /**
-     * 设置环境变量
+     * 设置环境变量.
      *
      * @param string      $name
      * @param null|string $value
@@ -133,7 +134,7 @@ class Builder
     }
 
     /**
-     *  添加环境变量
+     *  添加环境变量.
      *
      * @param array $variables
      *
@@ -147,7 +148,7 @@ class Builder
     }
 
     /**
-     * 设置输入
+     * 设置输入.
      *
      * @param mixed $input
      *
@@ -161,9 +162,9 @@ class Builder
     }
 
     /**
-     * 设置超时时间
+     * 设置超时时间.
      *
-     * @param float|null $timeout
+     * @param null|float $timeout
      *
      * @return self
      */
@@ -175,7 +176,7 @@ class Builder
             return $this;
         }
 
-        $timeout = (float)$timeout;
+        $timeout = (float) $timeout;
 
         if ($timeout < 0) {
             throw new \InvalidArgumentException('The timeout value must be a valid positive integer or float number.');
@@ -187,7 +188,7 @@ class Builder
     }
 
     /**
-     * 设置proc_open选项
+     * 设置proc_open选项.
      *
      * @param string $name
      * @param string $value
@@ -202,7 +203,8 @@ class Builder
     }
 
     /**
-     * 禁止输出
+     * 禁止输出.
+     *
      * @return self
      */
     public function disableOutput()
@@ -213,7 +215,8 @@ class Builder
     }
 
     /**
-     * 开启输出
+     * 开启输出.
+     *
      * @return self
      */
     public function enableOutput()
@@ -224,12 +227,13 @@ class Builder
     }
 
     /**
-     * 创建一个Process实例
+     * 创建一个Process实例.
+     *
      * @return Process
      */
     public function getProcess()
     {
-        if (0 === count($this->prefix) && 0 === count($this->arguments)) {
+        if (0 === \count($this->prefix) && 0 === \count($this->arguments)) {
             throw new \LogicException('You must add() command arguments before calling getProcess().');
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -24,8 +25,62 @@ class View extends Response
     protected $contentType = 'text/html';
 
     /**
-     * 处理数据
-     * @access protected
+     * 获取视图变量.
+     *
+     * @param string $name 模板变量
+     *
+     * @return mixed
+     */
+    public function getVars($name = null)
+    {
+        if (null === $name) {
+            return $this->vars;
+        }
+
+        return isset($this->vars[$name]) ? $this->vars[$name] : null;
+    }
+
+    /**
+     * 模板变量赋值
+     *
+     * @param mixed $name  变量名
+     * @param mixed $value 变量值
+     *
+     * @return $this
+     */
+    public function assign($name, $value = '')
+    {
+        if (\is_array($name)) {
+            $this->vars = array_merge($this->vars, $name);
+
+            return $this;
+        }
+        $this->vars[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * 视图内容替换.
+     *
+     * @param array|string $content 被替换内容（支持批量替换）
+     * @param string       $replace 替换内容
+     *
+     * @return $this
+     */
+    public function replace($content, $replace = '')
+    {
+        if (\is_array($content)) {
+            $this->replace = array_merge($this->replace, $content);
+        } else {
+            $this->replace[$content] = $replace;
+        }
+
+        return $this;
+    }
+
+    /**
+     * 处理数据.
      *
      * @param mixed $data 要处理的数据
      *
@@ -37,61 +92,4 @@ class View extends Response
         return ViewTemplate::instance(Config::get('template'), Config::get('view_replace_str'))
             ->fetch($data, $this->vars, $this->replace);
     }
-
-    /**
-     * 获取视图变量
-     * @access public
-     *
-     * @param string $name 模板变量
-     *
-     * @return mixed
-     */
-    public function getVars($name = null)
-    {
-        if (is_null($name)) {
-            return $this->vars;
-        } else {
-            return isset($this->vars[$name]) ? $this->vars[$name] : null;
-        }
-    }
-
-    /**
-     * 模板变量赋值
-     * @access public
-     *
-     * @param mixed $name  变量名
-     * @param mixed $value 变量值
-     *
-     * @return $this
-     */
-    public function assign($name, $value = '')
-    {
-        if (is_array($name)) {
-            $this->vars = array_merge($this->vars, $name);
-            return $this;
-        } else {
-            $this->vars[$name] = $value;
-        }
-        return $this;
-    }
-
-    /**
-     * 视图内容替换
-     * @access public
-     *
-     * @param string|array $content 被替换内容（支持批量替换）
-     * @param string       $replace 替换内容
-     *
-     * @return $this
-     */
-    public function replace($content, $replace = '')
-    {
-        if (is_array($content)) {
-            $this->replace = array_merge($this->replace, $content);
-        } else {
-            $this->replace[$content] = $replace;
-        }
-        return $this;
-    }
-
 }

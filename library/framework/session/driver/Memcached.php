@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -19,7 +20,7 @@ class Memcached extends SessionHandler
     /**
      * @var \Memcached
      */
-    protected $handler = null;
+    protected $handler;
     protected $config  = [
         'host'         => '127.0.0.1', // memcache主机
         'port'         => 11211, // memcache端口
@@ -36,22 +37,22 @@ class Memcached extends SessionHandler
     }
 
     /**
-     * 打开Session
-     * @access public
+     * 打开Session.
      *
      * @param string $savePath
      * @param string $sessionName
      *
-     * @return bool
      * @throws Exception
+     *
+     * @return bool
      */
     public function open($savePath, $sessionName)
     {
         // 检测php环境
-        if (!extension_loaded('memcached')) {
+        if (!\extension_loaded('memcached')) {
             throw new Exception('not support:memcached');
         }
-        $this->handler = new \Memcached;
+        $this->handler = new \Memcached();
         // 设置连接超时时间（单位：毫秒）
         if ($this->config['timeout'] > 0) {
             $this->handler->setOption(\Memcached::OPT_CONNECT_TIMEOUT, $this->config['timeout']);
@@ -64,7 +65,7 @@ class Memcached extends SessionHandler
         }
         // 建立连接
         $servers = [];
-        foreach ((array)$hosts as $i => $host) {
+        foreach ((array) $hosts as $i => $host) {
             $servers[] = [$host, (isset($ports[$i]) ? $ports[$i] : $ports[0]), 1];
         }
         $this->handler->addServers($servers);
@@ -72,24 +73,24 @@ class Memcached extends SessionHandler
             $this->handler->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
 //            $this->handler->setSaslAuthData($this->config['username'], $this->config['password']);
         }
+
         return true;
     }
 
     /**
-     * 关闭Session
-     * @access public
+     * 关闭Session.
      */
     public function close()
     {
         $this->gc(ini_get('session.gc_maxlifetime'));
         $this->handler->quit();
         $this->handler = null;
+
         return true;
     }
 
     /**
-     * 读取Session
-     * @access public
+     * 读取Session.
      *
      * @param string $sessionID
      *
@@ -97,15 +98,14 @@ class Memcached extends SessionHandler
      */
     public function read($sessionID)
     {
-        return (string)$this->handler->get($this->config['session_name'] . $sessionID);
+        return (string) $this->handler->get($this->config['session_name'] . $sessionID);
     }
 
     /**
-     * 写入Session
-     * @access public
+     * 写入Session.
      *
      * @param string $sessionID
-     * @param String $sessionData
+     * @param string $sessionData
      *
      * @return bool
      */
@@ -115,8 +115,7 @@ class Memcached extends SessionHandler
     }
 
     /**
-     * 删除Session
-     * @access public
+     * 删除Session.
      *
      * @param string $sessionID
      *
@@ -128,8 +127,7 @@ class Memcached extends SessionHandler
     }
 
     /**
-     * Session 垃圾回收
-     * @access public
+     * Session 垃圾回收.
      *
      * @param string $sessionMaxLifeTime
      *

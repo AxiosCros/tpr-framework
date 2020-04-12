@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -8,6 +9,7 @@
 // +----------------------------------------------------------------------
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
+
 namespace tpr\framework\console\command\optimize;
 
 use tpr\framework\App;
@@ -18,7 +20,6 @@ use tpr\framework\console\Output;
 
 class Autoload extends Command
 {
-
     protected function configure()
     {
         $this->setName('optimize:autoload')
@@ -27,8 +28,7 @@ class Autoload extends Command
 
     protected function execute(Input $input, Output $output)
     {
-
-        $classmapFile = <<<EOF
+        $classmapFile = <<<'EOF'
 <?php
 /**
  * 类库映射
@@ -39,11 +39,11 @@ return [
 EOF;
 
         $namespacesToScan = [
-            App::$namespace . '\\' => realpath(rtrim(APP_PATH)),
+            App::$namespace . '\\'          => realpath(rtrim(APP_PATH)),
             'tpr\\framework\\'              => LIB_PATH . 'think',
-            'behavior\\'           => LIB_PATH . 'behavior',
-            'traits\\'             => LIB_PATH . 'traits',
-            ''                     => realpath(rtrim(EXTEND_PATH)),
+            'behavior\\'                    => LIB_PATH . 'behavior',
+            'traits\\'                      => LIB_PATH . 'traits',
+            ''                              => realpath(rtrim(EXTEND_PATH)),
         ];
 
         $root_namespace = Config::get('root_namespace');
@@ -54,12 +54,11 @@ EOF;
         krsort($namespacesToScan);
         $classMap = [];
         foreach ($namespacesToScan as $namespace => $dir) {
-
             if (!is_dir($dir)) {
                 continue;
             }
 
-            $namespaceFilter = $namespace === '' ? null : $namespace;
+            $namespaceFilter = '' === $namespace ? null : $namespace;
             $classMap        = $this->addClassMapCode($dir, $namespaceFilter, $classMap);
         }
 
@@ -81,7 +80,6 @@ EOF;
     protected function addClassMapCode($dir, $namespace, $classMap)
     {
         foreach ($this->createMap($dir, $namespace) as $class => $path) {
-
             $pathCode = $this->getPathCode($path) . ",\n";
 
             if (!isset($classMap[$class])) {
@@ -95,12 +93,12 @@ EOF;
                 );
             }
         }
+
         return $classMap;
     }
 
     protected function getPathCode($path)
     {
-
         $baseDir    = '';
         $libPath    = $this->normalizePath(realpath(LIB_PATH));
         $appPath    = $this->normalizePath(realpath(APP_PATH));
@@ -108,30 +106,30 @@ EOF;
         $rootPath   = $this->normalizePath(realpath(ROOT_PATH));
         $path       = $this->normalizePath($path);
 
-        if ($libPath !== null && strpos($path, $libPath . '/') === 0) {
-            $path    = substr($path, strlen(LIB_PATH));
+        if (null !== $libPath && 0 === strpos($path, $libPath . '/')) {
+            $path    = substr($path, \strlen(LIB_PATH));
             $baseDir = 'LIB_PATH';
-        } elseif ($appPath !== null && strpos($path, $appPath . '/') === 0) {
-            $path    = substr($path, strlen($appPath) + 1);
+        } elseif (null !== $appPath && 0 === strpos($path, $appPath . '/')) {
+            $path    = substr($path, \strlen($appPath) + 1);
             $baseDir = 'APP_PATH';
-        } elseif ($extendPath !== null && strpos($path, $extendPath . '/') === 0) {
-            $path    = substr($path, strlen($extendPath) + 1);
+        } elseif (null !== $extendPath && 0 === strpos($path, $extendPath . '/')) {
+            $path    = substr($path, \strlen($extendPath) + 1);
             $baseDir = 'EXTEND_PATH';
-        } elseif ($rootPath !== null && strpos($path, $rootPath . '/') === 0) {
-            $path    = substr($path, strlen($rootPath) + 1);
+        } elseif (null !== $rootPath && 0 === strpos($path, $rootPath . '/')) {
+            $path    = substr($path, \strlen($rootPath) + 1);
             $baseDir = 'ROOT_PATH';
         }
 
-        if ($path !== false) {
-            $baseDir .= " . ";
+        if (false !== $path) {
+            $baseDir .= ' . ';
         }
 
-        return $baseDir . (($path !== false) ? var_export($path, true) : "");
+        return $baseDir . ((false !== $path) ? var_export($path, true) : '');
     }
 
     protected function normalizePath($path)
     {
-        if ($path === false) {
+        if (false === $path) {
             return null;
         }
         $parts    = [];
@@ -141,10 +139,10 @@ EOF;
 
         if (preg_match('{^([0-9a-z]+:(?://(?:[a-z]:)?)?)}i', $path, $match)) {
             $prefix = $match[1];
-            $path   = substr($path, strlen($prefix));
+            $path   = substr($path, \strlen($prefix));
         }
 
-        if (substr($path, 0, 1) === '/') {
+        if ('/' === substr($path, 0, 1)) {
             $absolute = true;
             $path     = substr($path, 1);
         }
@@ -165,18 +163,17 @@ EOF;
 
     protected function createMap($path, $namespace = null)
     {
-        if (is_string($path)) {
+        if (\is_string($path)) {
             if (is_file($path)) {
                 $path = [new \SplFileInfo($path)];
             } elseif (is_dir($path)) {
-
                 $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
 
                 $path = [];
 
                 /** @var \SplFileInfo $object */
                 foreach ($objects as $object) {
-                    if ($object->isFile() && $object->getExtension() == 'php') {
+                    if ($object->isFile() && 'php' == $object->getExtension()) {
                         $path[] = $object;
                     }
                 }
@@ -194,7 +191,7 @@ EOF;
         foreach ($path as $file) {
             $filePath = $file->getRealPath();
 
-            if (pathinfo($filePath, PATHINFO_EXTENSION) != 'php') {
+            if ('php' != pathinfo($filePath, PATHINFO_EXTENSION)) {
                 continue;
             }
 
@@ -238,6 +235,7 @@ EOF;
             if (isset($error['message'])) {
                 $message .= PHP_EOL . 'The following message may be helpful:' . PHP_EOL . $error['message'];
             }
+
             throw new \RuntimeException(sprintf($message, $path));
         }
 
@@ -250,9 +248,9 @@ EOF;
         // strip strings
         $contents = preg_replace('{"[^"\\\\]*+(\\\\.[^"\\\\]*+)*+"|\'[^\'\\\\]*+(\\\\.[^\'\\\\]*+)*+\'}s', 'null', $contents);
         // strip leading non-php code if needed
-        if (substr($contents, 0, 2) !== '<?') {
+        if ('<?' !== substr($contents, 0, 2)) {
             $contents = preg_replace('{^.+?<\?}s', '<?', $contents, 1, $replacements);
-            if ($replacements === 0) {
+            if (0 === $replacements) {
                 return [];
             }
         }
@@ -274,14 +272,14 @@ EOF;
         $classes   = [];
         $namespace = '';
 
-        for ($i = 0, $len = count($matches['type']); $i < $len; $i++) {
+        for ($i = 0, $len = \count($matches['type']); $i < $len; ++$i) {
             if (!empty($matches['ns'][$i])) {
                 $namespace = str_replace([' ', "\t", "\r", "\n"], '', $matches['nsname'][$i]) . '\\';
             } else {
                 $name = $matches['name'][$i];
-                if ($name[0] === ':') {
+                if (':' === $name[0]) {
                     $name = 'xhp' . substr(str_replace(['-', ':'], ['_', '__'], $name), 1);
-                } elseif ($matches['type'][$i] === 'enum') {
+                } elseif ('enum' === $matches['type'][$i]) {
                     $name = rtrim($name, ':');
                 }
                 $classes[] = ltrim($namespace . $name, '\\');
@@ -290,5 +288,4 @@ EOF;
 
         return $classes;
     }
-
 }

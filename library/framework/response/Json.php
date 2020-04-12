@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -23,13 +24,13 @@ class Json extends Response
     protected $contentType = 'application/json';
 
     /**
-     * 处理数据
-     * @access protected
+     * 处理数据.
      *
      * @param mixed $data 要处理的数据
      *
-     * @return mixed
      * @throws \Exception
+     *
+     * @return mixed
      */
     protected function output($data)
     {
@@ -37,7 +38,7 @@ class Json extends Response
             // 返回JSON数据格式到客户端 包含状态信息
             $data = json_encode($data, $this->options['json_encode_param']);
 
-            if ($data === false) {
+            if (false === $data) {
                 throw new \InvalidArgumentException(json_last_error_msg());
             }
 
@@ -46,8 +47,8 @@ class Json extends Response
             if ($e->getPrevious()) {
                 throw $e->getPrevious();
             }
+
             throw $e;
         }
     }
-
 }

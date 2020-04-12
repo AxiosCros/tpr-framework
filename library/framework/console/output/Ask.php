@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -18,18 +19,17 @@ use tpr\framework\console\output\question\Confirmation;
 
 class Ask
 {
+    /** @var Input */
+    protected $input;
+
+    /** @var Output */
+    protected $output;
+
+    /** @var Question */
+    protected $question;
     private static $stty;
 
     private static $shell;
-
-    /** @var  Input */
-    protected $input;
-
-    /** @var  Output */
-    protected $output;
-
-    /** @var  Question */
-    protected $question;
 
     public function __construct(Input $input, Output $output, Question $question)
     {
@@ -87,7 +87,7 @@ class Ask
             $ret = trim($this->autocomplete($inputStream));
         }
 
-        $ret = strlen($ret) > 0 ? $ret : $this->question->getDefault();
+        $ret = \strlen($ret) > 0 ? $ret : $this->question->getDefault();
 
         if ($normalizer = $this->question->getNormalizer()) {
             return $normalizer($ret);
@@ -96,102 +96,9 @@ class Ask
         return $ret;
     }
 
-    private function autocomplete($inputStream)
-    {
-        $autocomplete = $this->question->getAutocompleterValues();
-        $ret          = '';
-
-        $i          = 0;
-        $ofs        = -1;
-        $matches    = $autocomplete;
-        $numMatches = count($matches);
-
-        $sttyMode = shell_exec('stty -g');
-
-        shell_exec('stty -icanon -echo');
-
-        while (!feof($inputStream)) {
-            $c = fread($inputStream, 1);
-
-            if ("\177" === $c) {
-                if (0 === $numMatches && 0 !== $i) {
-                    --$i;
-                    $this->output->write("\033[1D");
-                }
-
-                if ($i === 0) {
-                    $ofs        = -1;
-                    $matches    = $autocomplete;
-                    $numMatches = count($matches);
-                } else {
-                    $numMatches = 0;
-                }
-
-                $ret = substr($ret, 0, $i);
-            } elseif ("\033" === $c) {
-                $c .= fread($inputStream, 2);
-
-                if (isset($c[2]) && ('A' === $c[2] || 'B' === $c[2])) {
-                    if ('A' === $c[2] && -1 === $ofs) {
-                        $ofs = 0;
-                    }
-
-                    if (0 === $numMatches) {
-                        continue;
-                    }
-
-                    $ofs += ('A' === $c[2]) ? -1 : 1;
-                    $ofs = ($numMatches + $ofs) % $numMatches;
-                }
-            } elseif (ord($c) < 32) {
-                if ("\t" === $c || "\n" === $c) {
-                    if ($numMatches > 0 && -1 !== $ofs) {
-                        $ret = $matches[$ofs];
-                        $this->output->write(substr($ret, $i));
-                        $i = strlen($ret);
-                    }
-
-                    if ("\n" === $c) {
-                        $this->output->write($c);
-                        break;
-                    }
-
-                    $numMatches = 0;
-                }
-
-                continue;
-            } else {
-                $this->output->write($c);
-                $ret .= $c;
-                ++$i;
-
-                $numMatches = 0;
-                $ofs        = 0;
-
-                foreach ($autocomplete as $value) {
-                    if (0 === strpos($value, $ret) && $i !== strlen($value)) {
-                        $matches[$numMatches++] = $value;
-                    }
-                }
-            }
-
-            $this->output->write("\033[K");
-
-            if ($numMatches > 0 && -1 !== $ofs) {
-                $this->output->write("\0337");
-                $this->output->highlight(substr($matches[$ofs], $i));
-                $this->output->write("\0338");
-            }
-        }
-
-        shell_exec(sprintf('stty %s', $sttyMode));
-
-        return $ret;
-    }
-
     protected function getHiddenResponse($inputStream)
     {
-        if ('\\' === DIRECTORY_SEPARATOR) {
+        if ('\\' === \DIRECTORY_SEPARATOR) {
             $exe = __DIR__ . '/../bin/hiddeninput.exe';
 
             $value = rtrim(shell_exec($exe));
@@ -222,7 +129,7 @@ class Ask
         }
 
         if (false !== $shell = $this->getShell()) {
-            $readCmd = $shell === 'csh' ? 'set mypassword = $<' : 'read -r mypassword';
+            $readCmd = 'csh' === $shell ? 'set mypassword = $<' : 'read -r mypassword';
             $command = sprintf("/usr/bin/env %s -c 'stty -echo; %s; stty echo; echo \$mypassword'", $shell, $readCmd);
             $value   = rtrim(shell_exec($command));
             $this->output->writeln('');
@@ -244,7 +151,7 @@ class Ask
             }
 
             try {
-                return call_user_func($this->question->getValidator(), $interviewer());
+                return \call_user_func($this->question->getValidator(), $interviewer());
             } catch (\Exception $error) {
             }
         }
@@ -253,7 +160,7 @@ class Ask
     }
 
     /**
-     * 显示问题的提示信息
+     * 显示问题的提示信息.
      */
     protected function writePrompt()
     {
@@ -265,12 +172,10 @@ class Ask
                 $text = sprintf(' <info>%s</info>:', $text);
 
                 break;
-
             case $this->question instanceof Confirmation:
                 $text = sprintf(' <info>%s (yes/no)</info> [<comment>%s</comment>]:', $text, $default ? 'yes' : 'no');
 
                 break;
-
             case $this->question instanceof Choice && $this->question->isMultiselect():
                 $choices = $this->question->getChoices();
                 $default = explode(',', $default);
@@ -282,13 +187,11 @@ class Ask
                 $text = sprintf(' <info>%s</info> [<comment>%s</comment>]:', $text, implode(', ', $default));
 
                 break;
-
             case $this->question instanceof Choice:
                 $choices = $this->question->getChoices();
                 $text    = sprintf(' <info>%s</info> [<comment>%s</comment>]:', $text, $choices[$default]);
 
                 break;
-
             default:
                 $text = sprintf(' <info>%s</info> [<comment>%s</comment>]:', $text, $default);
         }
@@ -299,11 +202,105 @@ class Ask
             $width = max(array_map('strlen', array_keys($this->question->getChoices())));
 
             foreach ($this->question->getChoices() as $key => $value) {
-                $this->output->writeln(sprintf("  [<comment>%-${width}s</comment>] %s", $key, $value));
+                $this->output->writeln(sprintf("  [<comment>%-{$width}s</comment>] %s", $key, $value));
             }
         }
 
         $this->output->write(' > ');
+    }
+
+    private function autocomplete($inputStream)
+    {
+        $autocomplete = $this->question->getAutocompleterValues();
+        $ret          = '';
+
+        $i          = 0;
+        $ofs        = -1;
+        $matches    = $autocomplete;
+        $numMatches = \count($matches);
+
+        $sttyMode = shell_exec('stty -g');
+
+        shell_exec('stty -icanon -echo');
+
+        while (!feof($inputStream)) {
+            $c = fread($inputStream, 1);
+
+            if ("\177" === $c) {
+                if (0 === $numMatches && 0 !== $i) {
+                    --$i;
+                    $this->output->write("\033[1D");
+                }
+
+                if (0 === $i) {
+                    $ofs        = -1;
+                    $matches    = $autocomplete;
+                    $numMatches = \count($matches);
+                } else {
+                    $numMatches = 0;
+                }
+
+                $ret = substr($ret, 0, $i);
+            } elseif ("\033" === $c) {
+                $c .= fread($inputStream, 2);
+
+                if (isset($c[2]) && ('A' === $c[2] || 'B' === $c[2])) {
+                    if ('A' === $c[2] && -1 === $ofs) {
+                        $ofs = 0;
+                    }
+
+                    if (0 === $numMatches) {
+                        continue;
+                    }
+
+                    $ofs += ('A' === $c[2]) ? -1 : 1;
+                    $ofs = ($numMatches + $ofs) % $numMatches;
+                }
+            } elseif (\ord($c) < 32) {
+                if ("\t" === $c || "\n" === $c) {
+                    if ($numMatches > 0 && -1 !== $ofs) {
+                        $ret = $matches[$ofs];
+                        $this->output->write(substr($ret, $i));
+                        $i = \strlen($ret);
+                    }
+
+                    if ("\n" === $c) {
+                        $this->output->write($c);
+
+                        break;
+                    }
+
+                    $numMatches = 0;
+                }
+
+                continue;
+            } else {
+                $this->output->write($c);
+                $ret .= $c;
+                ++$i;
+
+                $numMatches = 0;
+                $ofs        = 0;
+
+                foreach ($autocomplete as $value) {
+                    if (0 === strpos($value, $ret) && $i !== \strlen($value)) {
+                        $matches[$numMatches++] = $value;
+                    }
+                }
+            }
+
+            $this->output->write("\033[K");
+
+            if ($numMatches > 0 && -1 !== $ofs) {
+                $this->output->write("\0337");
+                $this->output->highlight(substr($matches[$ofs], $i));
+                $this->output->write("\0338");
+            }
+        }
+
+        shell_exec(sprintf('stty %s', $sttyMode));
+
+        return $ret;
     }
 
     private function getShell()
@@ -319,6 +316,7 @@ class Ask
             foreach (['bash', 'zsh', 'ksh', 'csh'] as $sh) {
                 if ('OK' === rtrim(shell_exec(sprintf($test, $sh)))) {
                     self::$shell = $sh;
+
                     break;
                 }
             }
@@ -335,6 +333,6 @@ class Ask
 
         exec('stty 2>&1', $output, $exitcode);
 
-        return self::$stty = $exitcode === 0;
+        return self::$stty = 0 === $exitcode;
     }
 }

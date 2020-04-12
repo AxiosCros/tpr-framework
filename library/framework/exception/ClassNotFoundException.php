@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -14,6 +15,7 @@ namespace tpr\framework\exception;
 class ClassNotFoundException extends \RuntimeException
 {
     protected $class;
+
     public function __construct($message, $class = '')
     {
         $this->message = $message;
@@ -21,8 +23,8 @@ class ClassNotFoundException extends \RuntimeException
     }
 
     /**
-     * 获取类名
-     * @access public
+     * 获取类名.
+     *
      * @return string
      */
     public function getClass()

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -20,8 +21,6 @@ use tpr\framework\Template;
 
 class Think
 {
-    // 模板引擎实例
-    private $template;
     // 模板引擎参数
     protected $config = [
         // 视图基础目录（集中式）
@@ -35,6 +34,8 @@ class Think
         // 是否开启模板编译缓存,设为false则每次都会重新编译
         'tpl_cache'   => true,
     ];
+    // 模板引擎实例
+    private $template;
 
     public function __construct($config = [])
     {
@@ -46,9 +47,13 @@ class Think
         $this->template = new Template($this->config);
     }
 
+    public function __call($method, $params)
+    {
+        return \call_user_func_array([$this->template, $method], $params);
+    }
+
     /**
-     * 检测是否存在模板文件
-     * @access public
+     * 检测是否存在模板文件.
      *
      * @param string $template 模板文件或者模板规则
      *
@@ -60,18 +65,17 @@ class Think
             // 获取模板文件名
             $template = $this->parseTemplate($template);
         }
+
         return is_file($template);
     }
 
     /**
-     * 渲染模板文件
-     * @access public
+     * 渲染模板文件.
      *
      * @param string $template 模板文件
      * @param array  $data     模板变量
      * @param array  $config   模板参数
      *
-     * @return void
      * @throws \tpr\framework\Exception
      */
     public function fetch($template, $data = [], $config = [])
@@ -91,14 +95,12 @@ class Think
     }
 
     /**
-     * 渲染模板内容
-     * @access public
+     * 渲染模板内容.
      *
      * @param string $template 模板内容
      * @param array  $data     模板变量
      * @param array  $config   模板参数
      *
-     * @return void
      * @throws \tpr\framework\Exception
      */
     public function display($template, $data = [], $config = [])
@@ -107,8 +109,30 @@ class Think
     }
 
     /**
-     * 自动定位模板文件
-     * @access private
+     * 配置或者获取模板引擎参数.
+     *
+     * @param array|string $name  参数名
+     * @param mixed        $value 参数值
+     *
+     * @return mixed
+     */
+    public function config($name, $value = null)
+    {
+        if (\is_array($name)) {
+            $this->template->config($name);
+            $this->config = array_merge($this->config, $name);
+        } elseif (null === $value) {
+            return $this->template->config($name);
+        } else {
+            $this->template->{$name} = $value;
+            $this->config[$name]     = $value;
+        }
+
+        return null;
+    }
+
+    /**
+     * 自动定位模板文件.
      *
      * @param string $template 模板文件规则
      *
@@ -146,34 +170,7 @@ class Think
         } else {
             $template = str_replace(['/', ':'], $depr, substr($template, 1));
         }
+
         return $path . ltrim($template, '/') . '.' . ltrim($this->config['view_suffix'], '.');
-    }
-
-    /**
-     * 配置或者获取模板引擎参数
-     * @access private
-     *
-     * @param string|array $name  参数名
-     * @param mixed        $value 参数值
-     *
-     * @return mixed
-     */
-    public function config($name, $value = null)
-    {
-        if (is_array($name)) {
-            $this->template->config($name);
-            $this->config = array_merge($this->config, $name);
-        } elseif (is_null($value)) {
-            return $this->template->config($name);
-        } else {
-            $this->template->$name = $value;
-            $this->config[$name]   = $value;
-        }
-        return null;
-    }
-
-    public function __call($method, $params)
-    {
-        return call_user_func_array([$this->template, $method], $params);
     }
 }

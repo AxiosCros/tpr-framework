@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TPR [ Design For Api Develop ]
 // +----------------------------------------------------------------------
@@ -14,17 +15,14 @@ namespace tpr\framework\behavior;
 use tpr\framework\Request;
 
 /**
- * Class LogWriteDone
- * @package axios\tpr\behavior
- * need library/think/Log.php 161
- *  ->   Hook::listen('log_write_done', $log);
+ * Class LogWriteDone.
  */
 class LogWriteDone
 {
     public $param;
     public $request;
 
-    function __construct()
+    public function __construct()
     {
         $this->request = Request::instance();
         $this->param   = $this->request->param();
@@ -32,6 +30,5 @@ class LogWriteDone
 
     public function run()
     {
-
     }
 }

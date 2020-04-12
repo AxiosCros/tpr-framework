@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -11,15 +12,15 @@
 
 namespace tpr\framework\debug;
 
+use tpr\db\Db;
 use tpr\framework\Cache;
 use tpr\framework\Config;
-use tpr\db\Db;
 use tpr\framework\Debug;
 use tpr\framework\Request;
 use tpr\framework\Response;
 
 /**
- * 页面Trace调试
+ * 页面Trace调试.
  */
 class Html
 {
@@ -36,23 +37,24 @@ class Html
     }
 
     /**
-     * 调试输出接口
-     * @access public
+     * 调试输出接口.
      *
      * @param Response $response Response对象
      * @param array    $log      日志信息
      *
-     * @return bool
      * @throws \tpr\framework\Exception
+     *
+     * @return bool
      */
     public function output(Response $response, array $log = [])
     {
         $request     = Request::instance();
         $contentType = $response->getHeader('Content-Type');
         $accept      = $request->header('accept');
-        if (strpos($accept, 'application/json') === 0 || $request->isAjax()) {
+        if (0 === strpos($accept, 'application/json') || $request->isAjax()) {
             return false;
-        } elseif (!empty($contentType) && strpos($contentType, 'html') === false) {
+        }
+        if (!empty($contentType) && false === strpos($contentType, 'html')) {
             return false;
         }
         // 获取基本信息
@@ -68,10 +70,10 @@ class Html
         }
         $base = [
             '请求信息' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) . ' ' . $uri,
-            '运行时间' => number_format($runtime, 6) . 's [ 吞吐率：' . $reqs . 'req/s ] 内存消耗：' . $mem . 'kb 文件加载：' . count(get_included_files()),
+            '运行时间' => number_format($runtime, 6) . 's [ 吞吐率：' . $reqs . 'req/s ] 内存消耗：' . $mem . 'kb 文件加载：' . \count(get_included_files()),
             '查询信息' => Db::$queryTimes . ' queries ' . Db::$executeTimes . ' writes ',
             '缓存信息' => Cache::$readTimes . ' reads,' . Cache::$writeTimes . ' writes',
-            '配置加载' => count(Config::get()),
+            '配置加载' => \count(Config::get()),
         ];
 
         if (session_id()) {
@@ -87,9 +89,11 @@ class Html
             switch ($name) {
                 case 'base': // 基本信息
                     $trace[$title] = $base;
+
                     break;
                 case 'file': // 文件信息
                     $trace[$title] = $info;
+
                     break;
                 default: // 调试信息
                     if (strpos($name, '|')) {
@@ -108,7 +112,7 @@ class Html
         // 调用Trace页面模板
         ob_start();
         include $this->config['trace_file'];
+
         return ob_get_clean();
     }
-
 }

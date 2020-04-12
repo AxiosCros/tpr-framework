@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -22,21 +23,21 @@ use tpr\framework\console\output\question\Choice;
 use tpr\framework\console\output\question\Confirmation;
 
 /**
- * Class Output
- * @package tpr\framework\console
+ * Class Output.
  *
  * @see     \tpr\framework\console\output\driver\Console::setDecorated
+ *
  * @method void setDecorated($decorated)
  *
  * @see     \tpr\framework\console\output\driver\Buffer::fetch
- * @method string fetch()
  *
- * @method void info($message)
- * @method void error($message)
- * @method void comment($message)
- * @method void warning($message)
- * @method void highlight($message)
- * @method void question($message)
+ * @method string fetch()
+ * @method void   info($message)
+ * @method void   error($message)
+ * @method void   comment($message)
+ * @method void   warning($message)
+ * @method void   highlight($message)
+ * @method void   question($message)
  */
 class Output
 {
@@ -50,25 +51,40 @@ class Output
     const OUTPUT_RAW    = 1;
     const OUTPUT_PLAIN  = 2;
 
-    private $verbosity = self::VERBOSITY_NORMAL;
-
-    /** @var Buffer|Console|Nothing */
-    private $handle = null;
-
     protected $styles = [
         'info',
         'error',
         'comment',
         'question',
         'highlight',
-        'warning'
+        'warning',
     ];
+
+    private $verbosity = self::VERBOSITY_NORMAL;
+
+    /** @var Buffer|Console|Nothing */
+    private $handle;
 
     public function __construct($driver = 'console')
     {
         $class = '\\tpr\\framework\\console\\output\\driver\\' . ucwords($driver);
 
         $this->handle = new $class($this);
+    }
+
+    public function __call($method, $args)
+    {
+        if (\in_array($method, $this->styles)) {
+            array_unshift($args, $method);
+
+            return \call_user_func_array([$this, 'block'], $args);
+        }
+
+        if ($this->handle && method_exists($this->handle, $method)) {
+            return \call_user_func_array([$this->handle, $method], $args);
+        }
+
+        throw new Exception('method not exists:' . __CLASS__ . '->' . $method);
     }
 
     public function ask(Input $input, $question, $default = null, $validator = null)
@@ -94,9 +110,6 @@ class Output
         return $this->askQuestion($input, new Confirmation($question, $default));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function choice(Input $input, $question, array $choices, $default = null)
     {
         if (null !== $default) {
@@ -107,25 +120,9 @@ class Output
         return $this->askQuestion($input, new Choice($question, $choices, $default));
     }
 
-    protected function askQuestion(Input $input, Question $question)
-    {
-        $ask    = new Ask($input, $this, $question);
-        $answer = $ask->run();
-
-        if ($input->isInteractive()) {
-            $this->newLine();
-        }
-
-        return $answer;
-    }
-
-    protected function block($style, $message)
-    {
-        $this->writeln("<{$style}>{$message}</$style>");
-    }
-
     /**
-     * 输出空行
+     * 输出空行.
+     *
      * @param int $count
      */
     public function newLine($count = 1)
@@ -134,7 +131,8 @@ class Output
     }
 
     /**
-     * 输出信息并换行
+     * 输出信息并换行.
+     *
      * @param string $messages
      * @param int    $type
      */
@@ -144,7 +142,8 @@ class Output
     }
 
     /**
-     * 输出信息
+     * 输出信息.
+     *
      * @param string $messages
      * @param bool   $newline
      * @param int    $type
@@ -154,22 +153,16 @@ class Output
         $this->handle->write($messages, $newline, $type);
     }
 
-    public function renderException(\Exception $e)
+    public function renderException(Exception $e)
     {
         $this->handle->renderException($e);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setVerbosity($level)
     {
         $this->verbosity = (int) $level;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getVerbosity()
     {
         return $this->verbosity;
@@ -205,18 +198,20 @@ class Output
         $descriptor->describe($this, $object, $options);
     }
 
-    public function __call($method, $args)
+    protected function askQuestion(Input $input, Question $question)
     {
-        if (in_array($method, $this->styles)) {
-            array_unshift($args, $method);
-            return call_user_func_array([$this, 'block'], $args);
+        $ask    = new Ask($input, $this, $question);
+        $answer = $ask->run();
+
+        if ($input->isInteractive()) {
+            $this->newLine();
         }
 
-        if ($this->handle && method_exists($this->handle, $method)) {
-            return call_user_func_array([$this->handle, $method], $args);
-        } else {
-            throw new Exception('method not exists:' . __CLASS__ . '->' . $method);
-        }
+        return $answer;
     }
 
+    protected function block($style, $message)
+    {
+        $this->writeln("<{$style}>{$message}</{$style}>");
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -15,20 +16,19 @@ use tpr\framework\cache\Driver;
 
 class Cache
 {
+    public static $readTimes     = 0;
+    public static $writeTimes    = 0;
     protected static $instance   = [];
-    public static    $readTimes  = 0;
-    public static    $writeTimes = 0;
 
     /**
-     * 操作句柄
+     * 操作句柄.
+     *
      * @var object
-     * @access protected
      */
     protected static $handler;
 
     /**
-     * 连接缓存
-     * @access public
+     * 连接缓存.
      *
      * @param array       $options 配置数组
      * @param bool|string $name    缓存连接标识 true 强制重新连接
@@ -49,16 +49,15 @@ class Cache
             App::$debug && Log::record('[ CACHE ] INIT ' . $type, 'info');
             if (true === $name) {
                 return new $class($options);
-            } else {
-                self::$instance[$name] = new $class($options);
             }
+            self::$instance[$name] = new $class($options);
         }
+
         return self::$instance[$name];
     }
 
     /**
-     * 自动初始化缓存
-     * @access public
+     * 自动初始化缓存.
      *
      * @param array $options 配置数组
      *
@@ -66,7 +65,7 @@ class Cache
      */
     public static function init(array $options = [])
     {
-        if (is_null(self::$handler)) {
+        if (null === self::$handler) {
             // 自动初始化缓存
             if (!empty($options)) {
                 $connect = self::connect($options);
@@ -77,12 +76,12 @@ class Cache
             }
             self::$handler = $connect;
         }
+
         return self::$handler;
     }
 
     /**
-     * 切换缓存类型 需要配置 cache.type 为 complex
-     * @access public
+     * 切换缓存类型 需要配置 cache.type 为 complex.
      *
      * @param string $name 缓存标识
      *
@@ -93,12 +92,12 @@ class Cache
         if ('' !== $name && 'complex' == Config::get('cache.type')) {
             return self::connect(Config::get('cache.' . $name), strtolower($name));
         }
+
         return self::init();
     }
 
     /**
-     * 判断缓存是否存在
-     * @access public
+     * 判断缓存是否存在.
      *
      * @param string $name 缓存变量名
      *
@@ -106,13 +105,13 @@ class Cache
      */
     public static function has($name)
     {
-        self::$readTimes++;
+        ++self::$readTimes;
+
         return self::init()->has($name);
     }
 
     /**
-     * 读取缓存
-     * @access public
+     * 读取缓存.
      *
      * @param string $name    缓存标识
      * @param mixed  $default 默认值
@@ -121,29 +120,29 @@ class Cache
      */
     public static function get($name, $default = false)
     {
-        self::$readTimes++;
+        ++self::$readTimes;
+
         return self::init()->get($name, $default);
     }
 
     /**
-     * 写入缓存
-     * @access public
+     * 写入缓存.
      *
      * @param string   $name   缓存标识
      * @param mixed    $value  存储数据
-     * @param int|null $expire 有效时间 0为永久
+     * @param null|int $expire 有效时间 0为永久
      *
-     * @return boolean
+     * @return bool
      */
     public static function set($name, $value, $expire = null)
     {
-        self::$writeTimes++;
+        ++self::$writeTimes;
+
         return self::init()->set($name, $value, $expire);
     }
 
     /**
-     * 自增缓存（针对数值缓存）
-     * @access public
+     * 自增缓存（针对数值缓存）.
      *
      * @param string $name 缓存变量名
      * @param int    $step 步长
@@ -152,13 +151,13 @@ class Cache
      */
     public static function inc($name, $step = 1)
     {
-        self::$writeTimes++;
+        ++self::$writeTimes;
+
         return self::init()->inc($name, $step);
     }
 
     /**
-     * 自减缓存（针对数值缓存）
-     * @access public
+     * 自减缓存（针对数值缓存）.
      *
      * @param string $name 缓存变量名
      * @param int    $step 步长
@@ -167,41 +166,41 @@ class Cache
      */
     public static function dec($name, $step = 1)
     {
-        self::$writeTimes++;
+        ++self::$writeTimes;
+
         return self::init()->dec($name, $step);
     }
 
     /**
-     * 删除缓存
-     * @access public
+     * 删除缓存.
      *
      * @param string $name 缓存标识
      *
-     * @return boolean
+     * @return bool
      */
     public static function rm($name)
     {
-        self::$writeTimes++;
+        ++self::$writeTimes;
+
         return self::init()->rm($name);
     }
 
     /**
-     * 清除缓存
-     * @access public
+     * 清除缓存.
      *
      * @param string $tag 标签名
      *
-     * @return boolean
+     * @return bool
      */
     public static function clear($tag = null)
     {
-        self::$writeTimes++;
+        ++self::$writeTimes;
+
         return self::init()->clear($tag);
     }
 
     /**
-     * 读取缓存并删除
-     * @access public
+     * 读取缓存并删除.
      *
      * @param string $name 缓存变量名
      *
@@ -209,14 +208,14 @@ class Cache
      */
     public static function pull($name)
     {
-        self::$readTimes++;
-        self::$writeTimes++;
+        ++self::$readTimes;
+        ++self::$writeTimes;
+
         return self::init()->pull($name);
     }
 
     /**
-     * 如果不存在则写入缓存
-     * @access public
+     * 如果不存在则写入缓存.
      *
      * @param string $name   缓存变量名
      * @param mixed  $value  存储数据
@@ -226,16 +225,16 @@ class Cache
      */
     public static function remember($name, $value, $expire = null)
     {
-        self::$readTimes++;
+        ++self::$readTimes;
+
         return self::init()->remember($name, $value, $expire);
     }
 
     /**
-     * 缓存标签
-     * @access public
+     * 缓存标签.
      *
      * @param string       $name    标签名
-     * @param string|array $keys    缓存标识
+     * @param array|string $keys    缓存标识
      * @param bool         $overlay 是否覆盖
      *
      * @return Driver
@@ -244,5 +243,4 @@ class Cache
     {
         return self::init()->tag($name, $keys, $overlay);
     }
-
 }

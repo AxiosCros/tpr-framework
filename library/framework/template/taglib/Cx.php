@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -14,15 +15,14 @@ namespace tpr\framework\template\taglib;
 use tpr\framework\template\TagLib;
 
 /**
- * CX标签库解析类
+ * CX标签库解析类.
+ *
  * @category    Think
- * @package     Think
- * @subpackage  Driver.Taglib
+ *
  * @author      liu21st <liu21st@gmail.com>
  */
 class Cx extends Taglib
 {
-
     // 标签定义
     protected $tags = [
         // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
@@ -54,8 +54,7 @@ class Cx extends Taglib
     /**
      * php标签解析
      * 格式：
-     * {php}echo $name{/php}
-     * @access public
+     * {php}echo $name{/php}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -65,8 +64,8 @@ class Cx extends Taglib
     public function tagPhp($tag, $content)
     {
         unset($tag);
-        $parseStr = '<?php ' . $content . ' ?>';
-        return $parseStr;
+
+        return '<?php ' . $content . ' ?>';
     }
 
     /**
@@ -75,8 +74,7 @@ class Cx extends Taglib
      * {volist name="userList" id="user" empty=""}
      * {user.username}
      * {user.email}
-     * {/volist}
-     * @access public
+     * {/volist}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -90,8 +88,8 @@ class Cx extends Taglib
         $empty  = isset($tag['empty']) ? $tag['empty'] : '';
         $key    = !empty($tag['key']) ? $tag['key'] : 'i';
         $mod    = isset($tag['mod']) ? $tag['mod'] : '2';
-        $offset = !empty($tag['offset']) && is_numeric($tag['offset']) ? intval($tag['offset']) : 0;
-        $length = !empty($tag['length']) && is_numeric($tag['length']) ? intval($tag['length']) : 'null';
+        $offset = !empty($tag['offset']) && is_numeric($tag['offset']) ? (int) ($tag['offset']) : 0;
+        $length = !empty($tag['length']) && is_numeric($tag['length']) ? (int) ($tag['length']) : 'null';
         // 允许使用函数设定数据集 <volist name=":fun('arg')" id="vo">{$vo.name}</volist>
         $parseStr = '<?php ';
         $flag     = substr($name, 0, 1);
@@ -121,6 +119,7 @@ class Cx extends Taglib
         if (!empty($parseStr)) {
             return $parseStr;
         }
+
         return null;
     }
 
@@ -129,8 +128,7 @@ class Cx extends Taglib
      * 格式：
      * {foreach name="userList" id="user" key="key" index="i" mod="2" offset="3" length="5" empty=""}
      * {user.username}
-     * {/foreach}
-     * @access public
+     * {/foreach}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -144,16 +142,17 @@ class Cx extends Taglib
             $expression = ltrim(rtrim($tag['expression'], ')'), '(');
             $expression = $this->autoBuildVar($expression);
             $parseStr   = '<?php foreach(' . $expression . '): ?>';
-            $parseStr   .= $content;
-            $parseStr   .= '<?php endforeach; ?>';
+            $parseStr .= $content;
+            $parseStr .= '<?php endforeach; ?>';
+
             return $parseStr;
         }
         $name   = $tag['name'];
         $key    = !empty($tag['key']) ? $tag['key'] : 'key';
         $item   = !empty($tag['id']) ? $tag['id'] : $tag['item'];
         $empty  = isset($tag['empty']) ? $tag['empty'] : '';
-        $offset = !empty($tag['offset']) && is_numeric($tag['offset']) ? intval($tag['offset']) : 0;
-        $length = !empty($tag['length']) && is_numeric($tag['length']) ? intval($tag['length']) : 'null';
+        $offset = !empty($tag['offset']) && is_numeric($tag['offset']) ? (int) ($tag['offset']) : 0;
+        $length = !empty($tag['length']) && is_numeric($tag['length']) ? (int) ($tag['length']) : 'null';
 
         $parseStr = '<?php ';
         // 支持用函数传数组
@@ -189,7 +188,7 @@ class Cx extends Taglib
         if (isset($tag['index'])) {
             $index = $tag['index'];
             if (isset($tag['mod'])) {
-                $mod      = (int)$tag['mod'];
+                $mod      = (int) $tag['mod'];
                 $parseStr .= '$mod = ($' . $index . ' % ' . $mod . '); ';
             }
             $parseStr .= '++$' . $index . '; ';
@@ -202,6 +201,7 @@ class Cx extends Taglib
         if (!empty($parseStr)) {
             return $parseStr;
         }
+
         return null;
     }
 
@@ -212,8 +212,7 @@ class Cx extends Taglib
      * {elseif condition="$a eq 2" /}
      * {else /}
      * {/if}
-     * 表达式支持 eq neq gt egt lt elt == > >= < <= or and || &&
-     * @access public
+     * 表达式支持 eq neq gt egt lt elt == > >= < <= or and || &&.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -224,14 +223,13 @@ class Cx extends Taglib
     {
         $condition = !empty($tag['expression']) ? $tag['expression'] : $tag['condition'];
         $condition = $this->parseCondition($condition);
-        $parseStr  = '<?php if(' . $condition . '): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(' . $condition . '): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * elseif标签解析
-     * 格式：见if标签
-     * @access public
+     * 格式：见if标签.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -243,14 +241,13 @@ class Cx extends Taglib
         unset($content);
         $condition = !empty($tag['expression']) ? $tag['expression'] : $tag['condition'];
         $condition = $this->parseCondition($condition);
-        $parseStr  = '<?php elseif(' . $condition . '): ?>';
-        return $parseStr;
+
+        return '<?php elseif(' . $condition . '): ?>';
     }
 
     /**
      * else标签解析
-     * 格式：见if标签
-     * @access public
+     * 格式：见if标签.
      *
      * @param array $tag 标签属性
      *
@@ -259,8 +256,8 @@ class Cx extends Taglib
     public function tagElse($tag)
     {
         unset($tag);
-        $parseStr = '<?php else: ?>';
-        return $parseStr;
+
+        return '<?php else: ?>';
     }
 
     /**
@@ -270,8 +267,7 @@ class Cx extends Taglib
      * {case value="1" break="false"}1{/case}
      * {case value="2" }2{/case}
      * {default /}other
-     * {/switch}
-     * @access public
+     * {/switch}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -282,13 +278,12 @@ class Cx extends Taglib
     {
         $name     = !empty($tag['expression']) ? $tag['expression'] : $tag['name'];
         $name     = $this->autoBuildVar($name);
-        $parseStr = '<?php switch(' . $name . '): ?>' . $content . '<?php endswitch; ?>';
-        return $parseStr;
+
+        return '<?php switch(' . $name . '): ?>' . $content . '<?php endswitch; ?>';
     }
 
     /**
-     * case标签解析 需要配合switch才有效
-     * @access public
+     * case标签解析 需要配合switch才有效.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -316,13 +311,13 @@ class Cx extends Taglib
         if ('' == $isBreak || $isBreak) {
             $parseStr .= '<?php break; ?>';
         }
+
         return $parseStr;
     }
 
     /**
      * default标签解析 需要配合switch才有效
-     * 使用： {default /}ddfdf
-     * @access public
+     * 使用： {default /}ddfdf.
      *
      * @param array $tag 标签属性
      *
@@ -331,15 +326,14 @@ class Cx extends Taglib
     public function tagDefault($tag)
     {
         unset($tag);
-        $parseStr = '<?php default: ?>';
-        return $parseStr;
+
+        return '<?php default: ?>';
     }
 
     /**
      * compare标签解析
      * 用于值的比较 支持 eq neq gt lt egt elt heq nheq 默认是eq
-     * 格式： {compare name="" type="eq" value="" }content{/compare}
-     * @access public
+     * 格式： {compare name="" type="eq" value="" }content{/compare}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -361,22 +355,23 @@ class Cx extends Taglib
         switch ($type) {
             case 'equal':
                 $type = 'eq';
+
                 break;
             case 'notequal':
                 $type = 'neq';
+
                 break;
         }
         $type     = $this->parseCondition(' ' . $type . ' ');
-        $parseStr = '<?php if(' . $name . ' ' . $type . ' ' . $value . '): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(' . $name . ' ' . $type . ' ' . $value . '): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * range标签解析
      * 如果某个变量存在于某个范围 则输出内容 type= in 表示在范围内 否则表示在范围外
      * 格式： {range name="var|function"  value="val" type='in|notin' }content{/range}
-     * example: {range name="a"  value="1,2,3" type='in' }content{/range}
-     * @access public
+     * example: {range name="a"  value="1,2,3" type='in' }content{/range}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -406,14 +401,14 @@ class Cx extends Taglib
             $fun      = ('in' == $type) ? 'in_array' : '!in_array';
             $parseStr = '<?php if(' . $fun . '((' . $name . '), ' . $str . ')): ?>' . $content . '<?php endif; ?>';
         }
+
         return $parseStr;
     }
 
     /**
      * present标签解析
      * 如果某个变量已经设置 则输出内容
-     * 格式： {present name="" }content{/present}
-     * @access public
+     * 格式： {present name="" }content{/present}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -424,15 +419,14 @@ class Cx extends Taglib
     {
         $name     = $tag['name'];
         $name     = $this->autoBuildVar($name);
-        $parseStr = '<?php if(isset(' . $name . ')): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(isset(' . $name . ')): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * notpresent标签解析
      * 如果某个变量没有设置，则输出内容
-     * 格式： {notpresent name="" }content{/notpresent}
-     * @access public
+     * 格式： {notpresent name="" }content{/notpresent}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -443,15 +437,14 @@ class Cx extends Taglib
     {
         $name     = $tag['name'];
         $name     = $this->autoBuildVar($name);
-        $parseStr = '<?php if(!isset(' . $name . ')): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(!isset(' . $name . ')): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * empty标签解析
      * 如果某个变量为empty 则输出内容
-     * 格式： {empty name="" }content{/empty}
-     * @access public
+     * 格式： {empty name="" }content{/empty}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -462,15 +455,14 @@ class Cx extends Taglib
     {
         $name     = $tag['name'];
         $name     = $this->autoBuildVar($name);
-        $parseStr = '<?php if(empty(' . $name . ') || ((' . $name . ' instanceof \think\Collection || ' . $name . ' instanceof \think\Paginator ) && ' . $name . '->isEmpty())): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(empty(' . $name . ') || ((' . $name . ' instanceof \think\Collection || ' . $name . ' instanceof \think\Paginator ) && ' . $name . '->isEmpty())): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * notempty标签解析
      * 如果某个变量不为empty 则输出内容
-     * 格式： {notempty name="" }content{/notempty}
-     * @access public
+     * 格式： {notempty name="" }content{/notempty}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -481,13 +473,13 @@ class Cx extends Taglib
     {
         $name     = $tag['name'];
         $name     = $this->autoBuildVar($name);
-        $parseStr = '<?php if(!(empty(' . $name . ') || ((' . $name . ' instanceof \think\Collection || ' . $name . ' instanceof \think\Paginator ) && ' . $name . '->isEmpty()))): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(!(empty(' . $name . ') || ((' . $name . ' instanceof \think\Collection || ' . $name . ' instanceof \think\Paginator ) && ' . $name . '->isEmpty()))): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * 判断是否已经定义了该常量
-     * {defined name='TXT'}已定义{/defined}
+     * {defined name='TXT'}已定义{/defined}.
      *
      * @param array  $tag
      * @param string $content
@@ -497,13 +489,13 @@ class Cx extends Taglib
     public function tagDefined($tag, $content)
     {
         $name     = $tag['name'];
-        $parseStr = '<?php if(defined("' . $name . '")): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(defined("' . $name . '")): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * 判断是否没有定义了该常量
-     * {notdefined name='TXT'}已定义{/notdefined}
+     * {notdefined name='TXT'}已定义{/notdefined}.
      *
      * @param array  $tag
      * @param string $content
@@ -513,14 +505,13 @@ class Cx extends Taglib
     public function tagNotdefined($tag, $content)
     {
         $name     = $tag['name'];
-        $parseStr = '<?php if(!defined("' . $name . '")): ?>' . $content . '<?php endif; ?>';
-        return $parseStr;
+
+        return '<?php if(!defined("' . $name . '")): ?>' . $content . '<?php endif; ?>';
     }
 
     /**
      * load 标签解析 {load file="/static/js/base.js" /}
-     * 格式：{load file="/static/css/base.css" /}
-     * @access public
+     * 格式：{load file="/static/css/base.css" /}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -551,23 +542,26 @@ class Cx extends Taglib
             switch ($type) {
                 case 'js':
                     $parseStr .= '<script type="text/javascript" src="' . $val . '"></script>';
+
                     break;
                 case 'css':
                     $parseStr .= '<link rel="stylesheet" type="text/css" href="' . $val . '" />';
+
                     break;
                 case 'php':
                     $parseStr .= '<?php include "' . $val . '"; ?>';
+
                     break;
             }
         }
+
         return $parseStr . $endStr;
     }
 
     /**
      * assign标签解析
      * 在模板中给某个变量赋值 支持变量赋值
-     * 格式： {assign name="" value="" /}
-     * @access public
+     * 格式： {assign name="" value="" /}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -584,15 +578,14 @@ class Cx extends Taglib
         } else {
             $value = '\'' . $tag['value'] . '\'';
         }
-        $parseStr = '<?php ' . $name . ' = ' . $value . '; ?>';
-        return $parseStr;
+
+        return '<?php ' . $name . ' = ' . $value . '; ?>';
     }
 
     /**
      * define标签解析
      * 在模板中定义常量 支持变量赋值
-     * 格式： {define name="" value="" /}
-     * @access public
+     * 格式： {define name="" value="" /}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -609,8 +602,8 @@ class Cx extends Taglib
         } else {
             $value = '\'' . $tag['value'] . '\'';
         }
-        $parseStr = '<?php define(' . $name . ', ' . $value . '); ?>';
-        return $parseStr;
+
+        return '<?php define(' . $name . ', ' . $value . '); ?>';
     }
 
     /**
@@ -618,8 +611,7 @@ class Cx extends Taglib
      * 格式：
      * {for start="" end="" comparison="" step="" name=""}
      * content
-     * {/for}
-     * @access public
+     * {/for}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -646,18 +638,23 @@ class Cx extends Taglib
             switch ($key) {
                 case 'start':
                     $start = $value;
+
                     break;
                 case 'end':
                     $end = $value;
+
                     break;
                 case 'step':
                     $step = $value;
+
                     break;
                 case 'comparison':
                     $comparison = $value;
+
                     break;
                 case 'name':
                     $name = $value;
+
                     break;
             }
         }
@@ -666,13 +663,13 @@ class Cx extends Taglib
         $parseStr .= 'for($' . $name . '=$__FOR_START_' . $rand . '__;' . $this->parseCondition('$' . $name . ' ' . $comparison . ' $__FOR_END_' . $rand . '__') . ';$' . $name . '+=' . $step . '){ ?>';
         $parseStr .= $content;
         $parseStr .= '<?php } ?>';
+
         return $parseStr;
     }
 
     /**
      * url函数的tag标签
-     * 格式：{url link="模块/控制器/方法" vars="参数" suffix="true或者false 是否带有后缀" domain="true或者false 是否携带域名" /}
-     * @access public
+     * 格式：{url link="模块/控制器/方法" vars="参数" suffix="true或者false 是否带有后缀" domain="true或者false 是否携带域名" /}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -686,6 +683,7 @@ class Cx extends Taglib
         $vars   = isset($tag['vars']) ? $tag['vars'] : '';
         $suffix = isset($tag['suffix']) ? $tag['suffix'] : 'true';
         $domain = isset($tag['domain']) ? $tag['domain'] : 'false';
+
         return '<?php echo url("' . $url . '","' . $vars . '",' . $suffix . ',' . $domain . ');?>';
     }
 
@@ -700,8 +698,7 @@ class Cx extends Taglib
      *      {else /}
      *          {$data}
      *      {/if}
-     * {/function}
-     * @access public
+     * {/function}.
      *
      * @param array  $tag     标签属性
      * @param string $content 标签内容
@@ -722,6 +719,7 @@ class Cx extends Taglib
         $parseStr = '<?php $' . $name . '=function(' . $vars . ') use(' . implode(',', $use) . ') {';
         $parseStr .= ' ?>' . $content . '<?php }; ';
         $parseStr .= $call ? '$' . $name . '(' . $call . '); ?>' : '?>';
+
         return $parseStr;
     }
 }

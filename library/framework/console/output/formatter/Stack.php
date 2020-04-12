@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -13,7 +14,6 @@ namespace tpr\framework\console\output\formatter;
 
 class Stack
 {
-
     /**
      * @var Style[]
      */
@@ -25,8 +25,9 @@ class Stack
     private $emptyStyle;
 
     /**
-     * 构造方法
-     * @param Style|null $emptyStyle
+     * 构造方法.
+     *
+     * @param null|Style $emptyStyle
      */
     public function __construct(Style $emptyStyle = null)
     {
@@ -35,7 +36,7 @@ class Stack
     }
 
     /**
-     * 重置堆栈
+     * 重置堆栈.
      */
     public function reset()
     {
@@ -43,7 +44,8 @@ class Stack
     }
 
     /**
-     * 推一个样式进入堆栈
+     * 推一个样式进入堆栈.
+     *
      * @param Style $style
      */
     public function push(Style $style)
@@ -52,10 +54,13 @@ class Stack
     }
 
     /**
-     * 从堆栈中弹出一个样式
-     * @param Style|null $style
-     * @return Style
+     * 从堆栈中弹出一个样式.
+     *
+     * @param null|Style $style
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Style
      */
     public function pop(Style $style = null)
     {
@@ -68,12 +73,12 @@ class Stack
         }
 
         /**
-         * @var int   $index
+         * @var int
          * @var Style $stackedStyle
          */
         foreach (array_reverse($this->styles, true) as $index => $stackedStyle) {
             if ($style->apply('') === $stackedStyle->apply('')) {
-                $this->styles = array_slice($this->styles, 0, $index);
+                $this->styles = \array_slice($this->styles, 0, $index);
 
                 return $stackedStyle;
             }
@@ -84,6 +89,7 @@ class Stack
 
     /**
      * 计算堆栈的当前样式。
+     *
      * @return Style
      */
     public function getCurrent()
@@ -92,11 +98,12 @@ class Stack
             return $this->emptyStyle;
         }
 
-        return $this->styles[count($this->styles) - 1];
+        return $this->styles[\count($this->styles) - 1];
     }
 
     /**
      * @param Style $emptyStyle
+     *
      * @return Stack
      */
     public function setEmptyStyle(Style $emptyStyle)

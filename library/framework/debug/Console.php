@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -11,15 +12,15 @@
 
 namespace tpr\framework\debug;
 
+use tpr\db\Db;
 use tpr\framework\Cache;
 use tpr\framework\Config;
-use tpr\db\Db;
 use tpr\framework\Debug;
 use tpr\framework\Request;
 use tpr\framework\Response;
 
 /**
- * 浏览器调试输出
+ * 浏览器调试输出.
  */
 class Console
 {
@@ -30,29 +31,30 @@ class Console
     // 实例化并传入参数
     public function __construct($config = [])
     {
-        if (is_array($config)) {
+        if (\is_array($config)) {
             $this->config = array_merge($this->config, $config);
         }
     }
 
     /**
-     * 调试输出接口
-     * @access public
+     * 调试输出接口.
      *
      * @param Response $response Response对象
      * @param array    $log
      *
-     * @return bool|string
      * @throws \tpr\framework\Exception
+     *
+     * @return bool|string
      */
     public function output(Response $response, array $log = [])
     {
         $request     = Request::instance();
         $contentType = $response->getHeader('Content-Type');
         $accept      = $request->header('accept');
-        if (strpos($accept, 'application/json') === 0 || $request->isAjax()) {
+        if (0 === strpos($accept, 'application/json') || $request->isAjax()) {
             return false;
-        } elseif (!empty($contentType) && strpos($contentType, 'html') === false) {
+        }
+        if (!empty($contentType) && false === strpos($contentType, 'html')) {
             return false;
         }
         // 获取基本信息
@@ -69,10 +71,10 @@ class Console
         // 页面Trace信息
         $base = [
             '请求信息' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) . ' ' . $uri,
-            '运行时间' => number_format($runtime, 6) . 's [ 吞吐率：' . $reqs . 'req/s ] 内存消耗：' . $mem . 'kb 文件加载：' . count(get_included_files()),
+            '运行时间' => number_format($runtime, 6) . 's [ 吞吐率：' . $reqs . 'req/s ] 内存消耗：' . $mem . 'kb 文件加载：' . \count(get_included_files()),
             '查询信息' => Db::$queryTimes . ' queries ' . Db::$executeTimes . ' writes ',
             '缓存信息' => Cache::$readTimes . ' reads,' . Cache::$writeTimes . ' writes',
-            '配置加载' => count(Config::get()),
+            '配置加载' => \count(Config::get()),
         ];
 
         if (session_id()) {
@@ -88,9 +90,11 @@ class Console
             switch ($name) {
                 case 'base': // 基本信息
                     $trace[$title] = $base;
+
                     break;
                 case 'file': // 文件信息
                     $trace[$title] = $info;
+
                     break;
                 default: // 调试信息
                     if (strpos($name, '|')) {
@@ -118,6 +122,7 @@ class Console
 {$lines}
 </script>
 JS;
+
         return $js;
     }
 
@@ -129,35 +134,39 @@ JS;
             ? "console.group('{$type}');"
             : "console.groupCollapsed('{$type}');";
 
-        foreach ((array)$msg as $key => $m) {
+        foreach ((array) $msg as $key => $m) {
             switch ($type) {
                 case '调试':
-                    $var_type = gettype($m);
-                    if (in_array($var_type, ['array', 'string'])) {
-                        $line[] = "console.log(" . json_encode($m) . ");";
+                    $var_type = \gettype($m);
+                    if (\in_array($var_type, ['array', 'string'])) {
+                        $line[] = 'console.log(' . json_encode($m) . ');';
                     } else {
-                        $line[] = "console.log(" . json_encode(var_export($m, 1)) . ");";
+                        $line[] = 'console.log(' . json_encode(var_export($m, 1)) . ');';
                     }
+
                     break;
                 case '错误':
                     $msg    = str_replace("\n", '\n', $m);
                     $style  = 'color:#F4006B;font-size:14px;';
                     $line[] = "console.error(\"%c{$msg}\", \"{$style}\");";
+
                     break;
                 case 'sql':
                     $msg    = str_replace("\n", '\n', $m);
-                    $style  = "color:#009bb4;";
+                    $style  = 'color:#009bb4;';
                     $line[] = "console.log(\"%c{$msg}\", \"{$style}\");";
+
                     break;
                 default:
-                    $m      = is_string($key) ? $key . ' ' . $m : $key + 1 . ' ' . $m;
+                    $m      = \is_string($key) ? $key . ' ' . $m : $key + 1 . ' ' . $m;
                     $msg    = json_encode($m);
                     $line[] = "console.log({$msg});";
+
                     break;
             }
         }
-        $line[] = "console.groupEnd();";
+        $line[] = 'console.groupEnd();';
+
         return implode(PHP_EOL, $line);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -16,7 +17,7 @@ use tpr\framework\Exception;
 class File
 {
     /**
-     * 写入编译缓存
+     * 写入编译缓存.
      *
      * @param string $cacheFile 缓存的文件名
      * @param string $content   缓存的内容
@@ -26,7 +27,7 @@ class File
     public function write($cacheFile, $content)
     {
         // 检测模板目录
-        $dir = dirname($cacheFile);
+        $dir = \dirname($cacheFile);
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
@@ -37,16 +38,14 @@ class File
     }
 
     /**
-     * 读取编译编译
+     * 读取编译编译.
      *
      * @param string $cacheFile 缓存的文件名
      * @param array  $vars      变量数组
-     *
-     * @return void
      */
     public function read($cacheFile, $vars = [])
     {
-        if (!empty($vars) && is_array($vars)) {
+        if (!empty($vars) && \is_array($vars)) {
             // 模板阵列变量分解成为独立变量
             extract($vars, EXTR_OVERWRITE);
         }
@@ -55,12 +54,12 @@ class File
     }
 
     /**
-     * 检查编译缓存是否有效
+     * 检查编译缓存是否有效.
      *
      * @param string $cacheFile 缓存的文件名
      * @param int    $cacheTime 缓存时间
      *
-     * @return boolean
+     * @return bool
      */
     public function check($cacheFile, $cacheTime)
     {
@@ -72,6 +71,7 @@ class File
             // 缓存是否在有效期
             return false;
         }
+
         return true;
     }
 }

@@ -13,9 +13,10 @@ use tpr\framework\Config;
 
 class CaptchaController
 {
-    public function index($id = "")
+    public function index($id = '')
     {
-        $captcha = new Captcha((array)Config::get('captcha'));
+        $captcha = new Captcha((array) Config::get('captcha'));
+
         return $captcha->entry($id);
     }
 }

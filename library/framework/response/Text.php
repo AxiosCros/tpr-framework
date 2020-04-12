@@ -13,8 +13,7 @@ use tpr\framework\Response;
 class Text extends Response
 {
     /**
-     * 处理数据
-     * @access protected
+     * 处理数据.
      *
      * @param mixed $data 要处理的数据
      *

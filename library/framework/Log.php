@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -14,14 +15,14 @@ namespace tpr\framework;
 use tpr\framework\exception\ClassNotFoundException;
 
 /**
- * Class Log
- * @package think
- * @method void log($msg) static
- * @method void error($msg) static
- * @method void info($msg) static
- * @method void sql($msg) static
+ * Class Log.
+ *
+ * @method void log($msg)    static
+ * @method void error($msg)  static
+ * @method void info($msg)   static
+ * @method void sql($msg)    static
  * @method void notice($msg) static
- * @method void alert($msg) static
+ * @method void alert($msg)  static
  */
 class Log
 {
@@ -41,7 +42,8 @@ class Log
     protected static $type = ['log', 'error', 'info', 'sql', 'notice', 'alert', 'debug'];
 
     /**
-     * 日志写入驱动
+     * 日志写入驱动.
+     *
      * @var \tpr\framework\Log\driver\File|\tpr\framework\Log\driver\Mongo
      */
     protected static $driver;
@@ -50,7 +52,26 @@ class Log
     protected static $key;
 
     /**
-     * 日志初始化
+     * 静态调用.
+     *
+     * @param $method
+     * @param $args
+     *
+     * @return mixed
+     */
+    public static function __callStatic($method, $args)
+    {
+        if (\in_array($method, self::$type)) {
+            array_push($args, $method);
+
+            return \call_user_func_array('\\tpr\\framework\\Log::record', $args);
+        }
+
+        return false;
+    }
+
+    /**
+     * 日志初始化.
      *
      * @param array $config
      */
@@ -66,11 +87,11 @@ class Log
             throw new ClassNotFoundException('class not exists:' . $class, $class);
         }
         // 记录初始化信息
-        App::$debug && Log::record('[ LOG ] INIT ' . $type, 'info');
+        App::$debug && self::record('[ LOG ] INIT ' . $type, 'info');
     }
 
     /**
-     * 获取日志信息
+     * 获取日志信息.
      *
      * @param string $type 信息类型
      *
@@ -82,12 +103,10 @@ class Log
     }
 
     /**
-     * 记录调试信息
+     * 记录调试信息.
      *
      * @param mixed  $msg  调试信息
      * @param string $type 信息类型
-     *
-     * @return void
      */
     public static function record($msg, $type = 'log')
     {
@@ -99,8 +118,7 @@ class Log
     }
 
     /**
-     * 清空日志信息
-     * @return void
+     * 清空日志信息.
      */
     public static function clear()
     {
@@ -108,11 +126,9 @@ class Log
     }
 
     /**
-     * 当前日志记录的授权key
+     * 当前日志记录的授权key.
      *
      * @param string $key 授权key
-     *
-     * @return void
      */
     public static function key($key)
     {
@@ -120,7 +136,7 @@ class Log
     }
 
     /**
-     * 检查日志写入权限
+     * 检查日志写入权限.
      *
      * @param array $config 当前日志配置参数
      *
@@ -128,20 +144,22 @@ class Log
      */
     public static function check($config)
     {
-        if (self::$key && !empty($config['allow_key']) && !in_array(self::$key, $config['allow_key'])) {
+        if (self::$key && !empty($config['allow_key']) && !\in_array(self::$key, $config['allow_key'])) {
             return false;
         }
+
         return true;
     }
 
     /**
-     * 保存调试信息
+     * 保存调试信息.
+     *
      * @return bool
      */
     public static function save()
     {
         if (!empty(self::$log)) {
-            if (is_null(self::$driver)) {
+            if (null === self::$driver) {
                 self::init(Config::get('log'));
             }
 
@@ -171,13 +189,15 @@ class Log
                 self::$log = [];
             }
             Hook::listen('log_write_done', $log);
+
             return $result;
         }
+
         return true;
     }
 
     /**
-     * 实时写入日志信息 并支持行为
+     * 实时写入日志信息 并支持行为.
      *
      * @param mixed  $msg   调试信息
      * @param string $type  信息类型
@@ -191,7 +211,7 @@ class Log
         // 封装日志信息
         if (true === $force || empty(self::$config['level'])) {
             $log[$type][] = $msg;
-        } elseif (in_array($type, self::$config['level'])) {
+        } elseif (\in_array($type, self::$config['level'])) {
             $log[$type][] = $msg;
         } else {
             return false;
@@ -199,7 +219,7 @@ class Log
 
         // 监听log_write
         Hook::listen('log_write', $log);
-        if (is_null(self::$driver)) {
+        if (null === self::$driver) {
             self::init(Config::get('log'));
         }
         // 写入日志
@@ -207,24 +227,7 @@ class Log
         if ($result) {
             self::$log = [];
         }
+
         return $result;
     }
-
-    /**
-     * 静态调用
-     *
-     * @param $method
-     * @param $args
-     *
-     * @return mixed
-     */
-    public static function __callStatic($method, $args)
-    {
-        if (in_array($method, self::$type)) {
-            array_push($args, $method);
-            return call_user_func_array('\\tpr\\framework\\Log::record', $args);
-        }
-        return false;
-    }
-
 }

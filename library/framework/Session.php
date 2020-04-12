@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -20,26 +21,27 @@ class Session
     protected static $init   = null;
 
     /**
-     * 设置或者获取session作用域（前缀）
+     * 设置或者获取session作用域（前缀）.
      *
      * @param string $prefix
      *
-     * @return string|null
      * @throws PermissionDenied
+     *
+     * @return null|string
      */
     public static function prefix($prefix = '')
     {
         empty(self::$init) && self::boot();
         if (empty($prefix) && null !== $prefix) {
             return self::$prefix;
-        } else {
-            self::$prefix = $prefix;
         }
+        self::$prefix = $prefix;
+
         return null;
     }
 
     /**
-     * session初始化
+     * session初始化.
      *
      * @param array $config
      *
@@ -66,10 +68,10 @@ class Session
             $isDoStart = true;
         }
 
-        if (isset($config['prefix']) && (self::$prefix === '' || self::$prefix === null)) {
+        if (isset($config['prefix']) && ('' === self::$prefix || null === self::$prefix)) {
             self::$prefix = $config['prefix'];
         }
-        if (isset($config['var_session_id']) && isset($_REQUEST[$config['var_session_id']])) {
+        if (isset($config['var_session_id'], $_REQUEST[$config['var_session_id']])) {
             session_id($_REQUEST[$config['var_session_id']]);
         } elseif (isset($config['id']) && !empty($config['id'])) {
             session_id($config['id']);
@@ -126,12 +128,13 @@ class Session
     }
 
     /**
-     * session自动启动或者初始化
+     * session自动启动或者初始化.
+     *
      * @throws PermissionDenied
      */
     public static function boot()
     {
-        if (is_null(self::$init)) {
+        if (null === self::$init) {
             self::init();
         } elseif (false === self::$init) {
             if (PHP_SESSION_ACTIVE != session_status()) {
@@ -142,11 +145,11 @@ class Session
     }
 
     /**
-     * session设置
+     * session设置.
      *
      * @param string      $name   session名称
      * @param mixed       $value  session值
-     * @param string|null $prefix 作用域（前缀）
+     * @param null|string $prefix 作用域（前缀）
      *
      * @throws PermissionDenied
      */
@@ -154,7 +157,7 @@ class Session
     {
         empty(self::$init) && self::boot();
 
-        $prefix = !is_null($prefix) ? $prefix : self::$prefix;
+        $prefix = null !== $prefix ? $prefix : self::$prefix;
         if (strpos($name, '.')) {
             // 二维数组赋值
             list($name1, $name2) = explode('.', $name);
@@ -171,18 +174,19 @@ class Session
     }
 
     /**
-     * session获取
+     * session获取.
      *
      * @param string      $name   session名称
-     * @param string|null $prefix 作用域（前缀）
+     * @param null|string $prefix 作用域（前缀）
      *
-     * @return array|null
      * @throws PermissionDenied
+     *
+     * @return null|array
      */
     public static function get($name = '', $prefix = null)
     {
         empty(self::$init) && self::boot();
-        $prefix = !is_null($prefix) ? $prefix : self::$prefix;
+        $prefix = null !== $prefix ? $prefix : self::$prefix;
         if ('' == $name) {
             // 获取全部的session
             $value = $prefix ? (!empty($_SESSION[$prefix]) ? $_SESSION[$prefix] : []) : $_SESSION;
@@ -190,43 +194,46 @@ class Session
             // 获取session
             if (strpos($name, '.')) {
                 list($name1, $name2) = explode('.', $name);
-                $value = isset($_SESSION[$prefix][$name1][$name2]) ? $_SESSION[$prefix][$name1][$name2] : null;
+                $value               = isset($_SESSION[$prefix][$name1][$name2]) ? $_SESSION[$prefix][$name1][$name2] : null;
             } else {
                 $value = isset($_SESSION[$prefix][$name]) ? $_SESSION[$prefix][$name] : null;
             }
         } else {
             if (strpos($name, '.')) {
                 list($name1, $name2) = explode('.', $name);
-                $value = isset($_SESSION[$name1][$name2]) ? $_SESSION[$name1][$name2] : null;
+                $value               = isset($_SESSION[$name1][$name2]) ? $_SESSION[$name1][$name2] : null;
             } else {
                 $value = isset($_SESSION[$name]) ? $_SESSION[$name] : null;
             }
         }
+
         return $value;
     }
 
     /**
-     * session获取并删除
+     * session获取并删除.
      *
      * @param string      $name   session名称
-     * @param string|null $prefix 作用域（前缀）
+     * @param null|string $prefix 作用域（前缀）
      *
-     * @return array|null
      * @throws PermissionDenied
+     *
+     * @return null|array
      */
     public static function pull($name, $prefix = null)
     {
         $result = self::get($name, $prefix);
         if ($result) {
             self::delete($name, $prefix);
+
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * session设置 下一次请求有效
+     * session设置 下一次请求有效.
      *
      * @param string $name  session名称
      * @param mixed  $value session值
@@ -243,7 +250,8 @@ class Session
     }
 
     /**
-     * 清空当前请求的session数据
+     * 清空当前请求的session数据.
+     *
      * @throws PermissionDenied
      */
     public static function flush()
@@ -263,18 +271,18 @@ class Session
     }
 
     /**
-     * 删除session数据
+     * 删除session数据.
      *
-     * @param string|array $name   session名称
-     * @param string|null  $prefix 作用域（前缀）
+     * @param array|string $name   session名称
+     * @param null|string  $prefix 作用域（前缀）
      *
      * @throws PermissionDenied
      */
     public static function delete($name, $prefix = null)
     {
         empty(self::$init) && self::boot();
-        $prefix = !is_null($prefix) ? $prefix : self::$prefix;
-        if (is_array($name)) {
+        $prefix = null !== $prefix ? $prefix : self::$prefix;
+        if (\is_array($name)) {
             foreach ($name as $key) {
                 self::delete($key, $prefix);
             }
@@ -295,16 +303,16 @@ class Session
     }
 
     /**
-     * 清空session数据
+     * 清空session数据.
      *
-     * @param string|null $prefix 作用域（前缀）
+     * @param null|string $prefix 作用域（前缀）
      *
      * @throws PermissionDenied
      */
     public static function clear($prefix = null)
     {
         empty(self::$init) && self::boot();
-        $prefix = !is_null($prefix) ? $prefix : self::$prefix;
+        $prefix = null !== $prefix ? $prefix : self::$prefix;
         if ($prefix) {
             unset($_SESSION[$prefix]);
         } else {
@@ -313,39 +321,41 @@ class Session
     }
 
     /**
-     * 判断session数据
+     * 判断session数据.
      *
-     * @param string      $name session名称
-     * @param string|null $prefix
+     * @param string      $name   session名称
+     * @param null|string $prefix
+     *
+     * @throws PermissionDenied
      *
      * @return bool
-     * @throws PermissionDenied
      */
     public static function has($name, $prefix = null)
     {
         empty(self::$init) && self::boot();
-        $prefix = !is_null($prefix) ? $prefix : self::$prefix;
+        $prefix = null !== $prefix ? $prefix : self::$prefix;
         if (strpos($name, '.')) {
             // 支持数组
             list($name1, $name2) = explode('.', $name);
+
             return $prefix ? isset($_SESSION[$prefix][$name1][$name2]) : isset($_SESSION[$name1][$name2]);
-        } else {
-            return $prefix ? isset($_SESSION[$prefix][$name]) : isset($_SESSION[$name]);
         }
+
+        return $prefix ? isset($_SESSION[$prefix][$name]) : isset($_SESSION[$name]);
     }
 
     /**
-     * 添加数据到一个session数组
+     * 添加数据到一个session数组.
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
      *
      * @throws PermissionDenied
      */
     public static function push($key, $value)
     {
         $array = self::get($key);
-        if (is_null($array)) {
+        if (null === $array) {
             $array = [];
         }
         $array[] = $value;
@@ -353,8 +363,7 @@ class Session
     }
 
     /**
-     * 启动session
-     * @return void
+     * 启动session.
      */
     public static function start()
     {
@@ -363,8 +372,7 @@ class Session
     }
 
     /**
-     * 销毁session
-     * @return void
+     * 销毁session.
      */
     public static function destroy()
     {
@@ -377,11 +385,9 @@ class Session
     }
 
     /**
-     * 重新生成session_id
+     * 重新生成session_id.
      *
      * @param bool $delete 是否删除关联会话文件
-     *
-     * @return void
      */
     public static function regenerate($delete = false)
     {
@@ -389,8 +395,7 @@ class Session
     }
 
     /**
-     * 暂停session
-     * @return void
+     * 暂停session.
      */
     public static function pause()
     {

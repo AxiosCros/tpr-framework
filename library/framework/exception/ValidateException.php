@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -18,12 +19,12 @@ class ValidateException extends \RuntimeException
     public function __construct($error)
     {
         $this->error   = $error;
-        $this->message = is_array($error) ? implode("\n\r", $error) : $error;
+        $this->message = \is_array($error) ? implode("\n\r", $error) : $error;
     }
 
     /**
-     * 获取验证错误信息
-     * @access public
+     * 获取验证错误信息.
+     *
      * @return array|string
      */
     public function getError()

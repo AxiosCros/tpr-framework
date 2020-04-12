@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TopThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -11,9 +12,8 @@ namespace tpr\framework\process;
 
 class Utils
 {
-
     /**
-     * 转义字符串
+     * 转义字符串.
      *
      * @param string $argument
      *
@@ -21,7 +21,6 @@ class Utils
      */
     public static function escapeArgument($argument)
     {
-
         if ('' === $argument) {
             return escapeshellarg($argument);
         }
@@ -45,6 +44,7 @@ class Utils
         if ($quote) {
             $escapedArgument = '"' . $escapedArgument . '"';
         }
+
         return $escapedArgument;
     }
 
@@ -54,26 +54,28 @@ class Utils
      * @param string $caller
      * @param mixed  $input
      *
-     * @return string
      * @throws \InvalidArgumentException
+     *
+     * @return string
      */
     public static function validateInput($caller, $input)
     {
         if (null !== $input) {
-            if (is_resource($input)) {
+            if (\is_resource($input)) {
                 return $input;
             }
             if (is_scalar($input)) {
-                return (string)$input;
+                return (string) $input;
             }
+
             throw new \InvalidArgumentException(sprintf('%s only accepts strings or stream resources.', $caller));
         }
+
         return $input;
     }
 
     private static function isSurroundedBy($arg, $char)
     {
-        return 2 < strlen($arg) && $char === $arg[0] && $char === $arg[strlen($arg) - 1];
+        return 2 < \strlen($arg) && $char === $arg[0] && $char === $arg[\strlen($arg) - 1];
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -37,8 +38,7 @@ class Php
     }
 
     /**
-     * 检测是否存在模板文件
-     * @access public
+     * 检测是否存在模板文件.
      *
      * @param string $template 模板文件或者模板规则
      *
@@ -50,17 +50,15 @@ class Php
             // 获取模板文件名
             $template = $this->parseTemplate($template);
         }
+
         return is_file($template);
     }
 
     /**
-     * 渲染模板文件
-     * @access public
+     * 渲染模板文件.
      *
      * @param string $template 模板文件
      * @param array  $data     模板变量
-     *
-     * @return void
      */
     public function fetch($template, $data = [])
     {
@@ -85,13 +83,10 @@ class Php
     }
 
     /**
-     * 渲染模板内容
-     * @access public
+     * 渲染模板内容.
      *
      * @param string $content 模板内容
      * @param array  $data    模板变量
-     *
-     * @return void
      */
     public function display($content, $data = [])
     {
@@ -106,8 +101,26 @@ class Php
     }
 
     /**
-     * 自动定位模板文件
-     * @access private
+     * 配置模板引擎.
+     *
+     * @param array|string $name  参数名
+     * @param mixed        $value 参数值
+     */
+    public function config($name, $value = null)
+    {
+        if (\is_array($name)) {
+            $this->config = array_merge($this->config, $name);
+        } elseif (null === $value) {
+            return isset($this->config[$name]) ? $this->config[$name] : null;
+        } else {
+            $this->config[$name] = $value;
+        }
+
+        return null;
+    }
+
+    /**
+     * 自动定位模板文件.
      *
      * @param string $template 模板文件规则
      *
@@ -148,28 +161,7 @@ class Php
         } else {
             $template = str_replace(['/', ':'], $depr, substr($template, 1));
         }
+
         return $path . ltrim($template, '/') . '.' . ltrim($this->config['view_suffix'], '.');
     }
-
-    /**
-     * 配置模板引擎
-     * @access private
-     *
-     * @param string|array $name  参数名
-     * @param mixed        $value 参数值
-     *
-     * @return null
-     */
-    public function config($name, $value = null)
-    {
-        if (is_array($name)) {
-            $this->config = array_merge($this->config, $name);
-        } elseif (is_null($value)) {
-            return isset($this->config[$name]) ? $this->config[$name] : null;
-        } else {
-            $this->config[$name] = $value;
-        }
-        return null;
-    }
-
 }

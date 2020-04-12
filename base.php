@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -13,7 +14,7 @@ define('THINK_VERSION', '5.0.9');
 define('THINK_START_TIME', microtime(true));
 define('THINK_START_MEM', memory_get_usage());
 define('EXT', '.php');
-defined('DS') or define('DS',DIRECTORY_SEPARATOR);
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('THINK_PATH') or define('THINK_PATH', __DIR__ . DS);
 define('LIB_PATH', THINK_PATH . 'library' . DS);
 define('CORE_PATH', LIB_PATH . 'framework' . DS);
@@ -26,15 +27,15 @@ defined('RUNTIME_PATH') or define('RUNTIME_PATH', ROOT_PATH . 'runtime' . DS);
 defined('LOG_PATH') or define('LOG_PATH', RUNTIME_PATH . 'log' . DS);
 defined('CACHE_PATH') or define('CACHE_PATH', RUNTIME_PATH . 'cache' . DS);
 defined('TEMP_PATH') or define('TEMP_PATH', RUNTIME_PATH . 'temp' . DS);
-defined('CONF_PATH') or define('CONF_PATH', ROOT_PATH.'config/'); // 配置文件目录
+defined('CONF_PATH') or define('CONF_PATH', ROOT_PATH . 'config/'); // 配置文件目录
 defined('CONF_EXT') or define('CONF_EXT', EXT); // 配置文件后缀
 defined('ENV_PREFIX') or define('ENV_PREFIX', 'PHP_'); // 环境变量的配置前缀
-defined('LANG_PATH') or define('LANG_PATH',CONF_PATH.'lang'.DIRECTORY_SEPARATOR);
-defined('APP_NAMESPACE') or define('APP_NAMESPACE','app');
+defined('LANG_PATH') or define('LANG_PATH', CONF_PATH . 'lang' . DIRECTORY_SEPARATOR);
+defined('APP_NAMESPACE') or define('APP_NAMESPACE', 'app');
 
 // 环境常量
 define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
-define('IS_WIN', strpos(PHP_OS, 'WIN') !== false);
+define('IS_WIN', false !== strpos(PHP_OS, 'WIN'));
 
 // 载入Loader类
 require CORE_PATH . 'Loader.php';
@@ -47,10 +48,10 @@ if (is_file(ROOT_PATH . '.env')) {
         if (is_array($val)) {
             foreach ($val as $k => $v) {
                 $item = $name . '_' . strtoupper($k);
-                putenv("$item=$v");
+                putenv("{$item}={$v}");
             }
         } else {
-            putenv("$name=$val");
+            putenv("{$name}={$val}");
         }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -33,11 +34,9 @@ class Cookie
     protected static $init;
 
     /**
-     * Cookie初始化
+     * Cookie初始化.
      *
      * @param array $config
-     *
-     * @return void
      */
     public static function init(array $config = [])
     {
@@ -52,7 +51,7 @@ class Cookie
     }
 
     /**
-     * 设置或者获取cookie作用域（前缀）
+     * 设置或者获取cookie作用域（前缀）.
      *
      * @param string $prefix
      *
@@ -64,27 +63,27 @@ class Cookie
             return self::$config['prefix'];
         }
         self::$config['prefix'] = $prefix;
+
         return '';
     }
 
     /**
-     * Cookie 设置、获取、删除
+     * Cookie 设置、获取、删除.
      *
      * @param string $name   cookie名称
      * @param mixed  $value  cookie值
      * @param mixed  $option 可选参数 可能会是 null|integer|string
      *
-     * @return void
      * @internal param mixed $options cookie参数
      */
     public static function set($name, $value = '', $option = null)
     {
         !isset(self::$init) && self::init();
         // 参数设置(会覆盖黙认设置)
-        if (!is_null($option)) {
+        if (null !== $option) {
             if (is_numeric($option)) {
                 $option = ['expire' => $option];
-            } elseif (is_string($option)) {
+            } elseif (\is_string($option)) {
                 parse_str($option, $option);
             }
             $config = array_merge(self::$config, array_change_key_case($option));
@@ -93,11 +92,11 @@ class Cookie
         }
         $name = $config['prefix'] . $name;
         // 设置cookie
-        if (is_array($value)) {
+        if (\is_array($value)) {
             array_walk_recursive($value, 'self::jsonFormatProtect', 'encode');
             $value = 'think:' . json_encode($value);
         }
-        $expire = !empty($config['expire']) ? $_SERVER['REQUEST_TIME'] + intval($config['expire']) : 0;
+        $expire = !empty($config['expire']) ? $_SERVER['REQUEST_TIME'] + (int) ($config['expire']) : 0;
         if ($config['setcookie']) {
             setcookie($name, $value, $expire, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
         }
@@ -105,17 +104,15 @@ class Cookie
     }
 
     /**
-     * 永久保存Cookie数据
+     * 永久保存Cookie数据.
      *
      * @param string $name   cookie名称
      * @param mixed  $value  cookie值
      * @param mixed  $option 可选参数 可能会是 null|integer|string
-     *
-     * @return void
      */
     public static function forever($name, $value = '', $option = null)
     {
-        if (is_null($option) || is_numeric($option)) {
+        if (null === $option || is_numeric($option)) {
             $option = [];
         }
         $option['expire'] = 315360000;
@@ -123,33 +120,34 @@ class Cookie
     }
 
     /**
-     * 判断Cookie数据
+     * 判断Cookie数据.
      *
      * @param string      $name   cookie名称
-     * @param string|null $prefix cookie前缀
+     * @param null|string $prefix cookie前缀
      *
      * @return bool
      */
     public static function has($name, $prefix = null)
     {
         !isset(self::$init) && self::init();
-        $prefix = !is_null($prefix) ? $prefix : self::$config['prefix'];
+        $prefix = null !== $prefix ? $prefix : self::$config['prefix'];
         $name   = $prefix . $name;
+
         return isset($_COOKIE[$name]);
     }
 
     /**
-     * Cookie获取
+     * Cookie获取.
      *
      * @param string      $name   cookie名称
-     * @param string|null $prefix cookie前缀
+     * @param null|string $prefix cookie前缀
      *
      * @return mixed
      */
     public static function get($name = '', $prefix = null)
     {
         !isset(self::$init) && self::init();
-        $prefix = !is_null($prefix) ? $prefix : self::$config['prefix'];
+        $prefix = null !== $prefix ? $prefix : self::$config['prefix'];
         $key    = $prefix . $name;
 
         if ('' == $name) {
@@ -174,22 +172,21 @@ class Cookie
         } else {
             $value = null;
         }
+
         return $value;
     }
 
     /**
-     * Cookie删除
+     * Cookie删除.
      *
      * @param string      $name   cookie名称
-     * @param string|null $prefix cookie前缀
-     *
-     * @return void
+     * @param null|string $prefix cookie前缀
      */
     public static function delete($name, $prefix = null)
     {
         !isset(self::$init) && self::init();
         $config = self::$config;
-        $prefix = !is_null($prefix) ? $prefix : $config['prefix'];
+        $prefix = null !== $prefix ? $prefix : $config['prefix'];
         $name   = $prefix . $name;
         if ($config['setcookie']) {
             setcookie($name, '', $_SERVER['REQUEST_TIME'] - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
@@ -199,9 +196,9 @@ class Cookie
     }
 
     /**
-     * Cookie清空
+     * Cookie清空.
      *
-     * @param string|null $prefix cookie前缀
+     * @param null|string $prefix cookie前缀
      *
      * @return mixed
      */
@@ -214,7 +211,7 @@ class Cookie
         !isset(self::$init) && self::init();
         // 要删除的cookie前缀，不指定则删除config设置的指定前缀
         $config = self::$config;
-        $prefix = !is_null($prefix) ? $prefix : $config['prefix'];
+        $prefix = null !== $prefix ? $prefix : $config['prefix'];
         if ($prefix) {
             // 如果前缀为空字符串将不作处理直接返回
             foreach ($_COOKIE as $key => $val) {
@@ -226,11 +223,10 @@ class Cookie
                 }
             }
         }
-        return;
     }
 
     /**
-     * 该方法目前好像没用上，原先是private
+     * 该方法目前好像没用上，原先是private.
      *
      * @param        $val
      * @param string $type
@@ -241,5 +237,4 @@ class Cookie
             $val = 'decode' == $type ? urldecode($val) : urlencode($val);
         }
     }
-
 }

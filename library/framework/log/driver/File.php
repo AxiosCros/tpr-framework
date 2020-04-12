@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -14,7 +15,7 @@ namespace tpr\framework\log\driver;
 use tpr\framework\App;
 
 /**
- * 本地化调试输出到文件
+ * 本地化调试输出到文件.
  */
 class File
 {
@@ -30,14 +31,13 @@ class File
     // 实例化并传入参数
     public function __construct($config = [])
     {
-        if (is_array($config)) {
+        if (\is_array($config)) {
             $this->config = array_merge($this->config, $config);
         }
     }
 
     /**
-     * 日志写入接口
-     * @access public
+     * 日志写入接口.
      *
      * @param array $log 日志信息
      *
@@ -48,19 +48,19 @@ class File
         $cli         = IS_CLI ? '_cli' : '';
         $destination = $this->config['path'] . date('Ym') . DS . date('d') . $cli . '.log';
 
-        $path = dirname($destination);
+        $path = \dirname($destination);
         !is_dir($path) && mkdir($path, 0755, true);
 
         $info = '';
         foreach ($log as $type => $val) {
             $level = '';
             foreach ($val as $msg) {
-                if (!is_string($msg)) {
+                if (!\is_string($msg)) {
                     $msg = var_export($msg, true);
                 }
                 $level .= '[ ' . $type . ' ] ' . $msg . "\r\n";
             }
-            if (in_array($type, $this->config['apart_level'])) {
+            if (\in_array($type, $this->config['apart_level'])) {
                 // 独立记录的日志级别
                 $filename = $path . DS . date('d') . '_' . $type . $cli . '.log';
                 $this->write($level, $filename, true);
@@ -71,6 +71,7 @@ class File
         if ($info) {
             return $this->write($info, $destination);
         }
+
         return true;
     }
 
@@ -78,7 +79,7 @@ class File
     {
         //检测日志文件大小，超过配置大小则备份日志文件重新生成
         if (is_file($destination) && floor($this->config['file_size']) <= filesize($destination)) {
-            rename($destination, dirname($destination) . DS . time() . '-' . basename($destination));
+            rename($destination, \dirname($destination) . DS . time() . '-' . basename($destination));
             $this->writed[$destination] = false;
         }
 
@@ -88,7 +89,7 @@ class File
                 if (isset($_SERVER['HTTP_HOST'])) {
                     $current_uri = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                 } else {
-                    $current_uri = "cmd:" . implode(' ', $_SERVER['argv']);
+                    $current_uri = 'cmd:' . implode(' ', $_SERVER['argv']);
                 }
 
                 $runtime    = round(microtime(true) - THINK_START_TIME, 10);
@@ -96,7 +97,7 @@ class File
                 $time_str   = ' [运行时间：' . number_format($runtime, 6) . 's][吞吐率：' . $reqs . 'req/s]';
                 $memory_use = number_format((memory_get_usage() - THINK_START_MEM) / 1024, 2);
                 $memory_str = ' [内存消耗：' . $memory_use . 'kb]';
-                $file_load  = ' [文件加载：' . count(get_included_files()) . ']';
+                $file_load  = ' [文件加载：' . \count(get_included_files()) . ']';
 
                 $message = '[ info ] ' . $current_uri . $time_str . $memory_str . $file_load . "\r\n" . $message;
             }
@@ -117,5 +118,4 @@ class File
 
         return error_log($message, 3, $destination);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -13,13 +14,13 @@ namespace tpr\framework;
 
 class View
 {
-    // 视图实例
-    protected static $instance;
     // 模板引擎实例
     /**
      * @var \tpr\framework\view\driver\Think
      */
     public $engine;
+    // 视图实例
+    protected static $instance;
     // 模板变量
     protected $data = [];
     // 用于静态赋值的模板变量
@@ -28,10 +29,10 @@ class View
     protected $replace = [];
 
     /**
-     * 构造函数
-     * @access public
+     * 构造函数.
+     *
      * @param array $engine  模板引擎参数
-     * @param array $replace  字符串替换参数
+     * @param array $replace 字符串替换参数
      */
     public function __construct($engine = [], $replace = [])
     {
@@ -40,7 +41,7 @@ class View
         // 基础替换字符串
         $request = Request::instance();
         $base    = $request->root();
-        $root    = strpos($base, '.') ? ltrim(dirname($base), DS) : $base;
+        $root    = strpos($base, '.') ? ltrim(\dirname($base), DS) : $base;
         if ('' != $root) {
             $root = '/' . ltrim($root, '/');
         }
@@ -55,30 +56,66 @@ class View
     }
 
     /**
-     * 初始化视图
-     * @access public
+     * 模板变量赋值
+     *
+     * @param string $name  变量名
+     * @param mixed  $value 变量值
+     */
+    public function __set($name, $value)
+    {
+        $this->data[$name] = $value;
+    }
+
+    /**
+     * 取得模板显示变量的值
+     *
+     * @param string $name 模板变量
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->data[$name];
+    }
+
+    /**
+     * 检测模板变量是否设置.
+     *
+     * @param string $name 模板变量名
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->data[$name]);
+    }
+
+    /**
+     * 初始化视图.
+     *
      * @param array $engine  模板引擎参数
-     * @param array $replace  字符串替换参数
+     * @param array $replace 字符串替换参数
+     *
      * @return object
      */
     public static function instance($engine = [], $replace = [])
     {
-        if (is_null(self::$instance)) {
+        if (null === self::$instance) {
             self::$instance = new self($engine, $replace);
         }
+
         return self::$instance;
     }
 
     /**
      * 模板变量静态赋值
-     * @access public
+     *
      * @param mixed $name  变量名
      * @param mixed $value 变量值
-     * @return void
      */
     public static function share($name, $value = '')
     {
-        if (is_array($name)) {
+        if (\is_array($name)) {
             self::$var = array_merge(self::$var, $name);
         } else {
             self::$var[$name] = $value;
@@ -87,30 +124,33 @@ class View
 
     /**
      * 模板变量赋值
-     * @access public
+     *
      * @param mixed $name  变量名
      * @param mixed $value 变量值
+     *
      * @return $this
      */
     public function assign($name, $value = '')
     {
-        if (is_array($name)) {
+        if (\is_array($name)) {
             $this->data = array_merge($this->data, $name);
         } else {
             $this->data[$name] = $value;
         }
+
         return $this;
     }
 
     /**
-     * 设置当前模板解析的引擎
-     * @access public
+     * 设置当前模板解析的引擎.
+     *
      * @param array|string $options 引擎参数
+     *
      * @return $this
      */
     public function engine($options = [])
     {
-        if (is_string($options)) {
+        if (\is_string($options)) {
             $type    = $options;
             $options = [];
         } else {
@@ -122,29 +162,34 @@ class View
             unset($options['type']);
         }
         $this->engine = new $class($options);
+
         return $this;
     }
 
     /**
-     * 配置模板引擎
-     * @access private
-     * @param string|array  $name 参数名
-     * @param mixed         $value 参数值
+     * 配置模板引擎.
+     *
+     * @param array|string $name  参数名
+     * @param mixed        $value 参数值
+     *
      * @return object
      */
     public function config($name, $value = null)
     {
         $this->engine->config($name, $value);
+
         return $this;
     }
 
     /**
-     * 解析和获取模板内容 用于输出
-     * @param string    $template 模板文件名或者内容
-     * @param array     $vars     模板输出变量
-     * @param array     $replace 替换内容
-     * @param array     $config     模板参数
-     * @param bool      $renderContent     是否渲染内容
+     * 解析和获取模板内容 用于输出.
+     *
+     * @param string $template      模板文件名或者内容
+     * @param array  $vars          模板输出变量
+     * @param array  $replace       替换内容
+     * @param array  $config        模板参数
+     * @param bool   $renderContent 是否渲染内容
+     *
      * @return string
      */
     public function fetch($template = '', $vars = [], $replace = [], $config = [], $renderContent = false)
@@ -158,7 +203,7 @@ class View
 
         // 渲染输出
         $method = $renderContent ? 'display' : 'fetch';
-        $this->engine->$method($template, $vars, $config);
+        $this->engine->{$method}($template, $vars, $config);
 
         // 获取并清空缓存
         $content = ob_get_clean();
@@ -169,70 +214,41 @@ class View
         if (!empty($replace)) {
             $content = strtr($content, $replace);
         }
+
         return $content;
     }
 
     /**
-     * 视图内容替换
-     * @access public
-     * @param string|array  $content 被替换内容（支持批量替换）
-     * @param string        $replace    替换内容
+     * 视图内容替换.
+     *
+     * @param array|string $content 被替换内容（支持批量替换）
+     * @param string       $replace 替换内容
+     *
      * @return $this
      */
     public function replace($content, $replace = '')
     {
-        if (is_array($content)) {
+        if (\is_array($content)) {
             $this->replace = array_merge($this->replace, $content);
         } else {
             $this->replace[$content] = $replace;
         }
+
         return $this;
     }
 
     /**
-     * 渲染内容输出
-     * @access public
+     * 渲染内容输出.
+     *
      * @param string $content 内容
      * @param array  $vars    模板输出变量
      * @param array  $replace 替换内容
-     * @param array  $config     模板参数
+     * @param array  $config  模板参数
+     *
      * @return mixed
      */
     public function display($content, $vars = [], $replace = [], $config = [])
     {
         return $this->fetch($content, $vars, $replace, $config, true);
-    }
-
-    /**
-     * 模板变量赋值
-     * @access public
-     * @param string    $name  变量名
-     * @param mixed     $value 变量值
-     */
-    public function __set($name, $value)
-    {
-        $this->data[$name] = $value;
-    }
-
-    /**
-     * 取得模板显示变量的值
-     * @access protected
-     * @param string $name 模板变量
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->data[$name];
-    }
-
-    /**
-     * 检测模板变量是否设置
-     * @access public
-     * @param string $name 模板变量名
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return isset($this->data[$name]);
     }
 }

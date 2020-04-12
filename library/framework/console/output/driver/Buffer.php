@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -29,6 +30,7 @@ class Buffer
     {
         $content      = $this->buffer;
         $this->buffer = '';
+
         return $content;
     }
 
@@ -48,5 +50,4 @@ class Buffer
     {
         // do nothing
     }
-
 }

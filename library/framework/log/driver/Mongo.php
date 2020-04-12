@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | TPR [ Design For Api Develop ]
 // +----------------------------------------------------------------------
@@ -11,8 +12,8 @@
 
 namespace tpr\framework\log\driver;
 
-use tpr\framework\Config;
 use tpr\db\Db;
+use tpr\framework\Config;
 use tpr\framework\Request;
 
 class Mongo
@@ -25,7 +26,7 @@ class Mongo
         //日志数据库名称
         'database'    => 'log',
         //日志时间日期格式
-        'time_format' => "Y-m-d H:i:s",
+        'time_format' => 'Y-m-d H:i:s',
         //独立记录的日志级别
         'apart_level' => [],
     ];
@@ -36,10 +37,10 @@ class Mongo
 
     public function __construct($config = [])
     {
-        if (is_array($config)) {
+        if (\is_array($config)) {
             $this->config = array_merge($this->config, $config);
         }
-        $this->mongo_config = Config::get("mongo." . $this->config['connection']);
+        $this->mongo_config = Config::get('mongo.' . $this->config['connection']);
         if (empty($this->mongo_config)) {
             throw new \InvalidArgumentException('mongodb config not exits');
         }
@@ -47,8 +48,7 @@ class Mongo
     }
 
     /**
-     * 日志写入接口
-     * @access public
+     * 日志写入接口.
      *
      * @param array $log 日志信息
      *
@@ -57,14 +57,14 @@ class Mongo
     public function save(array $log = [])
     {
         $timestamp = time();
-        $datetime  = isset($this->config['time_format']) ? date($this->config['time_format']) : date("Y-m-d H:i:s");
+        $datetime  = isset($this->config['time_format']) ? date($this->config['time_format']) : date('Y-m-d H:i:s');
 
         $runtime     = round(microtime(true) - THINK_START_TIME, 10);
         $qps         = $runtime > 0 ? number_format(1 / $runtime, 2) . 'req/s' : '∞' . 'req/s';
         $runtime_str = number_format($runtime, 6) . 's';
         $memory_use  = number_format((memory_get_usage() - THINK_START_MEM) / 1024, 4);
         $memory_use  = $this->memoryUse($memory_use, 0);
-        $file_load   = count(get_included_files());
+        $file_load   = \count(get_included_files());
         $server      = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '0.0.0.0';
         $remote      = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
         $method      = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'CLI';
@@ -82,48 +82,50 @@ class Mongo
             'request'    => $request->path(),
             'module'     => strtolower($request->module()),
             'controller' => strtolower($request->controller()),
-            'action'     => $request->action()
+            'action'     => $request->action(),
         ];
         if (isset($_SERVER['HTTP_HOST'])) {
             $insert['current_url'] = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         } else {
-            $insert['current_url'] = "cmd:" . implode(' ', $_SERVER['argv']);
+            $insert['current_url'] = 'cmd:' . implode(' ', $_SERVER['argv']);
         }
 
         $content = [];
         foreach ($log as $type => $val) {
             if (isset($content[$type])) {
-                $n = count($val);
+                $n = \count($val);
             } else {
                 $n = 0;
             }
             foreach ($val as $msg) {
-                if (!is_string($msg)) {
+                if (!\is_string($msg)) {
                     $msg = var_export($msg, true);
                 }
                 $content[$type][$n] = $msg;
-                $n++;
+                ++$n;
             }
-            if (in_array($type, $this->config['apart_level'])) {
-                $this->log(array_merge($insert, ["log_type" => $type], $content), $type);
+            if (\in_array($type, $this->config['apart_level'])) {
+                $this->log(array_merge($insert, ['log_type' => $type], $content), $type);
             }
         }
-        $insert['log_type'] = isset($type) ? $type : "info";
+        $insert['log_type'] = isset($type) ? $type : 'info';
         $insert['log']      = $content;
         $this->log($insert);
+
         return true;
     }
 
     protected function memoryUse($memory_use, $unit)
     {
-        $units = ["kb", "gb", "tb", "pb"];
+        $units = ['kb', 'gb', 'tb', 'pb'];
         if ($memory_use > 1024) {
             $memory_use = number_format($memory_use / 1024, 4);
-            $unit++;
+            ++$unit;
+
             return $this->memoryUse($memory_use, $unit);
-        } else {
-            return $memory_use . $units[$unit];
         }
+
+        return $memory_use . $units[$unit];
     }
 
     protected function log($insert = [], $database = '')
@@ -135,6 +137,7 @@ class Mongo
         if (empty($mongo)) {
             throw new \InvalidArgumentException('mongodb connection fail');
         }
+
         return $mongo->insert($insert);
     }
 }

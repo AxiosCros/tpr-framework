@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -15,7 +16,6 @@ class ThrowableError extends \ErrorException
 {
     public function __construct(\Throwable $e)
     {
-
         if ($e instanceof \ParseError) {
             $message  = 'Parse error: ' . $e->getMessage();
             $severity = E_PARSE;

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -17,8 +18,8 @@ class Ini
     {
         if (is_file($config)) {
             return parse_ini_file($config, true);
-        } else {
-            return parse_ini_string($config, true);
         }
+
+        return parse_ini_string($config, true);
     }
 }

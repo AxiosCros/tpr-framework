@@ -8,9 +8,9 @@
 
 namespace tpr\framework\behavior;
 
+use tpr\framework\Config;
 use tpr\framework\exception\ClassNotFoundException;
 use tpr\framework\Request;
-use tpr\framework\Config;
 
 class ResponseEnd
 {
@@ -22,7 +22,7 @@ class ResponseEnd
     public $req;
     public $mca;
 
-    function __construct()
+    public function __construct()
     {
         $this->request    = Request::instance();
         $this->param      = $this->request->param();
@@ -44,6 +44,7 @@ class ResponseEnd
         if (!empty($middleware_config)) {
             if (isset($middleware_config[$this->mca])) {
                 $middleware_config = $middleware_config[$this->mca];
+
                 try {
                     $Middleware = validate($middleware_config[0], 'middleware');
                 } catch (ClassNotFoundException $e) {
@@ -51,7 +52,7 @@ class ResponseEnd
                 }
 
                 if (isset($middleware_config[1]) && method_exists($Middleware, $middleware_config[1])) {
-                    call_user_func_array([$Middleware, $middleware_config[1]], [$this->request]);
+                    \call_user_func_array([$Middleware, $middleware_config[1]], [$this->request]);
                 }
             }
         }

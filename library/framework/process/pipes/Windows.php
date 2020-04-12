@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -15,7 +16,6 @@ use tpr\framework\Process;
 
 class Windows extends Pipes
 {
-
     /** @var array */
     private $files = [];
     /** @var array */
@@ -30,23 +30,22 @@ class Windows extends Pipes
 
     public function __construct($disableOutput, $input)
     {
-        $this->disableOutput = (bool)$disableOutput;
+        $this->disableOutput = (bool) $disableOutput;
 
         if (!$this->disableOutput) {
-
             $this->files = [
                 Process::STDOUT => tempnam(sys_get_temp_dir(), 'sf_proc_stdout'),
                 Process::STDERR => tempnam(sys_get_temp_dir(), 'sf_proc_stderr'),
             ];
             foreach ($this->files as $offset => $file) {
-                $this->fileHandles[$offset] = fopen($this->files[$offset], 'rb');
+                $this->fileHandles[$offset] = fopen($this->files[$offset], 'r');
                 if (false === $this->fileHandles[$offset]) {
                     throw new \RuntimeException('A temporary file could not be opened to write the process output to, verify that your TEMP environment variable is writable');
                 }
             }
         }
 
-        if (is_resource($input)) {
+        if (\is_resource($input)) {
             $this->input = $input;
         } else {
             $this->inputBuffer = $input;
@@ -109,7 +108,7 @@ class Windows extends Pipes
                     $data .= $dataread;
                 }
             }
-            if (0 < $length = strlen($data)) {
+            if (0 < $length = \strlen($data)) {
                 $this->readBytes[$type] += $length;
                 $read[$type]            = $data;
             }
@@ -128,7 +127,7 @@ class Windows extends Pipes
      */
     public function areOpen()
     {
-        return (bool)$this->pipes && (bool)$this->fileHandles;
+        return (bool) $this->pipes && (bool) $this->fileHandles;
     }
 
     /**
@@ -157,7 +156,7 @@ class Windows extends Pipes
     }
 
     /**
-     * 删除临时文件
+     * 删除临时文件.
      */
     private function removeFiles()
     {
@@ -170,7 +169,7 @@ class Windows extends Pipes
     }
 
     /**
-     * 写入到 stdin 输入
+     * 写入到 stdin 输入.
      *
      * @param bool $blocking
      * @param bool $close
@@ -199,7 +198,7 @@ class Windows extends Pipes
             return;
         }
 
-        if (null !== $w && 0 < count($r)) {
+        if (null !== $w && 0 < \count($r)) {
             $data = '';
             while ($dataread = fread($r['input'], self::CHUNK_SIZE)) {
                 $data .= $dataread;
@@ -212,11 +211,11 @@ class Windows extends Pipes
             }
         }
 
-        if (null !== $w && 0 < count($w)) {
-            while (strlen($this->inputBuffer)) {
+        if (null !== $w && 0 < \count($w)) {
+            while (\strlen($this->inputBuffer)) {
                 $written = fwrite($w[0], $this->inputBuffer, 2 << 18);
                 if ($written > 0) {
-                    $this->inputBuffer = (string)substr($this->inputBuffer, $written);
+                    $this->inputBuffer = (string) substr($this->inputBuffer, $written);
                 } else {
                     break;
                 }

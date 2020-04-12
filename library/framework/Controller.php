@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -35,23 +36,22 @@ class Controller
     protected $batchValidate = false;
 
     /**
-     * 前置操作方法列表
-     * @var array $beforeActionList
-     * @access protected
+     * 前置操作方法列表.
+     *
+     * @var array
      */
     protected $beforeActionList = [];
 
     /**
-     * 构造方法
+     * 构造方法.
      *
      * @param Request $request Request对象
      *
-     * @access public
      * @throws Exception
      */
     public function __construct(Request $request = null)
     {
-        if (is_null($request)) {
+        if (null === $request) {
             $request = Request::instance();
         }
         $this->view    = View::instance(Config::get('template'), Config::get('view_replace_str'));
@@ -77,8 +77,7 @@ class Controller
     }
 
     /**
-     * 前置操作
-     * @access protected
+     * 前置操作.
      *
      * @param string $method  前置操作方法名
      * @param array  $options 调用参数 ['only'=>[...]] 或者['except'=>[...]]
@@ -86,27 +85,26 @@ class Controller
     protected function beforeAction($method, $options = [])
     {
         if (isset($options['only'])) {
-            if (is_string($options['only'])) {
+            if (\is_string($options['only'])) {
                 $options['only'] = explode(',', $options['only']);
             }
-            if (!in_array($this->request->action(), $options['only'])) {
+            if (!\in_array($this->request->action(), $options['only'])) {
                 return;
             }
         } elseif (isset($options['except'])) {
-            if (is_string($options['except'])) {
+            if (\is_string($options['except'])) {
                 $options['except'] = explode(',', $options['except']);
             }
-            if (in_array($this->request->action(), $options['except'])) {
+            if (\in_array($this->request->action(), $options['except'])) {
                 return;
             }
         }
 
-        call_user_func([$this, $method]);
+        \call_user_func([$this, $method]);
     }
 
     /**
-     * 加载模板输出
-     * @access protected
+     * 加载模板输出.
      *
      * @param string $template 模板文件名
      * @param array  $vars     模板输出变量
@@ -121,16 +119,15 @@ class Controller
             $template = $this->request->action();
         }
 
-        if (strpos($template, ':') === false) {
-            $template = strtolower($this->request->module()) . ":" . strtolower($this->request->controller()) . ":" . $template;
+        if (false === strpos($template, ':')) {
+            $template = strtolower($this->request->module()) . ':' . strtolower($this->request->controller()) . ':' . $template;
         }
 
         return $this->view->fetch($template, $vars, $replace, $config);
     }
 
     /**
-     * 渲染内容输出
-     * @access protected
+     * 渲染内容输出.
      *
      * @param string $content 模板内容
      * @param array  $vars    模板输出变量
@@ -146,12 +143,9 @@ class Controller
 
     /**
      * 模板变量赋值
-     * @access protected
      *
      * @param mixed $name  要显示的模板变量
      * @param mixed $value 变量的值
-     *
-     * @return void
      */
     protected function assign($name, $value = '')
     {
@@ -159,12 +153,9 @@ class Controller
     }
 
     /**
-     * 初始化模板引擎
-     * @access protected
+     * 初始化模板引擎.
      *
      * @param array|string $engine 引擎参数
-     *
-     * @return void
      */
     protected function engine($engine)
     {
@@ -172,8 +163,7 @@ class Controller
     }
 
     /**
-     * 设置验证失败后是否抛出异常
-     * @access protected
+     * 设置验证失败后是否抛出异常.
      *
      * @param bool $fail 是否抛出异常
      *
@@ -182,25 +172,26 @@ class Controller
     protected function validateFailException($fail = true)
     {
         $this->failException = $fail;
+
         return $this;
     }
 
     /**
-     * 验证数据
-     * @access protected
+     * 验证数据.
      *
      * @param array        $data     数据
-     * @param string|array $validate 验证器名或者验证规则数组
+     * @param array|string $validate 验证器名或者验证规则数组
      * @param array        $message  提示信息
      * @param bool         $batch    是否批量验证
      * @param mixed        $callback 回调方法（闭包）
      *
-     * @return array|string|true
      * @throws ValidateException
+     *
+     * @return array|string|true
      */
     protected function validate($data, $validate, $message = [], $batch = false, $callback = null)
     {
-        if (is_array($validate)) {
+        if (\is_array($validate)) {
             $v = Loader::validate();
             $v->rule($validate);
         } else {
@@ -218,22 +209,22 @@ class Controller
             $v->batch(true);
         }
 
-        if (is_array($message)) {
+        if (\is_array($message)) {
             $v->message($message);
         }
 
-        if ($callback && is_callable($callback)) {
-            call_user_func_array($callback, [$v, &$data]);
+        if ($callback && \is_callable($callback)) {
+            \call_user_func_array($callback, [$v, &$data]);
         }
 
         if (!$v->check($data)) {
             if ($this->failException) {
                 throw new ValidateException($v->getError());
-            } else {
-                return $v->getError();
             }
-        } else {
-            return true;
+
+            return $v->getError();
         }
+
+        return true;
     }
 }

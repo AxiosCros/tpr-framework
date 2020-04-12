@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -13,7 +14,6 @@ namespace tpr\framework\console\input;
 
 class Option
 {
-
     const VALUE_NONE     = 1;
     const VALUE_REQUIRED = 2;
     const VALUE_OPTIONAL = 4;
@@ -26,12 +26,14 @@ class Option
     private $description;
 
     /**
-     * 构造方法
+     * 构造方法.
+     *
      * @param string       $name        选项名
-     * @param string|array $shortcut    短名称,多个用|隔开或者使用数组
+     * @param array|string $shortcut    短名称,多个用|隔开或者使用数组
      * @param int          $mode        选项类型(可选类型为 self::VALUE_*)
      * @param string       $description 描述
      * @param mixed        $default     默认值 (类型为 self::VALUE_REQUIRED 或者 self::VALUE_NONE 的时候必须为null)
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct($name, $shortcut = null, $mode = null, $description = '', $default = null)
@@ -49,7 +51,7 @@ class Option
         }
 
         if (null !== $shortcut) {
-            if (is_array($shortcut)) {
+            if (\is_array($shortcut)) {
                 $shortcut = implode('|', $shortcut);
             }
             $shortcuts = preg_split('{(\|)-?}', ltrim($shortcut, '-'));
@@ -63,7 +65,7 @@ class Option
 
         if (null === $mode) {
             $mode = self::VALUE_NONE;
-        } elseif (!is_int($mode) || $mode > 15 || $mode < 1) {
+        } elseif (!\is_int($mode) || $mode > 15 || $mode < 1) {
             throw new \InvalidArgumentException(sprintf('Option mode "%s" is not valid.', $mode));
         }
 
@@ -80,7 +82,8 @@ class Option
     }
 
     /**
-     * 获取短名称
+     * 获取短名称.
+     *
      * @return string
      */
     public function getShortcut()
@@ -89,7 +92,8 @@ class Option
     }
 
     /**
-     * 获取选项名
+     * 获取选项名.
+     *
      * @return string
      */
     public function getName()
@@ -99,6 +103,7 @@ class Option
 
     /**
      * 是否可以设置值
+     *
      * @return bool 类型不是 self::VALUE_NONE 的时候返回true,其他均返回false
      */
     public function acceptValue()
@@ -107,7 +112,8 @@ class Option
     }
 
     /**
-     * 是否必须
+     * 是否必须.
+     *
      * @return bool 类型是 self::VALUE_REQUIRED 的时候返回true,其他均返回false
      */
     public function isValueRequired()
@@ -116,7 +122,8 @@ class Option
     }
 
     /**
-     * 是否可选
+     * 是否可选.
+     *
      * @return bool 类型是 self::VALUE_OPTIONAL 的时候返回true,其他均返回false
      */
     public function isValueOptional()
@@ -125,7 +132,8 @@ class Option
     }
 
     /**
-     * 选项值是否接受数组
+     * 选项值是否接受数组.
+     *
      * @return bool 类型是 self::VALUE_IS_ARRAY 的时候返回true,其他均返回false
      */
     public function isArray()
@@ -135,7 +143,9 @@ class Option
 
     /**
      * 设置默认值
+     *
      * @param mixed $default 默认值
+     *
      * @throws \LogicException
      */
     public function setDefault($default = null)
@@ -147,7 +157,7 @@ class Option
         if ($this->isArray()) {
             if (null === $default) {
                 $default = [];
-            } elseif (!is_array($default)) {
+            } elseif (!\is_array($default)) {
                 throw new \LogicException('A default value for an array option must be an array.');
             }
         }
@@ -157,6 +167,7 @@ class Option
 
     /**
      * 获取默认值
+     *
      * @return mixed
      */
     public function getDefault()
@@ -165,7 +176,8 @@ class Option
     }
 
     /**
-     * 获取描述文字
+     * 获取描述文字.
+     *
      * @return string
      */
     public function getDescription()
@@ -174,11 +186,13 @@ class Option
     }
 
     /**
-     * 检查所给选项是否是当前这个
+     * 检查所给选项是否是当前这个.
+     *
      * @param Option $option
+     *
      * @return bool
      */
-    public function equals(Option $option)
+    public function equals(self $option)
     {
         return $option->getName() === $this->getName()
         && $option->getShortcut() === $this->getShortcut()

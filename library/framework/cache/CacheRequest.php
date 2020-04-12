@@ -16,13 +16,13 @@ class CacheRequest
 {
     public static function set($req, Request $request)
     {
-        if(!empty($req)){
-            $path = $request->path();
+        if (!empty($req)) {
+            $path   = $request->path();
             $expire = c('cache.' . $path, null);
-            $except = c('cache.except_param', ["token", "sign", "timestamp"]);
-            if (is_int($expire)) {
-                $param = $request->except($except);
-                $identify = self::identify($path , $param);
+            $except = c('cache.except_param', ['token', 'sign', 'timestamp']);
+            if (\is_int($expire)) {
+                $param    = $request->except($except);
+                $identify = self::identify($path, $param);
                 Cache::set($identify, $req, $expire);
             }
         }
@@ -30,17 +30,18 @@ class CacheRequest
 
     public static function get(Request $request)
     {
-        $path = $request->path();
+        $path   = $request->path();
         $expire = c('cache.' . $path, null);
-        $except = c('cache.except_param', ["token", "sign", "timestamp"]);
-        if (is_int($expire)) {
-            $param = $request->except($except);
-            $identify = self::identify($path , $param);
-            $cache = Cache::get($identify);
+        $except = c('cache.except_param', ['token', 'sign', 'timestamp']);
+        if (\is_int($expire)) {
+            $param    = $request->except($except);
+            $identify = self::identify($path, $param);
+            $cache    = Cache::get($identify);
+
             return empty($cache) ? false : $cache;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     private static function identify($path, $param = [])

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -17,7 +18,6 @@ use tpr\framework\Response;
 
 abstract class Rest
 {
-
     protected $method; // 当前请求类型
     protected $type; // 当前资源类型
     // 输出类型
@@ -32,8 +32,7 @@ abstract class Rest
     ];
 
     /**
-     * 构造函数 取得模板对象实例
-     * @access public
+     * 构造函数 取得模板对象实例.
      */
     public function __construct()
     {
@@ -59,11 +58,13 @@ abstract class Rest
     }
 
     /**
-     * REST 调用
-     * @access public
+     * REST 调用.
+     *
      * @param string $method 方法名
-     * @return mixed
+     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function _empty($method)
     {
@@ -77,23 +78,22 @@ abstract class Rest
         }
         if (isset($fun)) {
             return App::invokeMethod([$this, $fun]);
-        } else {
-            // 抛出异常
-            throw new \Exception('error action :' . $method);
         }
+        // 抛出异常
+        throw new \Exception('error action :' . $method);
     }
 
     /**
-     * 输出返回数据
-     * @access protected
-     * @param mixed     $data 要返回的数据
-     * @param String    $type 返回类型 JSON XML
-     * @param integer   $code HTTP状态码
+     * 输出返回数据.
+     *
+     * @param mixed  $data 要返回的数据
+     * @param string $type 返回类型 JSON XML
+     * @param int    $code HTTP状态码
+     *
      * @return Response
      */
     protected function response($data, $type = 'json', $code = 200)
     {
         return Response::create($data, $type)->code($code);
     }
-
 }

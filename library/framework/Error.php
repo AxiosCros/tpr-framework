@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -19,8 +20,7 @@ use tpr\framework\exception\ThrowableError;
 class Error
 {
     /**
-     * 注册异常处理
-     * @return void
+     * 注册异常处理.
      */
     public static function register()
     {
@@ -31,9 +31,9 @@ class Error
     }
 
     /**
-     * Exception Handler
+     * Exception Handler.
      *
-     * @param  \Exception|\Throwable $e
+     * @param \Exception|\Throwable $e
      *
      * @throws Exception
      */
@@ -45,20 +45,20 @@ class Error
 
         self::getExceptionHandler()->report($e);
         if (IS_CLI) {
-            self::getExceptionHandler()->renderForConsole(new ConsoleOutput, $e);
+            self::getExceptionHandler()->renderForConsole(new ConsoleOutput(), $e);
         } else {
             self::getExceptionHandler()->render($e)->send();
         }
     }
 
     /**
-     * Error Handler
+     * Error Handler.
      *
-     * @param  integer $errno   错误编号
-     * @param  integer $errstr  详细错误信息
-     * @param  string  $errfile 出错的文件
-     * @param  integer $errline 出错行号
-     * @param array    $errcontext
+     * @param int    $errno      错误编号
+     * @param int    $errstr     详细错误信息
+     * @param string $errfile    出错的文件
+     * @param int    $errline    出错行号
+     * @param array  $errcontext
      *
      * @throws ErrorException
      */
@@ -68,17 +68,16 @@ class Error
         if (error_reporting() & $errno) {
             // 将错误信息托管至 think\exception\ErrorException
             throw $exception;
-        } else {
-            self::getExceptionHandler()->report($exception);
         }
+        self::getExceptionHandler()->report($exception);
     }
 
     /**
-     * Shutdown Handler
+     * Shutdown Handler.
      */
     public static function appShutdown()
     {
-        if (!is_null($error = error_get_last()) && self::isFatal($error['type'])) {
+        if (null !== ($error = error_get_last()) && self::isFatal($error['type'])) {
             // 将错误信息托管至think\ErrorException
             $exception = new ErrorException($error['type'], $error['message'], $error['file'], $error['line']);
 
@@ -90,19 +89,8 @@ class Error
     }
 
     /**
-     * 确定错误类型是否致命
-     *
-     * @param  int $type
-     *
-     * @return bool
-     */
-    protected static function isFatal($type)
-    {
-        return in_array($type, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE]);
-    }
-
-    /**
      * Get an instance of the exception handler.
+     *
      * @return Handle
      */
     public static function getExceptionHandler()
@@ -111,15 +99,28 @@ class Error
         if (!$handle) {
             // 异常处理handle
             $class = Config::get('exception_handle');
-            if ($class && class_exists($class) && is_subclass_of($class, "\\tpr\\framework\\exception\\Handle")) {
-                $handle = new $class;
+            if ($class && class_exists($class) && is_subclass_of($class, '\\tpr\\framework\\exception\\Handle')) {
+                $handle = new $class();
             } else {
-                $handle = new Handle;
+                $handle = new Handle();
                 if ($class instanceof \Closure) {
                     $handle->setRender($class);
                 }
             }
         }
+
         return $handle;
+    }
+
+    /**
+     * 确定错误类型是否致命.
+     *
+     * @param int $type
+     *
+     * @return bool
+     */
+    protected static function isFatal($type)
+    {
+        return \in_array($type, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE]);
     }
 }

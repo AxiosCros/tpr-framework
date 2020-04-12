@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -18,8 +19,13 @@ use tpr\framework\console\input\Option;
 
 class Command
 {
+    /** @var Input */
+    protected $input;
 
-    /** @var  Console */
+    /** @var Output */
+    protected $output;
+
+    /** @var Console */
     private $console;
     private $name;
     private $aliases = [];
@@ -33,16 +39,13 @@ class Command
     private $synopsis = [];
     private $usages   = [];
 
-    /** @var  Input */
-    protected $input;
-
-    /** @var  Output */
-    protected $output;
-
     /**
-     * 构造方法
-     * @param string|null $name 命令名称,如果没有设置则比如在 configure() 里设置
+     * 构造方法.
+     *
+     * @param null|string $name 命令名称,如果没有设置则比如在 configure() 里设置
+     *
      * @throws \LogicException
+     *
      * @api
      */
     public function __construct($name = null)
@@ -56,12 +59,12 @@ class Command
         $this->configure();
 
         if (!$this->name) {
-            throw new \LogicException(sprintf('The command defined in "%s" cannot have an empty name.', get_class($this)));
+            throw new \LogicException(sprintf('The command defined in "%s" cannot have an empty name.', \get_class($this)));
         }
     }
 
     /**
-     * 忽略验证错误
+     * 忽略验证错误.
      */
     public function ignoreValidationErrors()
     {
@@ -69,7 +72,8 @@ class Command
     }
 
     /**
-     * 设置控制台
+     * 设置控制台.
+     *
      * @param Console $console
      */
     public function setConsole(Console $console = null)
@@ -78,8 +82,10 @@ class Command
     }
 
     /**
-     * 获取控制台
+     * 获取控制台.
+     *
      * @return Console
+     *
      * @api
      */
     public function getConsole()
@@ -88,7 +94,8 @@ class Command
     }
 
     /**
-     * 是否有效
+     * 是否有效.
+     *
      * @return bool
      */
     public function isEnabled()
@@ -97,48 +104,15 @@ class Command
     }
 
     /**
-     * 配置指令
-     */
-    protected function configure()
-    {
-    }
-
-    /**
-     * 执行指令
+     * 执行.
+     *
      * @param Input  $input
      * @param Output $output
-     * @throws \LogicException
-     * @see setCode()
-     */
-    protected function execute(Input $input, Output $output)
-    {
-        throw new \LogicException('You must override the execute() method in the concrete command class.');
-    }
-
-    /**
-     * 用户验证
-     * @param Input  $input
-     * @param Output $output
-     */
-    protected function interact(Input $input, Output $output)
-    {
-    }
-
-    /**
-     * 初始化
-     * @param Input  $input  An InputInterface instance
-     * @param Output $output An OutputInterface instance
-     */
-    protected function initialize(Input $input, Output $output)
-    {
-    }
-
-    /**
-     * 执行
-     * @param Input  $input
-     * @param Output $output
-     * @return int
+     *
      * @throws \Exception
+     *
+     * @return int
+     *
      * @see setCode()
      * @see execute()
      */
@@ -169,7 +143,7 @@ class Command
         $input->validate();
         $statusCode = 0;
         if ($this->code) {
-            $statusCode = call_user_func($this->code, $input, $output);
+            $statusCode = \call_user_func($this->code, $input, $output);
         } else {
             $this->execute($input, $output);
         }
@@ -179,19 +153,23 @@ class Command
 
     /**
      * 设置执行代码
+     *
      * @param callable $code callable(InputInterface $input, OutputInterface $output)
-     * @return Command
+     *
      * @throws \InvalidArgumentException
-     * @see execute()
      * @throws \ReflectionException
+     *
+     * @return Command
+     *
+     * @see execute()
      */
     public function setCode(callable $code)
     {
-        if (!is_callable($code)) {
+        if (!\is_callable($code)) {
             throw new \InvalidArgumentException('Invalid callable provided to Command::setCode.');
         }
 
-        if (PHP_VERSION_ID >= 50400 && $code instanceof \Closure) {
+        if (\PHP_VERSION_ID >= 50400 && $code instanceof \Closure) {
             $r = new \ReflectionFunction($code);
             if (null === $r->getClosureThis()) {
                 $code = \Closure::bind($code, $this);
@@ -204,7 +182,8 @@ class Command
     }
 
     /**
-     * 合并参数定义
+     * 合并参数定义.
+     *
      * @param bool $mergeArgs
      */
     public function mergeConsoleDefinition($mergeArgs = true)
@@ -231,9 +210,12 @@ class Command
     }
 
     /**
-     * 设置参数定义
+     * 设置参数定义.
+     *
      * @param array|Definition $definition
+     *
      * @return Command
+     *
      * @api
      */
     public function setDefinition($definition)
@@ -250,8 +232,10 @@ class Command
     }
 
     /**
-     * 获取参数定义
+     * 获取参数定义.
+     *
      * @return Definition
+     *
      * @api
      */
     public function getDefinition()
@@ -260,7 +244,8 @@ class Command
     }
 
     /**
-     * 获取当前指令的参数定义
+     * 获取当前指令的参数定义.
+     *
      * @return Definition
      */
     public function getNativeDefinition()
@@ -269,11 +254,13 @@ class Command
     }
 
     /**
-     * 添加参数
+     * 添加参数.
+     *
      * @param string $name        名称
      * @param int    $mode        类型
      * @param string $description 描述
      * @param mixed  $default     默认值
+     *
      * @return Command
      */
     public function addArgument($name, $mode = null, $description = '', $default = null)
@@ -284,12 +271,14 @@ class Command
     }
 
     /**
-     * 添加选项
+     * 添加选项.
+     *
      * @param string $name        选项名称
      * @param string $shortcut    别名
      * @param int    $mode        类型
      * @param string $description 描述
      * @param mixed  $default     默认值
+     *
      * @return Command
      */
     public function addOption($name, $shortcut = null, $mode = null, $description = '', $default = null)
@@ -300,10 +289,13 @@ class Command
     }
 
     /**
-     * 设置指令名称
+     * 设置指令名称.
+     *
      * @param string $name
-     * @return Command
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Command
      */
     public function setName($name)
     {
@@ -315,7 +307,8 @@ class Command
     }
 
     /**
-     * 获取指令名称
+     * 获取指令名称.
+     *
      * @return string
      */
     public function getName()
@@ -324,8 +317,10 @@ class Command
     }
 
     /**
-     * 设置描述
+     * 设置描述.
+     *
      * @param string $description
+     *
      * @return Command
      */
     public function setDescription($description)
@@ -336,7 +331,8 @@ class Command
     }
 
     /**
-     *  获取描述
+     *  获取描述.
+     *
      * @return string
      */
     public function getDescription()
@@ -345,8 +341,10 @@ class Command
     }
 
     /**
-     * 设置帮助信息
+     * 设置帮助信息.
+     *
      * @param string $help
+     *
      * @return Command
      */
     public function setHelp($help)
@@ -357,7 +355,8 @@ class Command
     }
 
     /**
-     * 获取帮助信息
+     * 获取帮助信息.
+     *
      * @return string
      */
     public function getHelp()
@@ -366,7 +365,8 @@ class Command
     }
 
     /**
-     * 描述信息
+     * 描述信息.
+     *
      * @return string
      */
     public function getProcessedHelp()
@@ -386,14 +386,17 @@ class Command
     }
 
     /**
-     * 设置别名
+     * 设置别名.
+     *
      * @param string[] $aliases
-     * @return Command
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Command
      */
     public function setAliases($aliases)
     {
-        if (!is_array($aliases) && !$aliases instanceof \Traversable) {
+        if (!\is_array($aliases) && !$aliases instanceof \Traversable) {
             throw new \InvalidArgumentException('$aliases must be an array or an instance of \Traversable');
         }
 
@@ -407,7 +410,8 @@ class Command
     }
 
     /**
-     * 获取别名
+     * 获取别名.
+     *
      * @return array
      */
     public function getAliases()
@@ -416,8 +420,10 @@ class Command
     }
 
     /**
-     * 获取简介
+     * 获取简介.
+     *
      * @param bool $short 是否简单的
+     *
      * @return string
      */
     public function getSynopsis($short = false)
@@ -432,8 +438,10 @@ class Command
     }
 
     /**
-     * 添加用法介绍
+     * 添加用法介绍.
+     *
      * @param string $usage
+     *
      * @return $this
      */
     public function addUsage($usage)
@@ -448,7 +456,8 @@ class Command
     }
 
     /**
-     * 获取用法介绍
+     * 获取用法介绍.
+     *
      * @return array
      */
     public function getUsages()
@@ -457,8 +466,52 @@ class Command
     }
 
     /**
-     * 验证指令名称
+     * 配置指令.
+     */
+    protected function configure()
+    {
+    }
+
+    /**
+     * 执行指令.
+     *
+     * @param Input  $input
+     * @param Output $output
+     *
+     * @throws \LogicException
+     *
+     * @see setCode()
+     */
+    protected function execute(Input $input, Output $output)
+    {
+        throw new \LogicException('You must override the execute() method in the concrete command class.');
+    }
+
+    /**
+     * 用户验证
+     *
+     * @param Input  $input
+     * @param Output $output
+     */
+    protected function interact(Input $input, Output $output)
+    {
+    }
+
+    /**
+     * 初始化.
+     *
+     * @param Input  $input  An InputInterface instance
+     * @param Output $output An OutputInterface instance
+     */
+    protected function initialize(Input $input, Output $output)
+    {
+    }
+
+    /**
+     * 验证指令名称.
+     *
      * @param string $name
+     *
      * @throws \InvalidArgumentException
      */
     private function validateName($name)

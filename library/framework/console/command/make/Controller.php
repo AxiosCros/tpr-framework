@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -17,8 +18,7 @@ use tpr\framework\console\input\Option;
 
 class Controller extends Make
 {
-
-    protected $type = "Controller";
+    protected $type = 'Controller';
 
     protected function configure()
     {
@@ -46,5 +46,4 @@ class Controller extends Make
     {
         return parent::getNamespace($appNamespace, $module) . '\controller';
     }
-
 }

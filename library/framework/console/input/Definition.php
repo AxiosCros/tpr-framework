@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -13,7 +14,6 @@ namespace tpr\framework\console\input;
 
 class Definition
 {
-
     /**
      * @var Argument[]
      */
@@ -30,8 +30,10 @@ class Definition
     private $shortcuts;
 
     /**
-     * 构造方法
+     * 构造方法.
+     *
      * @param array $definition
+     *
      * @api
      */
     public function __construct(array $definition = [])
@@ -40,7 +42,8 @@ class Definition
     }
 
     /**
-     * 设置指令的定义
+     * 设置指令的定义.
+     *
      * @param array $definition 定义的数组
      */
     public function setDefinition(array $definition)
@@ -60,7 +63,8 @@ class Definition
     }
 
     /**
-     * 设置参数
+     * 设置参数.
+     *
      * @param Argument[] $arguments 参数数组
      */
     public function setArguments($arguments = [])
@@ -73,8 +77,10 @@ class Definition
     }
 
     /**
-     * 添加参数
+     * 添加参数.
+     *
      * @param Argument[] $arguments 参数数组
+     *
      * @api
      */
     public function addArguments($arguments = [])
@@ -87,8 +93,10 @@ class Definition
     }
 
     /**
-     * 添加一个参数
+     * 添加一个参数.
+     *
      * @param Argument $argument 参数
+     *
      * @throws \LogicException
      */
     public function addArgument(Argument $argument)
@@ -119,10 +127,13 @@ class Definition
     }
 
     /**
-     * 根据名称或者位置获取参数
-     * @param string|int $name 参数名或者位置
-     * @return Argument 参数
+     * 根据名称或者位置获取参数.
+     *
+     * @param int|string $name 参数名或者位置
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Argument 参数
      */
     public function getArgument($name)
     {
@@ -130,26 +141,30 @@ class Definition
             throw new \InvalidArgumentException(sprintf('The "%s" argument does not exist.', $name));
         }
 
-        $arguments = is_int($name) ? array_values($this->arguments) : $this->arguments;
+        $arguments = \is_int($name) ? array_values($this->arguments) : $this->arguments;
 
         return $arguments[$name];
     }
 
     /**
-     * 根据名称或位置检查是否具有某个参数
-     * @param string|int $name 参数名或者位置
+     * 根据名称或位置检查是否具有某个参数.
+     *
+     * @param int|string $name 参数名或者位置
+     *
      * @return bool
+     *
      * @api
      */
     public function hasArgument($name)
     {
-        $arguments = is_int($name) ? array_values($this->arguments) : $this->arguments;
+        $arguments = \is_int($name) ? array_values($this->arguments) : $this->arguments;
 
         return isset($arguments[$name]);
     }
 
     /**
-     * 获取所有的参数
+     * 获取所有的参数.
+     *
      * @return Argument[] 参数数组
      */
     public function getArguments()
@@ -158,16 +173,18 @@ class Definition
     }
 
     /**
-     * 获取参数数量
+     * 获取参数数量.
+     *
      * @return int
      */
     public function getArgumentCount()
     {
-        return $this->hasAnArrayArgument ? PHP_INT_MAX : count($this->arguments);
+        return $this->hasAnArrayArgument ? PHP_INT_MAX : \count($this->arguments);
     }
 
     /**
-     * 获取必填的参数的数量
+     * 获取必填的参数的数量.
+     *
      * @return int
      */
     public function getArgumentRequiredCount()
@@ -177,6 +194,7 @@ class Definition
 
     /**
      * 获取参数默认值
+     *
      * @return array
      */
     public function getArgumentDefaults()
@@ -190,7 +208,8 @@ class Definition
     }
 
     /**
-     * 设置选项
+     * 设置选项.
+     *
      * @param Option[] $options 选项数组
      */
     public function setOptions($options = [])
@@ -201,8 +220,10 @@ class Definition
     }
 
     /**
-     * 添加选项
+     * 添加选项.
+     *
      * @param Option[] $options 选项数组
+     *
      * @api
      */
     public function addOptions($options = [])
@@ -213,9 +234,12 @@ class Definition
     }
 
     /**
-     * 添加一个选项
+     * 添加一个选项.
+     *
      * @param Option $option 选项
+     *
      * @throws \LogicException
+     *
      * @api
      */
     public function addOption(Option $option)
@@ -243,10 +267,14 @@ class Definition
     }
 
     /**
-     * 根据名称获取选项
+     * 根据名称获取选项.
+     *
      * @param string $name 选项名
-     * @return Option
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Option
+     *
      * @api
      */
     public function getOption($name)
@@ -259,9 +287,12 @@ class Definition
     }
 
     /**
-     * 根据名称检查是否有这个选项
+     * 根据名称检查是否有这个选项.
+     *
      * @param string $name 选项名
+     *
      * @return bool
+     *
      * @api
      */
     public function hasOption($name)
@@ -270,8 +301,10 @@ class Definition
     }
 
     /**
-     * 获取所有选项
+     * 获取所有选项.
+     *
      * @return Option[]
+     *
      * @api
      */
     public function getOptions()
@@ -280,8 +313,10 @@ class Definition
     }
 
     /**
-     * 根据名称检查某个选项是否有短名称
+     * 根据名称检查某个选项是否有短名称.
+     *
      * @param string $name 短名称
+     *
      * @return bool
      */
     public function hasShortcut($name)
@@ -290,8 +325,10 @@ class Definition
     }
 
     /**
-     * 根据短名称获取选项
+     * 根据短名称获取选项.
+     *
      * @param string $shortcut 短名称
+     *
      * @return Option
      */
     public function getOptionForShortcut($shortcut)
@@ -301,6 +338,7 @@ class Definition
 
     /**
      * 获取所有选项的默认值
+     *
      * @return array
      */
     public function getOptionDefaults()
@@ -314,23 +352,10 @@ class Definition
     }
 
     /**
-     * 根据短名称获取选项名
-     * @param string $shortcut 短名称
-     * @return string
-     * @throws \InvalidArgumentException
-     */
-    private function shortcutToName($shortcut)
-    {
-        if (!isset($this->shortcuts[$shortcut])) {
-            throw new \InvalidArgumentException(sprintf('The "-%s" option does not exist.', $shortcut));
-        }
-
-        return $this->shortcuts[$shortcut];
-    }
-
-    /**
-     * 获取该指令的介绍
+     * 获取该指令的介绍.
+     *
      * @param bool $short 是否简洁介绍
+     *
      * @return string
      */
     public function getSynopsis($short = false)
@@ -351,7 +376,7 @@ class Definition
             }
         }
 
-        if (count($elements) && $this->getArguments()) {
+        if (\count($elements) && $this->getArguments()) {
             $elements[] = '[--]';
         }
 
@@ -371,5 +396,23 @@ class Definition
         }
 
         return implode(' ', $elements);
+    }
+
+    /**
+     * 根据短名称获取选项名.
+     *
+     * @param string $shortcut 短名称
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string
+     */
+    private function shortcutToName($shortcut)
+    {
+        if (!isset($this->shortcuts[$shortcut])) {
+            throw new \InvalidArgumentException(sprintf('The "-%s" option does not exist.', $shortcut));
+        }
+
+        return $this->shortcuts[$shortcut];
     }
 }

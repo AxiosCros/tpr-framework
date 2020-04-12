@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -15,7 +16,6 @@ use tpr\framework\Process;
 
 class Timeout extends \RuntimeException
 {
-
     const TYPE_GENERAL = 1;
     const TYPE_IDLE    = 2;
 
@@ -37,12 +37,12 @@ class Timeout extends \RuntimeException
 
     public function isGeneralTimeout()
     {
-        return $this->timeoutType === self::TYPE_GENERAL;
+        return self::TYPE_GENERAL === $this->timeoutType;
     }
 
     public function isIdleTimeout()
     {
-        return $this->timeoutType === self::TYPE_IDLE;
+        return self::TYPE_IDLE === $this->timeoutType;
     }
 
     public function getExceededTimeout()
@@ -50,10 +50,8 @@ class Timeout extends \RuntimeException
         switch ($this->timeoutType) {
             case self::TYPE_GENERAL:
                 return $this->process->getTimeout();
-
             case self::TYPE_IDLE:
                 return $this->process->getIdleTimeout();
-
             default:
                 throw new \LogicException(sprintf('Unknown timeout type "%d".', $this->timeoutType));
         }

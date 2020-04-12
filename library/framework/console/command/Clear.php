@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -8,6 +9,7 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
+
 namespace tpr\framework\console\command;
 
 use tpr\framework\console\Command;
@@ -34,7 +36,7 @@ class Clear extends Command
             $this->clearPath($path);
         }
 
-        $output->writeln("<info>Clear Successed</info>");
+        $output->writeln('<info>Clear Successed</info>');
     }
 
     protected function clearPath($path)

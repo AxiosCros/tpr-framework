@@ -9,8 +9,8 @@
 namespace tpr\framework;
 
 /**
- * Class Captcha
- * @package tpr\framework
+ * Class Captcha.
+ *
  * @property $imageW private
  * @property $imageH private
  * @property $length private
@@ -61,14 +61,13 @@ class Captcha
         // 验证成功后是否重置
     ];
 
-    private $_image = null; // 验证码图片实例
-    private $_color = null; // 验证码字体颜色
+    private $_image; // 验证码图片实例
+    private $_color; // 验证码字体颜色
 
     /**
-     * 架构方法 设置参数
-     * @access public
+     * 架构方法 设置参数.
      *
-     * @param  array $config 配置参数
+     * @param array $config 配置参数
      */
     public function __construct($config = [])
     {
@@ -76,12 +75,11 @@ class Captcha
     }
 
     /**
-     * 使用 $this->name 获取配置
-     * @access public
+     * 使用 $this->name 获取配置.
      *
-     * @param  string $name 配置名称
+     * @param string $name 配置名称
      *
-     * @return mixed    配置值
+     * @return mixed 配置值
      */
     public function __get($name)
     {
@@ -89,13 +87,10 @@ class Captcha
     }
 
     /**
-     * 设置验证码配置
-     * @access public
+     * 设置验证码配置.
      *
-     * @param  string $name  配置名称
-     * @param  string $value 配置值
-     *
-     * @return void
+     * @param string $name  配置名称
+     * @param string $value 配置值
      */
     public function __set($name, $value)
     {
@@ -105,10 +100,9 @@ class Captcha
     }
 
     /**
-     * 检查配置
-     * @access public
+     * 检查配置.
      *
-     * @param  string $name 配置名称
+     * @param string $name 配置名称
      *
      * @return bool
      */
@@ -118,14 +112,14 @@ class Captcha
     }
 
     /**
-     * 验证验证码是否正确
-     * @access public
+     * 验证验证码是否正确.
      *
      * @param string $code 用户验证码
      * @param string $id   验证码标识
      *
-     * @return bool 用户验证码是否正确
      * @throws exception\PermissionDenied
+     *
+     * @return bool 用户验证码是否正确
      */
     public function check($code, $id = '')
     {
@@ -138,11 +132,13 @@ class Captcha
         // session 过期
         if (time() - $secode['verify_time'] > $this->expire) {
             Session::delete($key, '');
+
             return false;
         }
 
         if ($this->authcode(strtoupper($code)) == $secode['verify_code']) {
             $this->reset && Session::delete($key, '');
+
             return true;
         }
 
@@ -151,13 +147,13 @@ class Captcha
 
     /**
      * 输出验证码并把验证码的值保存的session中
-     * 验证码保存到session的格式为： array('verify_code' => '验证码值', 'verify_time' => '验证码创建时间');
-     * @access public
+     * 验证码保存到session的格式为： array('verify_code' => '验证码值', 'verify_time' => '验证码创建时间');.
      *
      * @param string $id 要生成验证码的标识
      *
-     * @return Response
      * @throws exception\PermissionDenied
+     *
+     * @return Response
      */
     public function entry($id = '')
     {
@@ -179,7 +175,7 @@ class Captcha
             $dir  = dir($ttfPath);
             $ttfs = [];
             while (false !== ($file = $dir->read())) {
-                if ('.' != $file[0] && substr($file, -4) == '.ttf') {
+                if ('.' != $file[0] && '.ttf' == substr($file, -4)) {
                     $ttfs[] = $file;
                 }
             }
@@ -206,14 +202,14 @@ class Captcha
         $codeNX = 0; // 验证码第N个字符的左边距
         if ($this->useZh) {
             // 中文验证码
-            for ($i = 0; $i < $this->length; $i++) {
+            for ($i = 0; $i < $this->length; ++$i) {
                 $code[$i] = iconv_substr($this->zhSet, floor(mt_rand(0, mb_strlen($this->zhSet, 'utf-8') - 1)), 1, 'utf-8');
                 imagettftext($this->_image, $this->fontSize, mt_rand(-40, 40), $this->fontSize * ($i + 1) * 1.5, $this->fontSize + mt_rand(10, 20), $this->_color, $this->fontttf, $code[$i]);
             }
         } else {
-            for ($i = 0; $i < $this->length; $i++) {
-                $code[$i] = $this->codeSet[mt_rand(0, strlen($this->codeSet) - 1)];
-                $codeNX   += mt_rand($this->fontSize * 1.2, $this->fontSize * 1.6);
+            for ($i = 0; $i < $this->length; ++$i) {
+                $code[$i] = $this->codeSet[mt_rand(0, \strlen($this->codeSet) - 1)];
+                $codeNX += mt_rand($this->fontSize * 1.2, $this->fontSize * 1.6);
                 imagettftext($this->_image, $this->fontSize, mt_rand(-40, 40), $codeNX, $this->fontSize * 1.6, $this->_color, $this->fontttf, $code[$i]);
             }
         }
@@ -232,7 +228,7 @@ class Captcha
         $content = ob_get_clean();
         imagedestroy($this->_image);
 
-        return response($content, 200, ['Content-Length' => strlen($content)])->contentType('image/png');
+        return response($content, 200, ['Content-Length' => \strlen($content)])->contentType('image/png');
     }
 
     /**
@@ -243,7 +239,7 @@ class Captcha
      *        A：决定峰值（即纵向拉伸压缩的倍数）
      *        b：表示波形在Y轴的位置关系或纵向移动距离（上加下减）
      *        φ：决定波形与X轴位置关系或横向移动距离（左加右减）
-     *        ω：决定周期（最小正周期T=2π/∣ω∣）
+     *        ω：决定周期（最小正周期T=2π/∣ω∣）.
      */
     private function _writeCurve()
     {
@@ -262,10 +258,10 @@ class Captcha
         for ($px = $px1; $px <= $px2; $px = $px + 1) {
             if (0 != $w) {
                 $py = $A * sin($w * $px + $f) + $b + $this->imageH / 2; // y = Asin(ωx+φ) + b
-                $i  = (int)($this->fontSize / 5);
+                $i  = (int) ($this->fontSize / 5);
                 while ($i > 0) {
                     imagesetpixel($this->_image, $px + $i, $py + $i, $this->_color); // 这里(while)循环画像素点比imagettftext和imagestring用字体大小一次画出（不用这while循环）性能要好很多
-                    $i--;
+                    --$i;
                 }
             }
         }
@@ -282,10 +278,10 @@ class Captcha
         for ($px = $px1; $px <= $px2; $px = $px + 1) {
             if (0 != $w) {
                 $py = $A * sin($w * $px + $f) + $b + $this->imageH / 2; // y = Asin(ωx+φ) + b
-                $i  = (int)($this->fontSize / 5);
+                $i  = (int) ($this->fontSize / 5);
                 while ($i > 0) {
                     imagesetpixel($this->_image, $px + $i, $py + $i, $this->_color);
-                    $i--;
+                    --$i;
                 }
             }
         }
@@ -293,15 +289,15 @@ class Captcha
 
     /**
      * 画杂点
-     * 往图片上写不同颜色的字母或数字
+     * 往图片上写不同颜色的字母或数字.
      */
     private function _writeNoise()
     {
         $codeSet = '2345678abcdefhijkmnpqrstuvwxyz';
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             //杂点颜色
             $noiseColor = imagecolorallocate($this->_image, mt_rand(150, 225), mt_rand(150, 225), mt_rand(150, 225));
-            for ($j = 0; $j < 5; $j++) {
+            for ($j = 0; $j < 5; ++$j) {
                 // 绘杂点
                 imagestring($this->_image, 5, mt_rand(-10, $this->imageW), mt_rand(-10, $this->imageH), $codeSet[mt_rand(0, 29)], $noiseColor);
             }
@@ -310,16 +306,16 @@ class Captcha
 
     /**
      * 绘制背景图片
-     * 注：如果验证码输出图片比较大，将占用比较多的系统资源
+     * 注：如果验证码输出图片比较大，将占用比较多的系统资源.
      */
     private function _background()
     {
-        $path = dirname(__FILE__) . '/verify/bgs/';
+        $path = __DIR__ . '/verify/bgs/';
         $dir  = dir($path);
 
         $bgs = [];
         while (false !== ($file = $dir->read())) {
-            if ('.' != $file[0] && substr($file, -4) == '.jpg') {
+            if ('.' != $file[0] && '.jpg' == substr($file, -4)) {
                 $bgs[] = $path . $file;
             }
         }
@@ -334,11 +330,12 @@ class Captcha
         @imagedestroy($bgImage);
     }
 
-    /* 加密验证码 */
+    // 加密验证码
     private function authcode($str)
     {
         $key = substr(md5($this->seKey), 5, 8);
         $str = substr(md5($str), 8, 10);
+
         return md5($key . $str);
     }
 }

@@ -10,29 +10,28 @@ namespace tpr\framework;
 
 class Doc
 {
+    public static $classMap = [];
     protected static $instance;
 
     protected static $config = [
         'doc_path'      => [],
         'load_path'     => [],
         'app_namespace' => '',
-        'connector'     => ';'
+        'connector'     => ';',
     ];
 
     protected static $typeList = [
         'char', 'string', 'int', 'float', 'boolean', 'bool', 'date',
-        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed', 'file'
+        'array', 'fixed', 'enum', 'object', 'double', 'void', 'mixed', 'file',
     ];
 
     private static $isConnect = false;
-
-    public static $classMap = [];
 
     private static $content = '';
 
     public static function set($config = [])
     {
-        if (self::$instance === null) {
+        if (null === self::$instance) {
             self::$instance = new static();
         }
 
@@ -43,7 +42,7 @@ class Doc
 
     public static function instance()
     {
-        if (self::$instance === null) {
+        if (null === self::$instance) {
             self::$instance = new static();
         }
 
@@ -57,12 +56,13 @@ class Doc
         $class_path = [];
         $dirHandle  = opendir($app_path);
         while (false !== ($fileName = readdir($dirHandle))) {
-            $subFile = $app_path . DIRECTORY_SEPARATOR . $fileName;
-            if (is_dir($subFile) && str_replace('.', '', $fileName) != '' && !in_array($fileName, c('deny_module_list', ['common']))) {
+            $subFile = $app_path . \DIRECTORY_SEPARATOR . $fileName;
+            if (is_dir($subFile) && '' != str_replace('.', '', $fileName) && !\in_array($fileName, c('deny_module_list', ['common']))) {
                 $class_path[] = $subFile . DS . $layer;
             }
         }
         closedir($dirHandle);
+
         return $class_path;
     }
 
@@ -89,33 +89,6 @@ class Doc
         return $doc;
     }
 
-    private function filter($filter = null)
-    {
-        if (!is_null($filter)) {
-            switch ($filter) {
-                case 'public':
-                    $filter = \ReflectionMethod::IS_PUBLIC;
-                    break;
-                case 'static':
-                    $filter = \ReflectionMethod::IS_STATIC;
-                    break;
-                case 'protected':
-                    $filter = \ReflectionMethod::IS_PROTECTED;
-                    break;
-                case 'private':
-                    $filter = \ReflectionMethod::IS_PRIVATE;
-                    break;
-                case 'abstract':
-                    $filter = \ReflectionMethod::IS_ABSTRACT;
-                    break;
-                case 'final':
-                    $filter = \ReflectionMethod::IS_FINAL;
-                    break;
-            }
-        }
-        return $filter;
-    }
-
     public function makeClassDoc($class = '', $filter = 'public')
     {
         $filter = $this->filter($filter);
@@ -133,13 +106,14 @@ class Doc
             $methods = [];
             $m       = 0;
             foreach ($_getMethods as $key => $method) {
-                if ($method->class == $class && strpos($method->name, '__') === false) {
+                if ($method->class == $class && false === strpos($method->name, '__')) {
                     $methods[$m] = $this->makeMethodDoc($class, $method->name);
-                    $m++;
+                    ++$m;
                 }
             }
             $doc['methods'] = $methods;
         }
+
         return $doc;
     }
 
@@ -149,12 +123,12 @@ class Doc
 
         $method = $reflectionClass->getMethod($method_name);
         $temp   = str_replace(self::$config['app_namespace'], '', $class);
-        $temp   = explode("\\", $temp);
+        $temp   = explode('\\', $temp);
         $temp   = array_values(array_filter($temp));
 
         $m         = [];
         $m['name'] = $method->name;
-        $m['path'] = strtolower($temp[0]) . "/" . strtolower($temp[2]) . "/" . $method->name;
+        $m['path'] = strtolower($temp[0]) . '/' . strtolower($temp[2]) . '/' . $method->name;
         $rule      = Route::name($m['path']);
         $route     = '';
         if (!empty($rule)) {
@@ -164,28 +138,64 @@ class Doc
         $m['comment'] = $this->trans($method->getDocComment());
 
         $m['property'] = \Reflection::getModifierNames($method->getModifiers());
+
         return $m;
+    }
+
+    private function filter($filter = null)
+    {
+        if (null !== $filter) {
+            switch ($filter) {
+                case 'public':
+                    $filter = \ReflectionMethod::IS_PUBLIC;
+
+                    break;
+                case 'static':
+                    $filter = \ReflectionMethod::IS_STATIC;
+
+                    break;
+                case 'protected':
+                    $filter = \ReflectionMethod::IS_PROTECTED;
+
+                    break;
+                case 'private':
+                    $filter = \ReflectionMethod::IS_PRIVATE;
+
+                    break;
+                case 'abstract':
+                    $filter = \ReflectionMethod::IS_ABSTRACT;
+
+                    break;
+                case 'final':
+                    $filter = \ReflectionMethod::IS_FINAL;
+
+                    break;
+            }
+        }
+
+        return $filter;
     }
 
     private function trans($comment)
     {
         $docComment = $comment;
         $data       = [];
-        if ($docComment !== false) {
+        if (false !== $docComment) {
             $docCommentArr = explode("\n", $docComment);
             foreach ($docCommentArr as $key => $comment) {
                 //find @ position
                 $posA = strpos($comment, '@');
-                if ($posA === false) {
-                    if ($key == 1 && strpos($comment, '@') === false) {
+                if (false === $posA) {
+                    if (1 == $key && false === strpos($comment, '@')) {
                         $content       = trim(str_replace('*', ' ', $comment));
                         $data['title'] = $content;
                     }
+
                     continue;
                 }
                 $content       = trim(substr($comment, $posA));
                 $needle_length = strpos($content, ' ');
-                if ($needle_length === false) {
+                if (false === $needle_length) {
                     $needle  = str_replace('@', '', trim($content));
                     $content = '';
                 } else {
@@ -193,11 +203,11 @@ class Doc
                     $content = trim(substr($content, $needle_length));
                     $content = $this->transContent($content);
                 }
-                if ($content === true) {
+                if (true === $content) {
                     continue;
                 }
                 if (isset($data[$needle])) {
-                    if (is_array($data[$needle])) {
+                    if (\is_array($data[$needle])) {
                         array_push($data[$needle], $content);
                     } else {
                         $tmp              = $data[$needle];
@@ -206,7 +216,7 @@ class Doc
                         $data[$needle][1] = $content;
                     }
                 } else {
-                    if (is_array($content)) {
+                    if (\is_array($content)) {
                         $data[$needle][0] = $content;
                     } else {
                         $data[$needle] = $content;
@@ -221,23 +231,24 @@ class Doc
     private function transContent($content)
     {
         $connector       = self::$config['connector'];
-        self::$isConnect = strpos($content, $connector) === false ? false : true;
+        self::$isConnect = false === strpos($content, $connector) ? false : true;
         self::$content   = self::$content . $content;
         if (self::$isConnect) {
             self::$content = str_replace($connector, '', self::$content);
+
             return true;
         }
         $content       = self::$content;
         self::$content = '';
-        if (strpos($content, ' ') !== false) {
-            $content      = preg_replace("/[\s]+/is", " ", $content);
+        if (false !== strpos($content, ' ')) {
+            $content      = preg_replace('/[\\s]+/is', ' ', $content);
             $contentArray = explode(' ', $content);
             if (isset($contentArray[0]) && !$this->isType($contentArray[0])) {
                 return $content;
             }
             $data = [
                 'type' => isset($contentArray[0]) ? $contentArray[0] : '',
-                'name' => isset($contentArray[1]) ? $contentArray[1] : ''
+                'name' => isset($contentArray[1]) ? $contentArray[1] : '',
             ];
             $desc = '';
             foreach ($contentArray as $k => $c) {
@@ -252,6 +263,7 @@ class Doc
             $data['desc'] = trim($desc);
             $content      = $data;
         }
+
         return $content;
     }
 
@@ -260,27 +272,28 @@ class Doc
         if (strpos($type, '|')) {
             $array = explode('|', $type);
             foreach ($array as $a) {
-                if (in_array(strtolower($a), self::$typeList)) {
+                if (\in_array(strtolower($a), self::$typeList)) {
                     return true;
                 }
             }
         } else {
-            if (in_array(strtolower($type), self::$typeList)) {
+            if (\in_array(strtolower($type), self::$typeList)) {
                 return true;
             }
         }
+
         return false;
     }
 
     private static function scanDir($dir)
     {
         $file_list = [];
-        if (is_string($dir)) {
+        if (\is_string($dir)) {
             self::deepScanDir($dir, $file_list);
-        } else if (is_array($dir)) {
+        } elseif (\is_array($dir)) {
             $file_list = [];
             foreach ($dir as $d) {
-                if (is_string($d)) {
+                if (\is_string($d)) {
                     self::deepScanDir($d, $list);
                     foreach ($list as $l) {
                         array_push($file_list, $l);
@@ -288,6 +301,7 @@ class Doc
                 }
             }
         }
+
         return $file_list;
     }
 
@@ -295,7 +309,7 @@ class Doc
     {
         $files = self::scanDir($dir);
         foreach ($files as $k => $f) {
-            if (strpos($f, '.php') !== false) {
+            if (false !== strpos($f, '.php')) {
                 require_once $f;
                 $content            = file_get_contents($f);
                 $namespace_begin    = strpos($content, 'namespace') + 10;
@@ -308,7 +322,7 @@ class Doc
 
     private static function deepScanDir($dir, &$fileArr = [])
     {
-        if (is_null($fileArr)) {
+        if (null === $fileArr) {
             $fileArr = [];
         }
         $dir = rtrim($dir, '//');
@@ -316,10 +330,10 @@ class Doc
         if (is_dir($dir)) {
             $dirHandle = opendir($dir);
             while (false !== ($fileName = readdir($dirHandle))) {
-                $subFile = $dir . DIRECTORY_SEPARATOR . $fileName;
+                $subFile = $dir . \DIRECTORY_SEPARATOR . $fileName;
                 if (is_file($subFile)) {
                     array_push($fileArr, $subFile);
-                } elseif (is_dir($subFile) && str_replace('.', '', $fileName) != '') {
+                } elseif (is_dir($subFile) && '' != str_replace('.', '', $fileName)) {
                     self::deepScanDir($subFile, $fileArr);
                 }
             }

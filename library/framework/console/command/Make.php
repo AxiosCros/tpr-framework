@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -20,24 +21,21 @@ use tpr\framework\console\Output;
 
 abstract class Make extends Command
 {
-
     protected $type;
 
     abstract protected function getStub();
 
     protected function configure()
     {
-        $this->addArgument('name', Argument::REQUIRED, "The name of the class");
+        $this->addArgument('name', Argument::REQUIRED, 'The name of the class');
     }
 
     /**
-     * @param Input $input
+     * @param Input  $input
      * @param Output $output
-     * @return void
      */
     protected function execute(Input $input, Output $output)
     {
-
         $name = trim($input->getArgument('name'));
 
         $classname = $this->getClassName($name);
@@ -48,21 +46,20 @@ abstract class Make extends Command
             $output->writeln('<error>' . $this->type . ' already exists!</error>');
         }
 
-        if (!is_dir(dirname($pathname))) {
-            mkdir(strtolower(dirname($pathname)), 0755, true);
+        if (!is_dir(\dirname($pathname))) {
+            mkdir(strtolower(\dirname($pathname)), 0755, true);
         }
 
         file_put_contents($pathname, $this->buildClass($classname));
 
         $output->writeln('<info>' . $this->type . ' created successfully.</info>');
-
     }
 
     protected function buildClass($name)
     {
         $stub = file_get_contents($this->getStub());
 
-        $namespace = trim(implode('\\', array_slice(explode('\\', $name), 0, -1)), '\\');
+        $namespace = trim(implode('\\', \array_slice(explode('\\', $name), 0, -1)), '\\');
 
         $class = str_replace($namespace . '\\', '', $name);
 
@@ -71,7 +68,6 @@ abstract class Make extends Command
             $namespace,
             App::$namespace,
         ], $stub);
-
     }
 
     protected function getPathName($name)
@@ -85,7 +81,7 @@ abstract class Make extends Command
     {
         $appNamespace = App::$namespace;
 
-        if (strpos($name, $appNamespace . '\\') === 0) {
+        if (0 === strpos($name, $appNamespace . '\\')) {
             return $name;
         }
 
@@ -99,7 +95,7 @@ abstract class Make extends Command
             $module = null;
         }
 
-        if (strpos($name, '/') !== false) {
+        if (false !== strpos($name, '/')) {
             $name = str_replace('/', '\\', $name);
         }
 
@@ -110,5 +106,4 @@ abstract class Make extends Command
     {
         return $module ? ($appNamespace . '\\' . $module) : $appNamespace;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -8,6 +9,7 @@
 // +----------------------------------------------------------------------
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
+
 namespace tpr\framework\console\command\optimize;
 
 use tpr\framework\Config as ThinkConfig;
@@ -18,7 +20,7 @@ use tpr\framework\console\Output;
 
 class Config extends Command
 {
-    /** @var  Output */
+    /** @var Output */
     protected $output;
 
     protected function configure()
@@ -88,6 +90,7 @@ class Config extends Command
         }
 
         $content .= '\tpr\framework\Config::set(' . var_export(ThinkConfig::get(), true) . ');';
+
         return $content;
     }
 }

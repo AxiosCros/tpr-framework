@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -15,11 +16,11 @@ use tpr\framework\console\output\Question;
 
 class Confirmation extends Question
 {
-
     private $trueAnswerRegex;
 
     /**
-     * 构造方法
+     * 构造方法.
+     *
      * @param string $question        问题
      * @param bool   $default         默认答案
      * @param string $trueAnswerRegex 验证正则
@@ -33,7 +34,8 @@ class Confirmation extends Question
     }
 
     /**
-     * 获取默认的答案回调
+     * 获取默认的答案回调.
+     *
      * @return callable
      */
     private function getDefaultNormalizer()
@@ -42,7 +44,7 @@ class Confirmation extends Question
         $regex   = $this->trueAnswerRegex;
 
         return function ($answer) use ($default, $regex) {
-            if (is_bool($answer)) {
+            if (\is_bool($answer)) {
                 return $answer;
             }
 

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -13,20 +14,28 @@ namespace tpr\framework\console\command;
 
 use tpr\framework\console\Command;
 use tpr\framework\console\Input;
-use tpr\framework\console\Output;
 use tpr\framework\console\input\Argument as InputArgument;
-use tpr\framework\console\input\Option as InputOption;
 use tpr\framework\console\input\Definition as InputDefinition;
+use tpr\framework\console\input\Option as InputOption;
+use tpr\framework\console\Output;
 
 class Lists extends Command
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getNativeDefinition()
+    {
+        return $this->createDefinition();
+    }
 
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('list')->setDefinition($this->createDefinition())->setDescription('Lists commands')->setHelp(<<<EOF
+        $this->setName('list')->setDefinition($this->createDefinition())->setDescription('Lists commands')->setHelp(
+            <<<'EOF'
 The <info>%command.name%</info> command lists all commands:
 
   <info>php %command.full_name%</info>
@@ -40,14 +49,6 @@ It's also possible to get raw list of commands (useful for embedding command run
   <info>php %command.full_name% --raw</info>
 EOF
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNativeDefinition()
-    {
-        return $this->createDefinition();
     }
 
     /**
@@ -68,7 +69,7 @@ EOF
     {
         return new InputDefinition([
             new InputArgument('namespace', InputArgument::OPTIONAL, 'The namespace name'),
-            new InputOption('raw', null, InputOption::VALUE_NONE, 'To output raw command list')
+            new InputOption('raw', null, InputOption::VALUE_NONE, 'To output raw command list'),
         ]);
     }
 }

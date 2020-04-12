@@ -22,23 +22,24 @@ class Tool
     public static function uuidAddFlavour($salt = '', $cut = 8, $flavour = '-', $isUpper = false)
     {
         $str    = self::uuid($salt);
-        $len    = strlen($str);
+        $len    = \strlen($str);
         $length = $len;
         $uuid   = '';
-        if (is_array($cut)) {
+        if (\is_array($cut)) {
             while ($length > 0) {
-                $uuid   .= substr($str, $len - $length, array_rand($cut)) . $flavour;
+                $uuid .= substr($str, $len - $length, array_rand($cut)) . $flavour;
                 $length -= $cut;
             }
-        } else if (is_int($cut)) {
+        } elseif (\is_int($cut)) {
             $step = 0;
             while ($length > 0) {
                 $temp   = substr($str, $len - $length, $cut);
-                $uuid   .= $step != 0 ? $flavour . $temp : $temp;
+                $uuid .= 0 != $step ? $flavour . $temp : $temp;
                 $length -= $cut;
-                $step++;
+                ++$step;
             }
         }
+
         return $isUpper ? strtoupper($uuid) : self::randUpper($uuid);
     }
 
@@ -52,14 +53,18 @@ class Tool
      */
     public static function getClientIp($type = 0, $adv = false)
     {
-        $type = $type ? 1 : 0;
-        static $ip = NULL;
-        if ($ip !== NULL) return $ip[$type];
+        $type      = $type ? 1 : 0;
+        static $ip = null;
+        if (null !== $ip) {
+            return $ip[$type];
+        }
         if ($adv) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
                 $pos = array_search('unknown', $arr);
-                if (false !== $pos) unset($arr[$pos]);
+                if (false !== $pos) {
+                    unset($arr[$pos]);
+                }
                 $ip = trim($arr[0]);
             } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -70,57 +75,59 @@ class Tool
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         // IP地址合法验证
-        $long = sprintf("%u", ip2long($ip));
-        $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
+        $long = sprintf('%u', ip2long($ip));
+        $ip   = $long ? [$ip, $long] : ['0.0.0.0', 0];
+
         return $ip[$type];
     }
 
     public static function identity($identity = false)
     {
-        if ($identity === false) {
+        if (false === $identity) {
             return self::$identity;
         }
         self::$identity = $identity;
+
         return $identity;
     }
 
     public static function checkData2String(&$array = [])
     {
-        if (is_object($array)) {
+        if (\is_object($array)) {
             $array = self::object2Array($array);
         }
-        if (is_array($array)) {
+        if (\is_array($array)) {
             foreach ($array as &$a) {
-                if (is_object($a)) {
+                if (\is_object($a)) {
                     $a = self::object2Array($a);
                 }
-                if (is_array($a)) {
+                if (\is_array($a)) {
                     self::checkData2String($a);
                 }
-                if (is_int($a)) {
-                    $a = strval($a);
+                if (\is_int($a)) {
+                    $a = (string) $a;
                 }
-                if (is_null($a)) {
-                    $a = "";
+                if (null === $a) {
+                    $a = '';
                 }
             }
-        } else if (is_int($array)) {
-            $array = strval($array);
-        } else if (is_null($array)) {
-            $array = "";
+        } elseif (\is_int($array)) {
+            $array = (string) $array;
+        } elseif (null === $array) {
+            $array = '';
         }
+
         return $array;
     }
 
     public static function object2Array($object)
     {
-        $object = json_decode(json_encode($object), true);
-        return $object;
+        return json_decode(json_encode($object), true);
     }
 
-    public static function arraySort($array, $sortRule = "", $order = "asc")
+    public static function arraySort($array, $sortRule = '', $order = 'asc')
     {
-        /**
+        /*
          * $array = [
          *              ["book"=>10,"version"=>10],
          *              ["book"=>19,"version"=>30],
@@ -130,21 +137,21 @@ class Tool
          *              ["book"=>19,"version"=>20]
          *      ];
          */
-        if (is_array($sortRule)) {
-            /**
-             * $sortRule = ['book'=>"asc",'version'=>"asc"];
-             */
+        if (\is_array($sortRule)) {
+            // $sortRule = ['book'=>"asc",'version'=>"asc"];
             usort($array, function ($a, $b) use ($sortRule) {
                 foreach ($sortRule as $sortKey => $order) {
                     if ($a[$sortKey] == $b[$sortKey]) {
                         continue;
                     }
-                    return (($order == 'desc') ? -1 : 1) * (($a[$sortKey] < $b[$sortKey]) ? -1 : 1);
+
+                    return (('desc' == $order) ? -1 : 1) * (($a[$sortKey] < $b[$sortKey]) ? -1 : 1);
                 }
+
                 return 0;
             });
-        } else if (is_string($sortRule) && !empty($sortRule)) {
-            /**
+        } elseif (\is_string($sortRule) && !empty($sortRule)) {
+            /*
              * $sortRule = "book";
              * $order = "asc";
              */
@@ -152,42 +159,45 @@ class Tool
                 if ($a[$sortRule] == $b[$sortRule]) {
                     return 0;
                 }
-                return (($order == 'desc') ? -1 : 1) * (($a[$sortRule] < $b[$sortRule]) ? -1 : 1);
+
+                return (('desc' == $order) ? -1 : 1) * (($a[$sortRule] < $b[$sortRule]) ? -1 : 1);
             });
         } else {
             usort($array, function ($a, $b) use ($order) {
                 if ($a == $b) {
                     return 0;
                 }
-                return (($order == 'desc') ? -1 : 1) * (($a < $b) ? -1 : 1);
+
+                return (('desc' == $order) ? -1 : 1) * (($a < $b) ? -1 : 1);
             });
         }
+
         return $array;
     }
 
     /**
-     * 随机字符串生成器
+     * 随机字符串生成器.
      *
      * @param        $length
      * @param string $strPol
      *
      * @return null|string
      */
-    public static function getRandChar($length = 15, $strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz")
+    public static function getRandChar($length = 15, $strPol = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz')
     {
         $str = null;
 
-        $max = strlen($strPol) - 1;
+        $max = \strlen($strPol) - 1;
 
-        for ($i = 0; $i < $length; $i++) {
-            $str .= $strPol[rand(0, $max)];//rand($min,$max)生成介于min和max两个数之间的一个随机整数
+        for ($i = 0; $i < $length; ++$i) {
+            $str .= $strPol[rand(0, $max)]; //rand($min,$max)生成介于min和max两个数之间的一个随机整数
         }
 
         return $str;
     }
 
     /**
-     * 字符串随机大小写
+     * 字符串随机大小写.
      *
      * @param $str
      *
@@ -195,20 +205,21 @@ class Tool
      */
     public static function randUpper($str)
     {
-        $len = strlen($str);
-        for ($i = 0; $i < $len; $i++) {
+        $len = \strlen($str);
+        for ($i = 0; $i < $len; ++$i) {
             $str[$i] = mt_rand(0, 1) ? strtoupper($str[$i]) : strtolower($str[$i]);
         }
+
         return $str;
     }
 
     public static function curl($url, $data = [], $post = true, $header = [])
     {
-        $method   = $post ? "POST" : "GET";
-        $response = Http::instance()->setMethod($method)
+        $method   = $post ? 'POST' : 'GET';
+
+        return Http::instance()->setMethod($method)
             ->setParam($data)
             ->setHeader($header)
             ->curl($url);
-        return $response;
     }
 }

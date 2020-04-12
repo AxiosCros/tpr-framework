@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -8,6 +9,7 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
+
 namespace tpr\framework\console\command\optimize;
 
 use tpr\framework\console\Command;
@@ -16,7 +18,7 @@ use tpr\framework\console\Output;
 
 class Route extends Command
 {
-    /** @var  Output */
+    /** @var Output */
     protected $output;
 
     protected function configure()
@@ -37,7 +39,7 @@ class Route extends Command
         foreach ($files as $file) {
             if (is_file(CONF_PATH . $file . CONF_EXT)) {
                 $config = include CONF_PATH . $file . CONF_EXT;
-                if (is_array($config)) {
+                if (\is_array($config)) {
                     \tpr\framework\Route::import($config);
                 }
             }
@@ -47,6 +49,7 @@ class Route extends Command
         $content = '<?php ' . PHP_EOL . 'return ';
         $content .= var_export($rules, true) . ';';
         $content = str_replace(['\'[__start__', '__end__]\''], '', stripcslashes($content));
+
         return $content;
     }
 
@@ -59,7 +62,7 @@ class Route extends Command
             $file       = $reflection->getFileName();
             $item       = file($file);
             $content    = '';
-            for ($i = $startLine - 1; $i <= $endLine - 1; $i++) {
+            for ($i = $startLine - 1; $i <= $endLine - 1; ++$i) {
                 $content .= $item[$i];
             }
             $start = strpos($content, 'function');

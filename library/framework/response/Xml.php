@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -32,8 +33,7 @@ class Xml extends Response
     protected $contentType = 'text/xml';
 
     /**
-     * 处理数据
-     * @access protected
+     * 处理数据.
      *
      * @param mixed $data 要处理的数据
      *
@@ -59,7 +59,7 @@ class Xml extends Response
      */
     protected function xmlEncode($data, $root, $item, $attr, $id, $encoding)
     {
-        if (is_array($attr)) {
+        if (\is_array($attr)) {
             $array = [];
             foreach ($attr as $key => $value) {
                 $array[] = "{$key}=\"{$value}\"";
@@ -69,9 +69,10 @@ class Xml extends Response
         $attr = trim($attr);
         $attr = empty($attr) ? '' : " {$attr}";
         $xml  = "<?xml version=\"1.0\" encoding=\"{$encoding}\"?>";
-        $xml  .= "<{$root}{$attr}>";
-        $xml  .= $this->dataToXml($data, $item, $id);
-        $xml  .= "</{$root}>";
+        $xml .= "<{$root}{$attr}>";
+        $xml .= $this->dataToXml($data, $item, $id);
+        $xml .= "</{$root}>";
+
         return $xml;
     }
 
@@ -90,12 +91,13 @@ class Xml extends Response
         foreach ($data as $key => $val) {
             if (is_numeric($key)) {
                 $id && $attr = " {$id}=\"{$key}\"";
-                $key = $item;
+                $key         = $item;
             }
             $xml .= "<{$key}{$attr}>";
-            $xml .= (is_array($val) || is_object($val)) ? $this->dataToXml($val, $item, $id) : $val;
+            $xml .= (\is_array($val) || \is_object($val)) ? $this->dataToXml($val, $item, $id) : $val;
             $xml .= "</{$key}>";
         }
+
         return $xml;
     }
 }
